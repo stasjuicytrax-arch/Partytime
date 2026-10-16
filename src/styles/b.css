@@ -182,7 +182,7 @@
 .hb__fact--1 { left: var(--gutter); top: 21%; rotate: -3deg; }
 .hb__fact--2 { right: calc(var(--gutter) + 2%); top: 14%; rotate: 2.5deg; }
 .hb__fact--3 { right: var(--gutter); top: 40%; rotate: -1.5deg; }
-.hb__fact--4 { left: calc(var(--gutter) + 2%); top: 47%; rotate: 2deg; }
+.hb__fact--4 { left: calc(var(--gutter) + 2%); top: 40%; rotate: 2deg; }
 
 .hb__bottom {
   position: relative;

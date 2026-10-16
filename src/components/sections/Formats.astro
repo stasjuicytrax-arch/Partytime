@@ -13,7 +13,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     <div class="formats__viewport" data-formats-viewport>
       <ol class="formats__track" data-formats-track>
         {FORMATS.map((f, i) => {
-          const stem = `${base}/img/rooms/${f.room}/01`;
+          const stem = `${base}/img/rooms/${f.room}/02`;
           return (
             <li class="fcard" style={`--i:${i}`}>
               <img

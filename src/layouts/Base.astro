@@ -60,6 +60,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <slot name="head" />
   </head>
   <body class={bodyClass}>
+    <a class="skip-link" href="#main">Перейти к&nbsp;содержимому</a>
     <slot />
   </body>
 </html>
