@@ -8,5 +8,6 @@ export default defineConfig({
   base: "/Partytime",
   trailingSlash: "ignore",
   integrations: [sitemap()],
-  build: { inlineStylesheets: "auto" },
+  // весь CSS — прямо в HTML: без блокирующих запросов стилей (быстрее первый экран на телефоне)
+  build: { inlineStylesheets: "always" },
 });
