@@ -3,7 +3,7 @@ import { Image } from "astro:assets";
 import Icon from "../Icon.astro";
 import cakeGlasses from "../../assets/people/raw/cake-glasses.png";
 import guitars from "../../assets/people/raw/guitars.png";
-import { totalRooms, minPrice, rub, activeLocations } from "../../lib/rooms";
+import { networkRooms, minPrice, rub, activeLocations } from "../../lib/rooms";
 
 // «зайчики» от шара: детерминированный разброс, чтобы SSR и клиент совпадали
 let seed = 7;
@@ -61,7 +61,7 @@ const flecks = Array.from({ length: 46 }, (_, i) => ({
     </div>
 
     <ul class="hb__facts" aria-label="Коротко о Party Time">
-      <li class="glass hb__fact hb__fact--1" data-float><b class="num" data-count-to={totalRooms}>{totalRooms}</b><span>тематических залов</span></li>
+      <li class="glass hb__fact hb__fact--1" data-float><b class="num" data-count-to={networkRooms}>{networkRooms}</b><span>тематических залов</span></li>
       <li class="glass hb__fact hb__fact--2" data-float><span>до</span><b class="num">06:00</b><span>по&nbsp;пятницам и&nbsp;субботам</span></li>
       <li class="glass hb__fact hb__fact--3" data-float><span>от</span><b class="num">{rub(minPrice)}</b><span>за&nbsp;час аренды</span></li>
       <li class="glass hb__fact hb__fact--4" data-float><b class="num">{activeLocations.length}</b><span>локации в&nbsp;центре</span></li>

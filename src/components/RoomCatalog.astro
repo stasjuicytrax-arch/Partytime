@@ -37,6 +37,7 @@ const sizes = "(max-width: 559px) 92vw, (max-width: 1023px) 46vw, (max-width: 14
     </header>
 
     <div class="rc__controls">
+      <div class="rc__scroll" data-scroll-hint>
       <div class="rc__locs" role="group" aria-label="Локация">
         {
           locations.map((l) =>
@@ -68,7 +69,10 @@ const sizes = "(max-width: 559px) 92vw, (max-width: 1023px) 46vw, (max-width: 14
           )
         }
       </div>
+        <span class="rc__hint" aria-hidden="true"><Icon name="next" size={18} /></span>
+      </div>
 
+      <div class="rc__scroll" data-scroll-hint>
       <div class="rc__filters" role="group" aria-label="Сколько гостей">
         <button type="button" class="chip" data-group="all" aria-pressed="true">
           Все <span class="chip__n num" data-count="all">{countIn(DEFAULT_LOC)}</span>
@@ -80,6 +84,8 @@ const sizes = "(max-width: 559px) 92vw, (max-width: 1023px) 46vw, (max-width: 14
             </button>
           ))
         }
+      </div>
+        <span class="rc__hint" aria-hidden="true"><Icon name="next" size={18} /></span>
       </div>
     </div>
 
@@ -141,6 +147,13 @@ const sizes = "(max-width: 559px) 92vw, (max-width: 1023px) 46vw, (max-width: 14
         ))
       }
     </ul>
+
+    <div class="rc__more" data-more hidden>
+      <button type="button" class="btn btn--primary rc__more-btn" data-more-btn data-magnetic>
+        <span data-more-label>Показать все залы</span>
+        <span class="btn__ico"><Icon name="arrow" size={20} /></span>
+      </button>
+    </div>
 
     <div class="rc__empty" data-empty hidden>
       <p>На&nbsp;этой локации нет залов для такой компании.</p>

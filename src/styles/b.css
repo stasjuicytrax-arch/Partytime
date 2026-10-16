@@ -174,14 +174,15 @@
   grid-template-columns: auto 1fr;
   align-items: baseline;
   column-gap: 8px;
-  max-width: 196px;
-  padding: 14px 18px 16px;
+  width: max-content;
+  max-width: 260px;
+  padding: 14px 20px 16px;
   border-radius: 22px;
   color: var(--pt-white);
   pointer-events: auto;
 }
-.hb__fact b { grid-column: 1 / -1; font: 900 clamp(1.75rem, 2.6vw, 2.5rem) / 1 var(--font-display); letter-spacing: -0.03em; }
-.hb__fact > span { grid-column: 1 / -1; font: 500 0.8125rem / 1.3 var(--font-text); color: rgb(255 255 255 / 0.78); }
+.hb__fact b { white-space: nowrap; grid-column: 1 / -1; font: 900 clamp(1.75rem, 2.6vw, 2.5rem) / 1 var(--font-display); letter-spacing: -0.03em; }
+.hb__fact > span { max-width: 18ch; grid-column: 1 / -1; font: 500 0.8125rem / 1.3 var(--font-text); color: rgb(255 255 255 / 0.78); }
 .hb__fact > span:first-child { grid-column: 1; font-weight: 700; color: var(--pt-lime); text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.6875rem; margin-bottom: 4px; }
 .hb__fact--1 { left: var(--gutter); top: 21%; rotate: -3deg; }
 .hb__fact--2 { right: calc(var(--gutter) + 2%); top: 14%; rotate: 2.5deg; }
@@ -202,12 +203,12 @@
 
 /* гости в дуотоне по краям */
 .hb__guest { position: absolute; bottom: 0; z-index: 1; pointer-events: none; opacity: 0.9; }
-.hb__guest img { width: 100%; height: auto; }
+/* низ фото растворяется в фоне маской (не градиентом в цвет фона — на цветных пятнах он читался как чёрная плашка) */
+.hb__guest img { width: 100%; height: auto; -webkit-mask-image: linear-gradient(#000 55%, transparent 96%); mask-image: linear-gradient(#000 55%, transparent 96%); }
 .hb__guest--l { left: -7vw; width: clamp(200px, 22vw, 360px); opacity: 0.6; }
 .hb__guest--l img { filter: url(#duo-pink); }
 .hb__guest--r { right: -2vw; width: clamp(180px, 21vw, 340px); }
 .hb__guest--r img { filter: url(#duo-sky); }
-.hb__guest::after { content: ""; position: absolute; inset: auto 0 0; height: 40%; background: linear-gradient(transparent, var(--pt-deep)); }
 
 .hb__flash { position: absolute; inset: 0; z-index: 60; background: var(--pt-white); opacity: 0; pointer-events: none; }
 

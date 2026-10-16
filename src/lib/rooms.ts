@@ -83,6 +83,8 @@ export const rooms: Room[] = (data.rooms as RawRoom[])
 
 export const activeLocations = locations.filter((l) => l.active);
 export const totalRooms = rooms.length;
+/** Залов во всей сети (4 локации) — подтверждено заказчиком 16.10.2026 */
+export const networkRooms = 56;
 export const minPrice = Math.min(...rooms.map((r) => r.price));
 
 /** «1 550 ₽» с неразрывными пробелами (Intl ru не группирует 4-значные числа) */

@@ -246,7 +246,7 @@
 .ma .marquee__row + .marquee__row .marquee__star { color: var(--pt-white); }
 
 /* ---------- Каталог ---------- */
-.rc--a { background: var(--pt-paper); padding-top: calc(var(--section-y) + 24px); }
+.rc--a { --hint-bg: var(--pt-paper); background: var(--pt-paper); padding-top: calc(var(--section-y) + 24px); }
 .rc--a .rc__label { color: #5c5c57; }
 .rc--a .w-outline { color: var(--pt-paper); -webkit-text-stroke: 4px var(--pt-deep); paint-order: stroke fill; }
 .rc--a .w-mark span {

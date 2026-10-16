@@ -112,6 +112,7 @@
 
 .rc__controls { display: grid; gap: 16px; margin-bottom: clamp(28px, 3.5vw, 48px); }
 .rc__locs, .rc__filters { display: flex; flex-wrap: wrap; gap: 10px; }
+.rc__hint { display: none; }
 /* mobile: локации и фильтры — по одной горизонтальной ленте, комнаты видны сразу */
 @media (max-width: 767px) {
   .rc__locs, .rc__filters {
@@ -124,6 +125,39 @@
   }
   .rc__locs::-webkit-scrollbar, .rc__filters::-webkit-scrollbar { display: none; }
   .rc__locs > *, .rc__filters > * { flex: none; scroll-snap-align: start; }
+  /* подсказка «листайте вбок»: затухание справа + шеврон; пропадает в конце ленты */
+  .rc__scroll { position: relative; }
+  .rc__hint { display: grid; }
+  .rc__scroll::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: calc(var(--gutter) * -1);
+    width: 72px;
+    background: linear-gradient(90deg, transparent, var(--hint-bg, var(--pt-deep)) 70%);
+    pointer-events: none;
+    transition: opacity var(--dur-base);
+  }
+  .rc__hint {
+    position: absolute;
+    right: -4px;
+    top: 50%;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--pt-lime);
+    color: var(--pt-deep);
+    translate: 0 -50%;
+    pointer-events: none;
+    animation: hint-nudge 1.6s var(--ease-out) infinite;
+    transition: opacity var(--dur-base);
+  }
+  .rc__scroll.is-end::after, .rc__scroll.is-end .rc__hint { opacity: 0; }
+  @keyframes hint-nudge { 0%, 60%, 100% { translate: 0 -50%; } 30% { translate: 6px -50%; } }
   .rc__controls { gap: 0; }
   .loc { min-height: 56px; padding: 8px 18px; }
   .loc__tip { bottom: auto; top: calc(100% + 8px); }
@@ -255,6 +289,23 @@
 .card__title { overflow-wrap: break-word; hyphens: auto; font-size: var(--fs-h3); font-weight: 800; line-height: 1.05; letter-spacing: -0.015em; text-transform: uppercase; }
 .card__tag { margin-top: 6px; font-size: var(--fs-small); line-height: 1.4; }
 
+/* «Показать ещё»: последний ряд уходит в затемнение, кнопка поверх */
+.rc__grid { position: relative; }
+.rc__grid.is-clipped::after {
+  content: "";
+  position: absolute;
+  left: -2%;
+  right: -2%;
+  bottom: -2px;
+  z-index: 4;
+  height: clamp(180px, 22vw, 320px);
+  background: linear-gradient(transparent, var(--hint-bg, var(--pt-deep)) 82%);
+  pointer-events: none;
+}
+.rc__more { position: relative; z-index: 6; display: flex; justify-content: center; margin-top: -88px; }
+.rc__more[hidden] { display: none; }
+.rc__more-btn { --btn-h: 64px; padding-left: 32px; font-size: 1.0625rem; }
+.rc__empty[hidden] { display: none; }
 .rc__empty { display: grid; justify-items: start; gap: 16px; padding: 48px 0; font-size: var(--fs-lead); }
 
 /* ---------- Модалка зала: структура ---------- */

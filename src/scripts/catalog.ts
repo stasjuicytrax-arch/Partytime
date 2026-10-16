@@ -59,7 +59,14 @@ export function initCatalog(root: HTMLElement) {
   const state = {
     loc: locBtns.some((b) => b.dataset.loc === params.get("loc")) ? params.get("loc")! : "dumskaya",
     group: "all",
+    expanded: false,
   };
+  const more = root.querySelector<HTMLElement>("[data-more]")!;
+  const moreLabel = root.querySelector<HTMLElement>("[data-more-label]")!;
+  const grid0 = root.querySelector<HTMLElement>("[data-grid]")!;
+  // сколько залов видно до «Показать ещё»: 2 ряда на десктопе, 4 карточки на телефоне
+  const limit = () => (matchMedia("(max-width: 767px)").matches ? 4 : matchMedia("(max-width: 1023px)").matches ? 4 : 6);
+  const matches = (el: HTMLElement) => el.dataset.loc === state.loc && (state.group === "all" || el.dataset.group === state.group);
 
   /* ---------- фильтры ---------- */
   function apply(animate = true) {
@@ -78,12 +85,20 @@ export function initCatalog(root: HTMLElement) {
 
     const flipState = animate && !reduced() ? Flip.getState(cards, { props: "opacity" }) : null;
     let shown = 0;
+    let visible = 0;
+    const lim = limit();
     cards.forEach((el) => {
-      const on = el.dataset.loc === state.loc && (state.group === "all" || el.dataset.group === state.group);
-      el.hidden = !on;
+      const on = matches(el);
       if (on) shown++;
+      const show = on && (state.expanded || shown <= lim);
+      el.hidden = !show;
+      if (show) visible++;
     });
     empty.hidden = shown > 0;
+    const rest = shown - visible;
+    more.hidden = rest <= 0;
+    grid0.classList.toggle("is-clipped", rest > 0);
+    moreLabel.textContent = `Показать ещё ${rest} ${plural(rest, ["зал", "зала", "залов"])}`;
     const locName = locBtns.find((b) => b.dataset.loc === state.loc)?.querySelector(".loc__name")?.textContent;
     status.textContent = `${locName}: ${shown} ${plural(shown, ["зал", "зала", "залов"])}`;
 
@@ -107,6 +122,7 @@ export function initCatalog(root: HTMLElement) {
       if (state.loc === b.dataset.loc) return;
       state.loc = b.dataset.loc!;
       state.group = "all";
+      state.expanded = false;
       apply();
     })
   );
@@ -114,6 +130,7 @@ export function initCatalog(root: HTMLElement) {
     c.addEventListener("click", () => {
       if (state.group === c.dataset.group) return;
       state.group = c.dataset.group!;
+      state.expanded = false;
       apply();
     })
   );
@@ -127,6 +144,33 @@ export function initCatalog(root: HTMLElement) {
   );
 
   apply(false);
+
+  root.querySelector("[data-more-btn]")!.addEventListener("click", () => {
+    const before = new Set(cards.filter((c) => !c.hidden));
+    state.expanded = true;
+    apply(false);
+    const fresh = cards.filter((c) => !c.hidden && !before.has(c));
+    fresh[0]?.querySelector<HTMLElement>("a")?.focus({ preventScroll: true });
+    if (!reduced()) gsap.fromTo(fresh, { opacity: 0, y: 60, rotate: () => gsap.utils.random(-3, 3) }, { opacity: 1, y: 0, rotate: 0, duration: 0.7, ease: "expo.out", stagger: 0.05, clearProps: "transform,opacity" });
+  });
+
+  /* ---------- подсказка горизонтального скролла (mobile) ---------- */
+  root.querySelectorAll<HTMLElement>("[data-scroll-hint]").forEach((wrap) => {
+    const row = wrap.querySelector<HTMLElement>(".rc__locs, .rc__filters")!;
+    const upd = () => wrap.classList.toggle("is-end", row.scrollLeft + row.clientWidth >= row.scrollWidth - 8);
+    row.addEventListener("scroll", upd, { passive: true });
+    addEventListener("resize", upd);
+    upd();
+    // один раз «подталкиваем» ленту, когда она впервые попадает в экран
+    if (!reduced() && row.scrollWidth > row.clientWidth) {
+      const io = new IntersectionObserver((entries) => {
+        if (!entries[0].isIntersecting) return;
+        io.disconnect();
+        gsap.to(row, { scrollLeft: 64, duration: 0.5, ease: "power2.out", delay: 0.3, yoyo: true, repeat: 1, repeatDelay: 0.25 });
+      }, { threshold: 0.9 });
+      io.observe(row);
+    }
+  });
 
   /* ---------- листание фото курсором / свайпом ---------- */
   const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
@@ -318,9 +362,10 @@ export function initCatalog(root: HTMLElement) {
     const m = location.hash.match(/^#room-(.+)$/);
     if (m && bySlug.has(m[1])) {
       const r = bySlug.get(m[1])!;
-      if (r.loc !== state.loc) {
+      if (r.loc !== state.loc || cards.find((c) => c.dataset.slug === r.slug)?.hidden) {
         state.loc = r.loc;
         state.group = "all";
+        state.expanded = true;
         apply(false);
       }
       open(m[1], false);
