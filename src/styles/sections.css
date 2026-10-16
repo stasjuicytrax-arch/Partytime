@@ -63,7 +63,7 @@
 .bento__cell--own { grid-column: 1 / span 7; grid-row: span 2; min-height: clamp(420px, 44vw, 620px); padding: 0; display: flex; align-items: flex-end; }
 .bento__cell--food { grid-column: 8 / -1; background: linear-gradient(160deg, #2a1f3f, #1e1d22 70%); }
 .bento__cell--price { grid-column: 8 / -1; background: linear-gradient(160deg, #3a1c2c, #1e1d22 70%); }
-.bento__cell--night { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 24px; min-height: clamp(220px, 22vw, 300px); background: linear-gradient(100deg, #15232b, #1e1d22 60%); }
+.bento__cell--night { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 24px; min-height: clamp(220px, 22vw, 300px); background: linear-gradient(100deg, #15232b, #1e1d22 60%); }
 
 .bento__photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: scale 1.2s var(--ease-out); }
 .bento__cell--own:hover .bento__photo { scale: 1.04; }
@@ -99,7 +99,6 @@
   letter-spacing: -0.05em;
   color: var(--pt-white) !important;
 }
-.bento__cell--night { grid-template-columns: minmax(0, 1fr) auto auto; }
 
 @media (max-width: 1023px) {
   .bento__cell--own { grid-column: 1 / -1; grid-row: auto; min-height: 420px; }
@@ -107,9 +106,11 @@
 }
 @media (max-width: 767px) {
   .bento__cell--food, .bento__cell--price { grid-column: 1 / -1; }
-  .bento__cell--night { grid-template-columns: 1fr; }
-  .bento__icon--clock { position: absolute; right: -14px; bottom: -10px; width: 120px; opacity: 0.9; }
-  .bento__clock { font-size: 26vw; }
+  /* телефон: текст сверху, «06:00» во всю ширину ячейки, часы — в углу и не заходят на текст */
+  .bento__cell--night { grid-template-columns: minmax(0, 1fr); gap: 18px; padding-bottom: 28px; }
+  .bento__night-text { padding-right: 84px; }
+  .bento__icon--clock { position: absolute; top: 12px; right: 10px; width: 88px; }
+  .bento__clock { font-size: min(21vw, 6rem); }
 }
 
 /* ---------- 03 Повод найдётся: горизонтальный скролл ---------- */
