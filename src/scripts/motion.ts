@@ -84,7 +84,7 @@ export function initMarquee(root: ParentNode = document) {
       start: "top bottom",
       end: "bottom top",
       onUpdate: (self) => {
-        boost = 1 + Math.min(4, Math.abs(self.getVelocity()) / 600);
+        boost = 1 + Math.min(1.5, Math.abs(self.getVelocity()) / 1500);
       },
     });
     gsap.ticker.add(() => {

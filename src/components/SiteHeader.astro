@@ -21,7 +21,6 @@ const nav = [
     <a class="hdr__logo" href={Astro.url.pathname} aria-label="Party Time — на главную" data-party>
       <img src={`${base}/brand/logo-karaoke-loft.svg`} alt="Party Time — караоке-лофт" width="150" height="78" />
     </a>
-    {variant === "b" && <span class="hdr__ball" data-ball-slot aria-hidden="true"></span>}
     <nav class="hdr__nav" aria-label="Основное меню">
       {nav.map((n) => <a href={n.href}>{n.label}</a>)}
     </nav>

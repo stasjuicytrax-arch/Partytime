@@ -3,20 +3,16 @@ import SplitType from "split-type";
 import { reduced, finePointer, revealPage } from "./motion";
 import type { DiscoBall } from "./disco";
 
-const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
-const smooth = (t: number) => t * t * (3 - 2 * t);
 
 export function initHeroB(hero: HTMLElement) {
   const anchor = hero.querySelector<HTMLElement>("[data-ball-anchor]")!;
-  const slot = document.querySelector<HTMLElement>("[data-ball-slot]");
   const wrap = document.querySelector<HTMLElement>("[data-ball]")!;
   const canvas = wrap.querySelector<HTMLCanvasElement>("canvas")!;
   let ball: DiscoBall | null = null;
 
-  /* ---------- шапка: стекло после прокрутки ---------- */
-
-  /* ---------- шар: из hero в шапку ---------- */
+  /* ---------- шар: стоит на своём месте в hero и уезжает вместе с ним ---------- */
   let size = 0;
+  let visible = true;
   function layoutBall() {
     const a = anchor.getBoundingClientRect();
     if (Math.abs(a.width - size) > 1) {
@@ -27,25 +23,14 @@ export function initHeroB(hero: HTMLElement) {
   }
   function placeBall() {
     const a = anchor.getBoundingClientRect();
-    const end = hero.offsetHeight * 0.75;
-    const p = smooth(Math.min(1, Math.max(0, scrollY / end)));
-    let cx = a.left + a.width / 2;
-    let cy = a.top + a.height / 2;
-    let d = a.width;
-    if (slot && slot.offsetParent !== null) {
-      const s = slot.getBoundingClientRect();
-      cx = lerp(a.left + a.width / 2, s.left + s.width / 2, p);
-      cy = lerp(a.top + a.height / 2, s.top + s.height / 2, p);
-      d = lerp(a.width, s.width, p);
-    } else {
-      // на мобильном шапка без слота: шар просто уезжает с hero
+    wrap.style.transform = `translate3d(${a.left}px, ${a.top}px, 0)`;
+    // за пределами экрана не рендерим
+    const on = a.bottom > -40 && a.top < innerHeight + 40;
+    if (on !== visible) {
+      visible = on;
+      wrap.style.visibility = on ? "" : "hidden";
+      if (ball && !reduced()) (on ? ball.start() : ball.stop());
     }
-    const k = d / size;
-    wrap.style.transform = `translate3d(${cx - d / 2}px, ${cy - d / 2}px, 0) scale(${k})`;
-    wrap.style.setProperty("--glow", String(1 - p * 0.85));
-    // в hero шар под лицевой строкой, у шапки — поверх неё
-    wrap.classList.toggle("is-docked", p > 0.6);
-    ball?.setSpin(1 + p * 1.5);
   }
   layoutBall();
   placeBall();
@@ -67,7 +52,6 @@ export function initHeroB(hero: HTMLElement) {
     }, 3000);
   };
   anchor.addEventListener("click", party);
-  slot?.addEventListener("click", party);
   document.querySelector(".hdr--b [data-party]")?.addEventListener("click", (e) => {
     {
       e.preventDefault();
@@ -92,7 +76,7 @@ export function initHeroB(hero: HTMLElement) {
       if (finePointer() && !reduced()) {
         addEventListener("pointermove", (e) => ball?.setPointer(e.clientX / innerWidth - 0.5, e.clientY / innerHeight - 0.5), { passive: true });
       }
-      document.addEventListener("visibilitychange", () => (document.hidden ? ball?.stop() : !reduced() && ball?.start()));
+      document.addEventListener("visibilitychange", () => (document.hidden ? ball?.stop() : !reduced() && visible && ball?.start()));
     } catch (err) {
       console.warn("WebGL недоступен — остаётся статичный шар", err);
     }
