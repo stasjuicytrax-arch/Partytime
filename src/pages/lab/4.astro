@@ -1,0 +1,23 @@
+---
+import Lab from "../../layouts/Lab.astro";
+import RoomCatalog from "../../components/RoomCatalog.astro";
+---
+<Lab
+  n={4}
+  title="Жидкие фото залов"
+  lead="Наведите курсор на карточку зала: фото «плывёт» волной от курсора, края подсвечиваются неоном цвета группы (2–4 — голубой, 6–8 — жёлтый, 8–10 — розовый, 15–20 — фиолетовый). Листание фото движением мыши продолжает работать."
+  notes={[
+    "<b>Один WebGL-холст</b> на всю страницу — переезжает в карточку под курсором",
+    "<b>Телефон:</b> эффект выключен, остаётся свайп фото",
+    "<b>Без анимации:</b> выключен",
+  ]}
+>
+  <RoomCatalog variant="b" />
+</Lab>
+
+<script>
+  import { initCursor } from "../../scripts/motion";
+  import { initLiquid } from "../../scripts/fx/liquid";
+  initLiquid(document);
+  initCursor();
+</script>

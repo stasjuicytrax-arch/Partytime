@@ -1,0 +1,80 @@
+---
+import Lab from "../../layouts/Lab.astro";
+const word = ["P", "A", "R", "T", "Y", "T", "I", "M", "E"];
+const fills = ["lime", "pink", "white", "sky", "violet", "pink", "lime", "white", "saffron"];
+---
+<Lab
+  n={5}
+  title="Падающие буквы"
+  lead="В подвале слово PARTY TIME падает буквами, когда до него долистали. Курсор расталкивает буквы, любую можно схватить мышью и бросить. На телефоне — тап по куче и буквы подпрыгивают."
+  notes={[
+    "<b>Физика matter-js</b> подгружается, только когда подвал на экране",
+    "<b>Буквы — обычный текст</b>, не картинка",
+    "<b>Без анимации:</b> слово просто стоит",
+  ]}
+>
+  <section class="lab-sec">
+    <div class="container">
+      <h2>Листайте вниз</h2>
+      <p>Ниже — подвал сайта с буквами.</p>
+    </div>
+  </section>
+  <footer class="ft-demo">
+    <div class="container ft-demo__cols">
+      <div><b>Гостям</b><span>Залы</span><span>Кухня & Бар</span><span>Услуги</span><span>Акции</span></div>
+      <div><b>Компания</b><span>Франшиза</span><span>Работа у нас</span><span>Организаторам</span></div>
+      <div><b>Документы</b><span>Политика конфиденциальности</span><span>Правила</span><span>Оферта</span></div>
+    </div>
+    <div class="ft-demo__stage" data-letters aria-label="Party Time">
+      {word.map((l, i) => <span class={`ft-letter ft-letter--${fills[i]}`} data-letter aria-hidden="true">{l}</span>)}
+    </div>
+    <p class="container ft-demo__copy">© 2026 Party Time. Пространство для праздника.</p>
+  </footer>
+</Lab>
+
+<style is:global>
+  .ft-demo { position: relative; background: #0d0d0e; border-top: 1px solid rgb(255 255 255 / 0.08); overflow: hidden; }
+  .ft-demo__cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding-block: 56px 0; }
+  .ft-demo__cols div { display: grid; gap: 8px; align-content: start; color: rgb(255 255 255 / 0.7); font-size: var(--fs-small); }
+  .ft-demo__cols b { margin-bottom: 6px; font: 800 0.875rem / 1 var(--font-display); color: var(--pt-white); text-transform: uppercase; }
+  .ft-demo__stage { position: relative; height: clamp(320px, 52vh, 560px); touch-action: pan-y; user-select: none; cursor: grab; }
+  .ft-demo__stage:active { cursor: grabbing; }
+  .ft-letter {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: grid;
+    place-items: center;
+    padding: 0.04em 0.1em 0.02em;
+    border-radius: 0.14em;
+    font: 900 clamp(4.5rem, 13vw, 12rem) / 0.9 var(--font-display);
+    color: var(--pt-deep);
+    will-change: transform;
+    transform: translate(-200%, -200%);
+  }
+  .ft-letter--lime { background: var(--pt-lime); }
+  .ft-letter--pink { background: var(--pt-pink); }
+  .ft-letter--white { background: var(--pt-white); }
+  .ft-letter--sky { background: var(--pt-sky); }
+  .ft-letter--saffron { background: var(--pt-saffron); }
+  .ft-letter--violet { background: var(--pt-violet); color: var(--pt-white); }
+  /* статичный вариант (reduced-motion / до загрузки физики) */
+  .ft-demo__stage.is-static { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: center; gap: 0.1em; padding-bottom: 24px; }
+  .ft-demo__stage.is-static .ft-letter { position: static; transform: none; }
+  .ft-demo__copy { padding-block: 16px 28px; font-size: var(--fs-small); color: rgb(255 255 255 / 0.5); }
+  @media (max-width: 640px) { .ft-demo__cols { grid-template-columns: 1fr 1fr; } }
+</style>
+
+<script>
+  import { initSmoothScroll } from "../../scripts/motion";
+  initSmoothScroll();
+  const stage = document.querySelector<HTMLElement>("[data-letters]")!;
+  // физику грузим заранее, за 400px до подвала
+  const io = new IntersectionObserver(async (en) => {
+    if (!en[0].isIntersecting) return;
+    io.disconnect();
+    const { initLetters } = await import("../../scripts/fx/letters");
+    initLetters(stage);
+  }, { rootMargin: "400px" });
+  io.observe(stage);
+</script>

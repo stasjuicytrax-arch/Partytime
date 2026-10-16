@@ -1,0 +1,36 @@
+---
+import Base from "../../layouts/Base.astro";
+import "../../styles/components.css";
+import "../../styles/b.css";
+import "../../styles/lab.css";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const items = [
+  { t: "Зайчики от шара", d: "Отражения шара бегут по секциям при скролле", where: "все секции" },
+  { t: "Хромированный микрофон", d: "Поворачивается на каждом шаге формы, на успехе — 3D-конфетти", where: "бронирование" },
+  { t: "Проверить микрофон", d: "Шар и эквалайзер реагируют на голос, звук не уходит из браузера", where: "бронирование / hero" },
+  { t: "Жидкие фото залов", d: "Волна от курсора и неон цвета группы на карточках", where: "каталог залов" },
+  { t: "Падающие буквы", d: "PARTY TIME падает в подвале, курсор расталкивает", where: "подвал" },
+];
+---
+<Base title="Лаборатория эффектов — Party Time" theme="#151515" favicon="blue" bodyClass="vb lab" noindex>
+  <header class="lab__bar">
+    <a class="lab__logo" href={`${base}/`}>
+      <img src={`${base}/brand/logo-karaoke-loft.svg`} alt="Party Time" width="104" height="54" />
+      <span>Лаборатория</span>
+    </a>
+  </header>
+  <section class="lab__intro container">
+    <h1>Вау-эффекты</h1>
+    <p class="lab__lead">Каждый эффект — на отдельной странице, чтобы посмотреть и решить, что встраивать. На сайте будет не больше одного тяжёлого 3D на экран, всё грузится лениво и упрощается на телефонах.</p>
+  </section>
+  <main class="container lab-list">
+    {items.map((x, i) => (
+      <a href={`${base}/lab/${i + 1}`}>
+        <i class="num">0{i + 1}</i>
+        <b>{x.t}</b>
+        <span>{x.d}</span>
+        <span>Куда: {x.where}</span>
+      </a>
+    ))}
+  </main>
+</Base>

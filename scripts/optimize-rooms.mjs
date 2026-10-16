@@ -14,9 +14,10 @@ for (const slug of await readdir(dir)) {
     const base = src.replace(/\.(jpe?g|png|webp)$/i, "");
     await Promise.all(
       WIDTHS.map((w) =>
-        sharp(src).rotate().resize({ width: w, withoutEnlargement: true })
-          .modulate({ saturation: 1.04 }).linear(1.06, -6)
-          .webp({ quality: w > 1000 ? 74 : 70 }).toFile(`${base}-${w}.webp`)
+        // без фильтров и с высоким качеством: исходники с Tilda и так уже сжаты
+        sharp(src).rotate().resize({ width: w, withoutEnlargement: true, kernel: "lanczos3" })
+          .webp({ quality: w > 1000 ? 84 : w > 600 ? 82 : 78, smartSubsample: true, effort: 5 })
+          .toFile(`${base}-${w}.webp`)
       )
     );
     n++;

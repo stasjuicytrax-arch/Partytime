@@ -20,7 +20,11 @@ interface Props {
 const { variant } = Astro.props;
 const DEFAULT_LOC = "dumskaya";
 const countIn = (loc: string, g?: string) => rooms.filter((r) => r.loc === loc && (!g || r.group === g)).length;
-const sizes = "(max-width: 559px) 92vw, (max-width: 1023px) 46vw, (max-width: 1439px) 31vw, 440px";
+// карточка 4:5, а фото 3:2 — при object-fit: cover картинка шире карточки в ~1.9 раза
+// (на телефоне карточка 5:4 — в ~1.2 раза); sizes считаем по реальной ширине фото, иначе браузер берёт мелкую версию
+// сразу грузим только первое фото первых 6 залов локации по умолчанию, остальные — когда карточка покажется
+const eager = new Set(rooms.filter((r) => r.loc === DEFAULT_LOC).slice(0, 6).map((r) => r.slug));
+const sizes = "(max-width: 559px) 112vw, (max-width: 767px) 56vw, (max-width: 1023px) 86vw, (max-width: 1439px) 58vw, 825px";
 ---
 <section id="rooms" class={`rc rc--${variant}`} aria-labelledby="rooms-title" data-catalog>
   <div class="container rc__inner">
@@ -107,10 +111,10 @@ const sizes = "(max-width: 559px) 92vw, (max-width: 1023px) 46vw, (max-width: 14
                 {r.images.map((im, j) => (
                   <img
                     class={j === 0 ? "is-active" : undefined}
-                    src={j === 0 ? im.src : undefined}
-                    srcset={j === 0 ? im.srcset : undefined}
-                    data-src={j === 0 ? undefined : im.src}
-                    data-srcset={j === 0 ? undefined : im.srcset}
+                    src={j === 0 && eager.has(r.slug) ? im.src : undefined}
+                    srcset={j === 0 && eager.has(r.slug) ? im.srcset : undefined}
+                    data-src={j === 0 && eager.has(r.slug) ? undefined : im.src}
+                    data-srcset={j === 0 && eager.has(r.slug) ? undefined : im.srcset}
                     sizes={sizes}
                     alt={j === 0 ? roomAlt(r) : ""}
                     width="960"

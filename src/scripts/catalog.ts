@@ -37,6 +37,16 @@ function hydrate(media: HTMLElement) {
   });
 }
 
+/** Первое фото карточки — только когда карточка видна */
+function showFirst(card: HTMLElement) {
+  const img = card.querySelector<HTMLImageElement>(".card__media img.is-active[data-src]");
+  if (!img) return;
+  img.srcset = img.dataset.srcset!;
+  img.src = img.dataset.src!;
+  img.removeAttribute("data-src");
+  img.removeAttribute("data-srcset");
+}
+
 function showPhoto(media: HTMLElement, idx: number) {
   const imgs = media.querySelectorAll("img");
   const dots = media.querySelectorAll(".card__dots span");
@@ -92,7 +102,10 @@ export function initCatalog(root: HTMLElement) {
       if (on) shown++;
       const show = on && (state.expanded || shown <= lim);
       el.hidden = !show;
-      if (show) visible++;
+      if (show) {
+        visible++;
+        showFirst(el);
+      }
     });
     empty.hidden = shown > 0;
     const rest = shown - visible;
