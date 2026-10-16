@@ -5,9 +5,16 @@ import SiteHeader from "../components/SiteHeader.astro";
 import HeroB from "../components/b/HeroB.astro";
 import Marquee from "../components/Marquee.astro";
 import RoomCatalog from "../components/RoomCatalog.astro";
-import NextUp from "../components/NextUp.astro";
+import Why from "../components/sections/Why.astro";
+import Formats from "../components/sections/Formats.astro";
+import Services from "../components/sections/Services.astro";
+import Promos from "../components/sections/Promos.astro";
+import Reviews from "../components/sections/Reviews.astro";
+import Booking from "../components/sections/Booking.astro";
+import Faq from "../components/sections/Faq.astro";
 import "../styles/components.css";
 import "../styles/b.css";
+import "../styles/sections.css";
 
 const strip = ["Караоке", "Своя кухня", "Авторский бар", "PS5 и Nintendo Switch", "Без пробкового сбора", "До 06:00", "Только свои"];
 ---
@@ -23,16 +30,40 @@ const strip = ["Караоке", "Своя кухня", "Авторский ба
       </div>
     </div>
     <RoomCatalog variant="b" />
-    <NextUp class="next-up--b" />
+    <Why />
+    <Formats />
+    <Services />
+    <Promos />
+    <Reviews />
+    <Booking />
+    <Faq />
   </main>
 </Base>
 
 <script>
   import { initSmoothScroll, initMagnetic, initCursor, initMarquee } from "../scripts/motion";
   import { initHeroB } from "../scripts/hero-b";
+  import { initReveals, initClock, initFormats, initServices, initCoupons, initFaq } from "../scripts/sections";
+  import { initBooking } from "../scripts/booking";
   initSmoothScroll();
   initHeroB(document.querySelector("[data-hero-b]")!);
   initMarquee();
   initMagnetic();
   initCursor();
+  initReveals();
+  initClock();
+  initFormats();
+  initServices();
+  initCoupons();
+  initFaq();
+  initBooking(document.querySelector<HTMLElement>("[data-booking]")!);
+
+  // вау-эффекты — лениво, после загрузки страницы
+  const idle = (fn: () => void) => ("requestIdleCallback" in window ? requestIdleCallback(fn, { timeout: 2000 }) : setTimeout(fn, 800));
+  addEventListener("load", () =>
+    idle(async () => {
+      const { initLiquid } = await import("../scripts/fx/liquid");
+      initLiquid(document.getElementById("rooms")!);
+    })
+  );
 </script>

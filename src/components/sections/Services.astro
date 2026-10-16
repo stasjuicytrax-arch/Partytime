@@ -1,0 +1,35 @@
+---
+import Icon from "../Icon.astro";
+import { SERVICES } from "../../lib/content";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const icon = (n: string) => `${base}/img/3d/${n}-dynamic-premium.webp`;
+---
+<section class="sec services" id="services" aria-labelledby="services-title" data-services>
+  <div class="container">
+    <header class="sec__head">
+      <p class="sec__label">04 — Сервис</p>
+      <h2 id="services-title" class="sec__title">Всё для праздника — <span class="sec__accent">в&nbsp;одном месте</span></h2>
+    </header>
+
+    <ul class="svc" role="list">
+      {SERVICES.map((s, i) => (
+        <li class="svc__item" data-svc data-open={i === 0 ? "" : undefined}>
+          <button type="button" class="svc__head" aria-expanded={i === 0 ? "true" : "false"} aria-controls={`svc-${s.id}`} id={`svc-btn-${s.id}`}>
+            <span class="svc__num num">{String(i + 1).padStart(2, "0")}</span>
+            <span class="svc__title">{s.title}</span>
+            <span class="svc__plus" aria-hidden="true"></span>
+          </button>
+          <div class="svc__panel" id={`svc-${s.id}`} role="region" aria-labelledby={`svc-btn-${s.id}`}>
+            <div class="svc__inner">
+              <img class="svc__icon" src={icon(s.icon)} alt="" width="800" height="800" loading="lazy" decoding="async" />
+              <p>{s.text}</p>
+              {s.link && (
+                <a class="svc__link" href={`${base}/${s.link.href}`}>{s.link.label} <Icon name="arrow" size={18} /></a>
+              )}
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

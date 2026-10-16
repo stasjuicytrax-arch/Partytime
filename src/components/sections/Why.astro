@@ -1,0 +1,66 @@
+---
+import { REASONS } from "../../lib/content";
+import { minPrice, rub } from "../../lib/rooms";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const r = Object.fromEntries(REASONS.map((x) => [x.id, x]));
+const disco = `${base}/img/rooms/disco/01`;
+const included = ["Аренда зала", "Проектор", "Караоке", "2 микрофона", "Уборка"];
+---
+<section class="sec why" id="why" aria-labelledby="why-title">
+  <div class="container">
+    <header class="sec__head">
+      <p class="sec__label">02 — Почему мы</p>
+      <h2 id="why-title" class="sec__title">Весь зал — <span class="sec__accent">ваш</span></h2>
+    </header>
+
+    <div class="bento">
+      <article class="bento__cell bento__cell--own" data-reveal>
+        <img
+          class="bento__photo"
+          src={`${disco}-960.webp`}
+          srcset={`${disco}-480.webp 480w, ${disco}-960.webp 960w, ${disco}-1600.webp 1600w`}
+          sizes="(max-width: 767px) 100vw, 58vw"
+          alt="Зал «Диско» на Думской: зеркальный шар и диванная зона"
+          width="1600"
+          height="1067"
+          loading="lazy"
+          decoding="async"
+        />
+        <div class="bento__plate glass">
+          <h3>{r.own.title}</h3>
+          <p>{r.own.text}</p>
+        </div>
+        <span class="bento__sticker">Чужих — 0</span>
+      </article>
+
+      <article class="bento__cell bento__cell--food" data-reveal>
+        <img class="bento__icon" src={`${base}/img/3d/glass-dynamic-color.webp`} alt="" width="400" height="400" loading="lazy" />
+        <p class="bento__big num">0&nbsp;₽</p>
+        <p class="bento__cap">пробковый сбор</p>
+        <h3>{r.food.title}</h3>
+        <p>{r.food.text}</p>
+      </article>
+
+      <article class="bento__cell bento__cell--price" data-reveal>
+        <p class="bento__cap">аренда от</p>
+        <p class="bento__big num">{rub(minPrice)}<span>/час</span></p>
+        <h3>{r.price.title}</h3>
+        <p>{r.price.text}</p>
+        <ul class="bento__chips">
+          {included.map((x) => <li>{x}</li>)}
+        </ul>
+      </article>
+
+      <article class="bento__cell bento__cell--night" data-reveal>
+        <div class="bento__night-text">
+          <h3>{r.night.title}</h3>
+          <p>{r.night.text}</p>
+        </div>
+        <p class="bento__clock num" aria-label="до 06:00">
+          <span data-clock>06:00</span>
+        </p>
+        <img class="bento__icon bento__icon--clock" src={`${base}/img/3d/clock-dynamic-premium.webp`} alt="" width="400" height="400" loading="lazy" />
+      </article>
+    </div>
+  </div>
+</section>

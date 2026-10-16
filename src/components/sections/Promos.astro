@@ -1,0 +1,34 @@
+---
+import Icon from "../Icon.astro";
+import { PROMOS } from "../../lib/content";
+---
+<section class="sec promos" id="promos" aria-labelledby="promos-title">
+  <div class="container">
+    <header class="sec__head">
+      <p class="sec__label">05 — Акции</p>
+      <h2 id="promos-title" class="sec__title">Поводы зайти <span class="sec__accent">ещё</span></h2>
+      <p class="sec__lead">Наведите на&nbsp;купон (на&nbsp;телефоне — коснитесь), чтобы перевернуть.</p>
+    </header>
+
+    <ul class="coupons" role="list">
+      {PROMOS.map((p, i) => (
+        <li class={`coupon coupon--${p.color}`} style={`--tilt:${[-2, 1.5, -1, 2, -1.5, 1][i]}deg`} data-reveal>
+          <button type="button" class="coupon__flip" aria-pressed="false" aria-label={`${p.title}: подробнее`} data-coupon>
+            <span class="coupon__face coupon__face--front" aria-hidden="true">
+              <span class="coupon__big">{p.big}</span>
+              <span class="coupon__title">{p.title}</span>
+              <span class="coupon__hint"><Icon name="next" size={16} /> перевернуть</span>
+            </span>
+            <span class="coupon__face coupon__face--back">
+              <span class="coupon__title">{p.title}</span>
+              <span class="coupon__text">{p.text}</span>
+            </span>
+          </button>
+          {p.link && (
+            <a class="coupon__link" href={p.link.href} target="_blank" rel="noopener">{p.link.label} <Icon name="arrow" size={16} /></a>
+          )}
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

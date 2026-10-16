@@ -1,0 +1,148 @@
+---
+import Icon from "../Icon.astro";
+import { FORM, PHONE_MAIN, MESSENGERS } from "../../lib/content";
+import { tel } from "../../lib/rooms";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const hours = Array.from({ length: 13 }, (_, i) => `${String(12 + i === 24 ? 0 : 12 + i).padStart(2, "0")}:00`);
+const steps = ["Когда?", "Сколько гостей?", "Где?", "Какой повод?", "Что добавить?", "Контакты"];
+---
+<section class="sec booking" id="booking" aria-labelledby="booking-title" data-booking>
+  <div class="container">
+    <header class="sec__head">
+      <p class="sec__label">07 — Бронирование</p>
+      <h2 id="booking-title" class="sec__title">Соберите свой <span class="sec__accent">праздник</span></h2>
+      <p class="sec__lead">5&nbsp;вопросов — и&nbsp;менеджер перезвонит за&nbsp;2&nbsp;минуты с&nbsp;подходящими залами и&nbsp;ценой.</p>
+    </header>
+
+    <div class="bk">
+      <div class="bk__stage" aria-hidden="true">
+        <canvas class="bk__mic" data-mic-canvas></canvas>
+      </div>
+
+      <form class="bk__form" novalidate data-form>
+        <div class="bk__eq" aria-hidden="true">
+          {steps.map((_, i) => <span data-eq={i}></span>)}
+        </div>
+        <p class="bk__count num" data-count aria-live="polite">Шаг 1 из {steps.length}</p>
+
+        <!-- 1. Когда -->
+        <fieldset class="bk__step" data-step="0">
+          <legend>{steps[0]}</legend>
+          <div class="bk__row">
+            <label class="bk__field">
+              <span>Дата</span>
+              <input type="date" name="date" required data-date />
+            </label>
+            <label class="bk__field">
+              <span>Начало</span>
+              <select name="time">
+                {hours.map((h) => <option value={h} selected={h === "19:00"}>{h}</option>)}
+              </select>
+            </label>
+          </div>
+          <div class="bk__group" role="radiogroup" aria-label="Длительность">
+            {FORM.durations.map((d, i) => (
+              <label class="bk__chip"><input type="radio" name="duration" value={d} checked={i === 2} /><span>{d}</span></label>
+            ))}
+          </div>
+          <p class="bk__hint">Бронь на&nbsp;сегодня — быстрее по&nbsp;телефону <a href={tel(PHONE_MAIN)} class="num">{PHONE_MAIN}</a></p>
+        </fieldset>
+
+        <!-- 2. Гости -->
+        <fieldset class="bk__step" data-step="1" hidden>
+          <legend>{steps[1]}</legend>
+          <div class="bk__steppers">
+            {[["adults", "Взрослые", 6, 1], ["kids", "Дети", 0, 0]].map(([n, label, v, min]) => (
+              <div class="bk__stepper" data-stepper>
+                <span class="bk__stepper-label" id={`lbl-${n}`}>{label}</span>
+                <button type="button" class="bk__stepper-btn" data-dec aria-label={`Меньше: ${label}`}>−</button>
+                <input type="number" name={String(n)} value={v} min={min} max="40" inputmode="numeric" aria-labelledby={`lbl-${n}`} />
+                <button type="button" class="bk__stepper-btn" data-inc aria-label={`Больше: ${label}`}>+</button>
+              </div>
+            ))}
+          </div>
+        </fieldset>
+
+        <!-- 3. Где -->
+        <fieldset class="bk__step" data-step="2" hidden>
+          <legend>{steps[2]}</legend>
+          <div class="bk__group" role="radiogroup" aria-label="Локация">
+            {FORM.places.map((p, i) => (
+              <label class="bk__chip bk__chip--big"><input type="radio" name="place" value={p.id} checked={i === 2} /><span>{p.label}</span></label>
+            ))}
+          </div>
+          <p class="bk__picked" data-room hidden>
+            Зал: <b data-room-title></b>
+            <button type="button" class="bk__unpick" data-room-clear aria-label="Убрать выбранный зал"><Icon name="close" size={16} /></button>
+          </p>
+          <p class="bk__hint">Зал можно выбрать в&nbsp;<a href="#rooms">каталоге</a> — кнопка «Забронировать этот зал» подставит его сюда.</p>
+        </fieldset>
+
+        <!-- 4. Повод -->
+        <fieldset class="bk__step" data-step="3" hidden>
+          <legend>{steps[3]}</legend>
+          <div class="bk__group" role="radiogroup" aria-label="Повод">
+            {FORM.occasions.map((o, i) => (
+              <label class="bk__chip"><input type="radio" name="occasion" value={o} checked={i === 0} /><span>{o}</span></label>
+            ))}
+          </div>
+          <label class="bk__field bk__field--wide" data-other hidden>
+            <span>Ваш повод</span>
+            <input type="text" name="occasionOther" maxlength="80" />
+          </label>
+        </fieldset>
+
+        <!-- 5. Что добавить -->
+        <fieldset class="bk__step" data-step="4" hidden>
+          <legend>{steps[4]}</legend>
+          <div class="bk__group" aria-label="Дополнительно">
+            {FORM.extras.map((x) => (
+              <label class="bk__chip"><input type="checkbox" name="extras" value={x} /><span>{x}</span></label>
+            ))}
+          </div>
+          <p class="bk__hint">Можно ничего не&nbsp;выбирать — обсудим по&nbsp;телефону.</p>
+        </fieldset>
+
+        <!-- 6. Контакты -->
+        <fieldset class="bk__step" data-step="5" hidden>
+          <legend>{steps[5]}</legend>
+          <div class="bk__row">
+            <label class="bk__field">
+              <span>Имя</span>
+              <input type="text" name="name" autocomplete="given-name" required maxlength="60" />
+            </label>
+            <label class="bk__field">
+              <span>Телефон</span>
+              <input type="tel" name="phone" autocomplete="tel" required placeholder="+7 (___) ___-__-__" inputmode="tel" data-phone />
+            </label>
+          </div>
+          <div class="bk__group" role="radiogroup" aria-label="Как связаться">
+            {FORM.contactWays.map((w, i) => (
+              <label class="bk__chip"><input type="radio" name="contactWay" value={w} checked={i === 0} /><span>{w}</span></label>
+            ))}
+          </div>
+          <label class="bk__check"><input type="checkbox" name="consent" required /><span>Согласен на&nbsp;<a href={`${base}/soon`}>обработку персональных данных</a></span></label>
+          <label class="bk__check"><input type="checkbox" name="minors" required /><span>Понимаю, что с&nbsp;21:00 до&nbsp;06:00 несовершеннолетние могут находиться только с&nbsp;родителями</span></label>
+        </fieldset>
+
+        <p class="bk__error" data-error role="alert"></p>
+
+        <div class="bk__nav" data-nav>
+          <button type="button" class="btn btn--ghost" data-back>Назад</button>
+          <button type="submit" class="btn btn--primary" data-next>
+            <span data-next-label>Дальше</span><span class="btn__ico"><Icon name="arrow" size={20} /></span>
+          </button>
+        </div>
+
+        <div class="bk__success" data-success hidden tabindex="-1">
+          <h3>Заявка у&nbsp;нас!</h3>
+          <p>Перезвоним в&nbsp;течение 2&nbsp;минут. А&nbsp;пока можно написать нам:</p>
+          <div class="bk__msg">
+            <a class="btn btn--primary btn--sm" href={MESSENGERS.telegram.href} target="_blank" rel="noopener"><span>Telegram</span><span class="btn__ico"><Icon name="arrow" size={18} /></span></a>
+            <a class="btn btn--ghost btn--sm" href={MESSENGERS.vk.href} target="_blank" rel="noopener">VK</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,41 @@
+---
+import Icon from "../Icon.astro";
+import { REVIEWS, REVIEWS_LINK } from "../../lib/content";
+const colors = ["pink", "sky", "lime", "violet", "saffron"];
+const initials = (n: string) => n.split(" ").map((x) => x[0]).join("").slice(0, 2);
+const laneA = [...REVIEWS, ...REVIEWS];
+const laneB = [...REVIEWS.slice(2), ...REVIEWS.slice(0, 2), ...REVIEWS.slice(2), ...REVIEWS.slice(0, 2)];
+---
+<section class="sec reviews" id="reviews" aria-labelledby="reviews-title">
+  <div class="container">
+    <header class="sec__head">
+      <p class="sec__label">06 — Отзывы</p>
+      <h2 id="reviews-title" class="sec__title">Гости говорят <span class="sec__accent">громко</span></h2>
+      <p class="sec__lead">
+        <a class="reviews__link" href={REVIEWS_LINK} target="_blank" rel="noopener">Все отзывы на&nbsp;Яндекс Картах <Icon name="arrow" size={18} /></a>
+      </p>
+    </header>
+  </div>
+
+  <!-- для скринридера — обычный список, ленты ниже только визуальные -->
+  <ul class="visually-hidden">
+    {REVIEWS.map((r) => <li>{r.name}: {r.text}</li>)}
+  </ul>
+  <div class="lanes" aria-hidden="true">
+    {[laneA, laneB].map((lane, li) => (
+      <div class={`lane lane--${li ? "right" : "left"}`}>
+        <div class="lane__track">
+          {lane.map((r, i) => (
+            <figure class="rcard">
+              <blockquote>«{r.text}»</blockquote>
+              <figcaption>
+                <span class={`rcard__ava rcard__ava--${colors[(i + li * 2) % colors.length]}`}>{initials(r.name)}</span>
+                {r.name}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>

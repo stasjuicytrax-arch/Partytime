@@ -1,0 +1,28 @@
+---
+import { FAQ } from "../../lib/content";
+const ld = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQ.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+};
+---
+<section class="sec faq" id="faq" aria-labelledby="faq-title">
+  <div class="container faq__grid">
+    <header class="faq__head">
+      <p class="sec__label">08 — Вопросы</p>
+      <h2 id="faq-title" class="sec__title">Часто <span class="sec__accent">спрашивают</span></h2>
+    </header>
+    <div class="faq__list">
+      {FAQ.map((f, i) => (
+        <details class="qa" data-qa open={i === 0}>
+          <summary>
+            <span>{f.q}</span>
+            <span class="qa__icon" aria-hidden="true"></span>
+          </summary>
+          <div class="qa__body"><p>{f.a}</p></div>
+        </details>
+      ))}
+    </div>
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+</section>
