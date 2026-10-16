@@ -1,0 +1,199 @@
+---
+import Icon from "./Icon.astro";
+import {
+  rooms,
+  locations,
+  GROUPS,
+  groupById,
+  INCLUDED,
+  PROMO,
+  rub,
+  capacityLabel,
+  roomAlt,
+  roomsClientData,
+  totalRooms,
+} from "../lib/rooms";
+
+interface Props {
+  variant: "a" | "b";
+}
+const { variant } = Astro.props;
+const DEFAULT_LOC = "dumskaya";
+const countIn = (loc: string, g?: string) => rooms.filter((r) => r.loc === loc && (!g || r.group === g)).length;
+const sizes = "(max-width: 559px) 92vw, (max-width: 1023px) 46vw, (max-width: 1439px) 31vw, 440px";
+---
+<section id="rooms" class={`rc rc--${variant}`} aria-labelledby="rooms-title" data-catalog>
+  <div class="container rc__inner">
+    <header class="rc__head">
+      <p class="rc__label">01 — Залы</p>
+      <h2 id="rooms-title" class="rc__title">
+        <span class="w-fill">Найди</span>
+        <span class="w-outline outline-word">свой</span>
+        <span class="w-mark"><span>зал</span></span>
+      </h2>
+      <p class="rc__lead">
+        {totalRooms} тематических миров в&nbsp;центре Петербурга. Выберите локацию и&nbsp;размер компании.
+      </p>
+    </header>
+
+    <div class="rc__controls">
+      <div class="rc__locs" role="group" aria-label="Локация">
+        {
+          locations.map((l) =>
+            l.active ? (
+              <button
+                type="button"
+                class="loc"
+                data-loc={l.id}
+                aria-pressed={l.id === DEFAULT_LOC ? "true" : "false"}
+                style={`--loc: var(--c-loc-${l.id})`}
+              >
+                <span class="loc__name">{l.name}</span>
+                <span class="loc__meta">{l.rooms} залов · {l.address}</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                class="loc loc--soon"
+                aria-disabled="true"
+                aria-describedby={`tip-${l.id}`}
+              >
+                <span class="loc__name">{l.name}</span>
+                <span class="loc__badge">скоро</span>
+                <span class="loc__tip" role="tooltip" id={`tip-${l.id}`}>
+                  Скоро на&nbsp;сайте
+                </span>
+              </button>
+            )
+          )
+        }
+      </div>
+
+      <div class="rc__filters" role="group" aria-label="Сколько гостей">
+        <button type="button" class="chip" data-group="all" aria-pressed="true">
+          Все <span class="chip__n num" data-count="all">{countIn(DEFAULT_LOC)}</span>
+        </button>
+        {
+          GROUPS.map((g) => (
+            <button type="button" class="chip" data-group={g.id} aria-pressed="false" style={`--g: ${g.color}`}>
+              {g.label} гостей <span class="chip__n num" data-count={g.id}>{countIn(DEFAULT_LOC, g.id)}</span>
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    <p class="visually-hidden" aria-live="polite" data-status></p>
+
+    <ul class="rc__grid" data-grid>
+      {
+        rooms.map((r, i) => (
+          <li
+            class="card"
+            data-loc={r.loc}
+            data-group={r.group}
+            data-slug={r.slug}
+            hidden={r.loc !== DEFAULT_LOC}
+            style={`--g: ${groupById[r.group].color}; --tilt: ${[-1, 0.6, -0.4, 1, -0.8, 0.3][i % 6]}deg`}
+          >
+            <a class="card__link" href={`#room-${r.slug}`} aria-label={`${r.title}, ${r.locName}: смотреть зал`}>
+              <div class="card__media" data-count={r.images.length}>
+                {r.images.map((im, j) => (
+                  <img
+                    class={j === 0 ? "is-active" : undefined}
+                    src={j === 0 ? im.src : undefined}
+                    srcset={j === 0 ? im.srcset : undefined}
+                    data-src={j === 0 ? undefined : im.src}
+                    data-srcset={j === 0 ? undefined : im.srcset}
+                    sizes={sizes}
+                    alt={j === 0 ? roomAlt(r) : ""}
+                    width="960"
+                    height="640"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ))}
+                {r.images.length > 1 && (
+                  <div class="card__dots" aria-hidden="true">
+                    {r.images.map((_, j) => (
+                      <span class={j === 0 ? "is-active" : undefined} />
+                    ))}
+                  </div>
+                )}
+                <div class="card__badges">
+                  <span class="badge badge--cap">{capacityLabel(r)}</span>
+                  {r.area && <span class="badge num">{r.area}&nbsp;м²</span>}
+                </div>
+                <span class="card__price num">
+                  от&nbsp;{rub(r.price)}
+                  <small>/час</small>
+                </span>
+                <span class="card__cta" aria-hidden="true">
+                  Смотреть зал <Icon name="arrow" size={18} />
+                </span>
+              </div>
+              <div class="card__body">
+                <h3 class="card__title">{r.title}</h3>
+                <p class="card__tag">{r.tagline}</p>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="rc__empty" data-empty hidden>
+      <p>На&nbsp;этой локации нет залов для такой компании.</p>
+      <button type="button" class="chip" data-reset>Показать все залы</button>
+    </div>
+  </div>
+
+  <dialog class={`rm rm--${variant}`} aria-labelledby="rm-title" data-modal>
+    <div class="rm__panel">
+      <button type="button" class="rm__close" data-close aria-label="Закрыть">
+        <Icon name="close" />
+      </button>
+      <div class="rm__gallery" data-gallery>
+        <div class="rm__track" data-track></div>
+        <button type="button" class="rm__nav rm__nav--prev" data-prev aria-label="Предыдущее фото">
+          <Icon name="prev" />
+        </button>
+        <button type="button" class="rm__nav rm__nav--next" data-next aria-label="Следующее фото">
+          <Icon name="next" />
+        </button>
+        <span class="rm__count num" data-counter></span>
+      </div>
+      <div class="rm__info">
+        <p class="rm__loc" data-f="loc"></p>
+        <h3 id="rm-title" class="rm__title" data-f="title"></h3>
+        <p class="rm__tagline" data-f="tagline"></p>
+        <div class="rm__badges" data-f="badges"></div>
+        <p class="rm__text" data-f="text"></p>
+        <div class="rm__included">
+          <h4>Входит в&nbsp;аренду</h4>
+          <ul>
+            {INCLUDED.map((x) => <li>{x}</li>)}
+          </ul>
+        </div>
+        <p class="rm__promo">{PROMO}</p>
+        <div class="rm__foot">
+          <p class="rm__price num">
+            от&nbsp;<b data-f="price"></b>
+            <span>/час</span>
+          </p>
+          <a class="btn btn--primary rm__book" href="#booking" data-book>
+            <span>Забронировать этот зал</span>
+            <span class="btn__ico"><Icon name="arrow" size={20} /></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <script type="application/json" id="rooms-data" set:html={JSON.stringify(roomsClientData)} />
+</section>
+
+<script>
+  import { initCatalog } from "../scripts/catalog";
+  document.querySelectorAll<HTMLElement>("[data-catalog]").forEach(initCatalog);
+</script>

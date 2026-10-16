@@ -18,3 +18,7 @@ public/img/rooms/*/[0-9][0-9].webp
 # локальные установки скиллов (переустанавливаются: npx impeccable install, npx skills add)
 .claude/
 .agents/
+
+# превью вырезок и локальные артефакты impeccable
+review/
+.impeccable/live/

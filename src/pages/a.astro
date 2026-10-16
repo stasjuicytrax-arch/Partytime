@@ -1,0 +1,37 @@
+---
+import Base from "../layouts/Base.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import HeroA from "../components/a/HeroA.astro";
+import Marquee from "../components/Marquee.astro";
+import RoomCatalog from "../components/RoomCatalog.astro";
+import NextUp from "../components/NextUp.astro";
+import "../styles/components.css";
+import "../styles/a.css";
+
+const strip = ["Караоке", "Своя кухня", "Авторский бар", "PS5 и Nintendo Switch", "Без пробкового сбора", "До 06:00", "Только свои"];
+---
+<Base title="Party Time — вариант A «Поп-коллаж»" theme="#FE76B4" favicon="pink" bodyClass="va" noindex>
+  <SiteHeader variant="a" />
+  <main>
+    <HeroA />
+    <div class="ma marquee">
+      <p class="visually-hidden">{strip.join(", ")}</p>
+      <div aria-hidden="true">
+        <Marquee items={strip} speed={34} />
+        <Marquee items={[...strip].reverse()} dir="right" speed={40} />
+      </div>
+    </div>
+    <RoomCatalog variant="a" />
+    <NextUp class="next-up--a grain" />
+  </main>
+</Base>
+
+<script>
+  import { initSmoothScroll, initMagnetic, initCursor, initMarquee } from "../scripts/motion";
+  import { initHeroA } from "../scripts/hero-a";
+  initSmoothScroll();
+  initHeroA(document.querySelector("[data-hero-a]")!);
+  initMarquee();
+  initMagnetic();
+  initCursor();
+</script>

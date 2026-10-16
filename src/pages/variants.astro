@@ -1,0 +1,111 @@
+---
+import { Image } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+import singers from "../assets/people/singers-mic.png";
+import "../styles/components.css";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const star = "M50 2C54 36 64 46 98 50 64 54 54 64 50 98 46 64 36 54 2 50 36 46 46 36 50 2Z";
+---
+<Base title="Party Time — выбор дизайна" description="Два варианта дизайна лендинга Party Time: «Поп-коллаж» и «Ночной лофт»." noindex bodyClass="pick">
+  <main class="pick__main">
+    <header class="pick__head">
+      <img src={`${base}/brand/logo-karaoke-loft.svg`} alt="Party Time — караоке-лофт" width="150" height="78" />
+      <h1>Выберите направление</h1>
+      <p>Два варианта первых экранов: hero и&nbsp;каталог 36&nbsp;залов. Всё кликается — фильтры, карточки, модалка зала.</p>
+    </header>
+
+    <div class="pick__grid">
+      <a class="pick__card pick__card--a" href={`${base}/a`}>
+        <span class="pick__tag">Вариант A · приоритет</span>
+        <span class="pick__title">Поп&#8209;коллаж</span>
+        <span class="pick__desc">Днём на&nbsp;афише: розовый и&nbsp;бумага, вырезанные гости на&nbsp;плашках, дудлы, стикеры, жёсткие тени.</span>
+        <span class="pick__art" aria-hidden="true">
+          <span class="pick__plate"></span>
+          <Image src={singers} alt="" widths={[480, 800]} sizes="(max-width: 767px) 70vw, 30vw" />
+          <svg class="pick__star" viewBox="0 0 100 100"><path d={star} /></svg>
+        </span>
+        <span class="pick__go">Смотреть вариант A <span class="btn__ico"><Icon name="arrow" size={20} /></span></span>
+      </a>
+
+      <a class="pick__card pick__card--b" href={`${base}/b`}>
+        <span class="pick__tag">Вариант B</span>
+        <span class="pick__title">Ночной лофт</span>
+        <span class="pick__desc">Ночью в&nbsp;клубе: тёмная сцена, живой 3D&nbsp;диско-шар, цветные прожекторы, стекло и&nbsp;неон.</span>
+        <span class="pick__art" aria-hidden="true">
+          <span class="pick__ball"></span>
+        </span>
+        <span class="pick__go">Смотреть вариант B <span class="btn__ico"><Icon name="arrow" size={20} /></span></span>
+      </a>
+    </div>
+  </main>
+</Base>
+
+<style is:global>
+  .pick { background: var(--pt-paper); }
+  .pick__main { max-width: 1440px; margin: 0 auto; padding: clamp(24px, 4vw, 56px) var(--gutter) clamp(32px, 4vw, 64px); }
+  .pick__head { display: grid; grid-template-columns: auto 1fr; gap: 12px 40px; align-items: end; margin-bottom: clamp(28px, 4vw, 48px); }
+  .pick__head img { grid-row: span 2; width: clamp(110px, 10vw, 150px); height: auto; rotate: -2deg; }
+  .pick__head h1 { font-size: clamp(2rem, 4.6vw, 4rem); font-weight: 900; line-height: 0.95; letter-spacing: -0.03em; text-transform: uppercase; }
+  .pick__head p { max-width: 52ch; font-size: var(--fs-lead); color: #4d4d48; }
+  .pick__grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 2vw, 28px); }
+  .pick__card {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto auto auto 1fr auto;
+    gap: 14px;
+    min-height: min(78svh, 720px);
+    padding: clamp(24px, 3vw, 40px);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    text-decoration: none;
+    transition: translate var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
+  }
+  .pick__tag { font: 700 var(--fs-label) / 1 var(--font-text); letter-spacing: 0.08em; text-transform: uppercase; }
+  .pick__title { position: relative; z-index: 2; font: 900 clamp(2.25rem, 4.4vw, 4.25rem) / 0.9 var(--font-display); letter-spacing: -0.04em; text-transform: uppercase; }
+  .pick__desc { position: relative; z-index: 2; max-width: 36ch; font-size: var(--fs-lead); line-height: 1.4; }
+  .pick__art { position: relative; display: grid; place-items: end center; min-height: 220px; }
+  .pick__go { position: relative; z-index: 2; display: inline-flex; align-items: center; justify-content: space-between; gap: 14px; justify-self: start; min-height: 56px; padding: 0 8px 0 24px; border-radius: var(--r-pill); font: 700 1rem / 1 var(--font-text); }
+  .pick__go .btn__ico { transition: rotate var(--dur-base) var(--ease-pop); }
+  .pick__card:hover .pick__go .btn__ico { rotate: 45deg; }
+
+  .pick__card--a { background: var(--pt-pink); color: var(--pt-deep); border: var(--border); box-shadow: var(--shadow-pop); }
+  .pick__card--a:hover { translate: -3px -3px; box-shadow: var(--shadow-pop-hover); }
+  .pick__card--a .pick__go { background: var(--pt-lime); border: var(--border); box-shadow: 4px 4px 0 var(--pt-deep); }
+  .pick__card--a .pick__art img { position: relative; z-index: 1; width: min(88%, 520px); height: auto; filter: drop-shadow(0 16px 20px rgb(21 21 21 / 0.25)); }
+  .pick__plate { position: absolute; bottom: 8%; width: 66%; height: 70%; background: var(--pt-saffron); border: var(--border); box-shadow: var(--shadow-pop); rotate: 4deg; }
+  .pick__star { position: absolute; z-index: 2; top: 2%; right: 10%; width: 64px; fill: var(--pt-lime); stroke: var(--pt-deep); stroke-width: 4; overflow: visible; filter: drop-shadow(3px 3px 0 var(--pt-deep)); animation: pick-spin 12s linear infinite; }
+  @keyframes pick-spin { to { rotate: 360deg; } }
+
+  .pick__card--b { background: var(--pt-deep); color: var(--pt-white); }
+  .pick__card--b::before { content: ""; position: absolute; inset: -30%; background: radial-gradient(circle at 30% 30%, rgb(118 89 255 / 0.55), transparent 40%), radial-gradient(circle at 75% 60%, rgb(254 118 180 / 0.45), transparent 40%), radial-gradient(circle at 40% 85%, rgb(108 208 240 / 0.35), transparent 35%); filter: blur(40px); }
+  .pick__card--b:hover { translate: 0 -4px; box-shadow: 0 30px 80px -30px rgb(118 89 255 / 0.8); }
+  .pick__card--b .pick__tag { color: var(--pt-lime); }
+  .pick__card--b .pick__desc { color: rgb(255 255 255 / 0.8); }
+  .pick__card--b .pick__go { background: var(--pt-lime); color: var(--pt-deep); }
+  .pick__ball {
+    position: relative;
+    width: min(62%, 300px);
+    aspect-ratio: 1;
+    align-self: center;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 32% 28%, rgb(255 255 255 / 0.9), transparent 12%),
+      radial-gradient(circle at 50% 50%, transparent 52%, rgb(0 0 0 / 0.7) 72%),
+      repeating-linear-gradient(0deg, rgb(10 10 10 / 0.7) 0 2px, transparent 2px 16px),
+      repeating-linear-gradient(90deg, rgb(10 10 10 / 0.7) 0 2px, transparent 2px 16px),
+      conic-gradient(from 40deg, #a693ff, #fe76b4, #6cd0f0, #c9e543, #fff, #7659ff, #a693ff);
+    box-shadow: 0 0 80px rgb(166 147 255 / 0.5);
+    animation: pick-spin 18s linear infinite;
+  }
+  .pick__card .pick__tag, .pick__card .pick__art { position: relative; z-index: 1; }
+
+  @media (max-width: 860px) {
+    .pick__head { grid-template-columns: 1fr; }
+    .pick__head img { grid-row: auto; }
+    .pick__grid { grid-template-columns: 1fr; }
+    .pick__card { min-height: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) { .pick__star, .pick__ball { animation: none; } }
+</style>

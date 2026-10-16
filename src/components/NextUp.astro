@@ -1,0 +1,44 @@
+---
+// Временный блок-цель для «Забронировать» на этапе выбора варианта.
+// На шаге 2 его заменит пошаговая форма (content.md §9).
+import Icon from "./Icon.astro";
+import { PHONE_MAIN, tel } from "../lib/rooms";
+interface Props {
+  class?: string;
+}
+const { class: cls } = Astro.props;
+---
+<section id="booking" class:list={["next-up", cls]} aria-labelledby="booking-title">
+  <div class="container next-up__inner">
+    <h2 id="booking-title">Соберите свой праздник</h2>
+    <p class="next-up__pick" data-pick></p>
+    <p>
+      Здесь будет пошаговая форма: 5&nbsp;вопросов — и&nbsp;менеджер перезвонит с&nbsp;подходящими залами и&nbsp;ценой.
+      Сейчас это превью: hero и&nbsp;каталог залов.
+    </p>
+    <div class="next-up__row">
+      <a class="btn btn--primary" href={tel(PHONE_MAIN)} data-magnetic>
+        <span class="num">{PHONE_MAIN}</span><span class="btn__ico"><Icon name="phone" size={20} /></span>
+      </a>
+      <a class="btn btn--ghost" href="#rooms">Вернуться к&nbsp;залам</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  const out = document.querySelector<HTMLElement>("[data-pick]");
+  const show = (title?: string, locName?: string) => {
+    if (out && title) out.textContent = `Вы выбрали зал «${title}»${locName ? ` на ${locName === "Думская" ? "Думской" : "Маяковской"}` : ""} — передадим его в форму.`;
+  };
+  window.addEventListener("pt:booking", (e) => {
+    const d = (e as CustomEvent).detail;
+    show(d.title, d.locName);
+  });
+  const qs = new URLSearchParams(location.search);
+  const room = qs.get("room");
+  if (room) {
+    const data = JSON.parse(document.getElementById("rooms-data")?.textContent || "[]");
+    const r = data.find((x: { slug: string }) => x.slug === room);
+    if (r) show(r.title, r.locName);
+  }
+</script>

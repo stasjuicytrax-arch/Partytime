@@ -1,4 +1,38 @@
 ---
+// Главная: выбранное направление — вариант B «Ночной лофт». /b оставлен как превью, /variants — экран выбора.
 import Base from "../layouts/Base.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import HeroB from "../components/b/HeroB.astro";
+import Marquee from "../components/Marquee.astro";
+import RoomCatalog from "../components/RoomCatalog.astro";
+import NextUp from "../components/NextUp.astro";
+import "../styles/components.css";
+import "../styles/b.css";
+
+const strip = ["Караоке", "Своя кухня", "Авторский бар", "PS5 и Nintendo Switch", "Без пробкового сбора", "До 06:00", "Только свои"];
 ---
-<Base><main class="container"><h1>Party Time</h1></main></Base>
+<Base theme="#151515" favicon="blue" bodyClass="vb">
+  <SiteHeader variant="b" />
+  <main>
+    <HeroB />
+    <div class="mb marquee">
+      <p class="visually-hidden">{strip.join(", ")}</p>
+      <div aria-hidden="true">
+        <Marquee items={strip} speed={38} />
+        <Marquee items={[...strip].reverse()} dir="right" speed={46} />
+      </div>
+    </div>
+    <RoomCatalog variant="b" />
+    <NextUp class="next-up--b" />
+  </main>
+</Base>
+
+<script>
+  import { initSmoothScroll, initMagnetic, initCursor, initMarquee } from "../scripts/motion";
+  import { initHeroB } from "../scripts/hero-b";
+  initSmoothScroll();
+  initHeroB(document.querySelector("[data-hero-b]")!);
+  initMarquee();
+  initMagnetic();
+  initCursor();
+</script>

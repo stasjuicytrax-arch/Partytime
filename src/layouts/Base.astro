@@ -43,6 +43,13 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary_large_image" />
+    <script is:inline>
+      // интро-занавес: снимается скриптом анимации; страховка — 2.5 с
+      if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        document.documentElement.classList.add("is-intro");
+        setTimeout(function () { document.documentElement.classList.remove("is-intro"); }, 2500);
+      }
+    </script>
     <slot name="head" />
   </head>
   <body class={bodyClass}>

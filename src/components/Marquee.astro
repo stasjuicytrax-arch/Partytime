@@ -1,0 +1,29 @@
+---
+// Бегущая строка (content.md §2). Разделитель — авторская звезда-искра.
+interface Props {
+  items: string[];
+  dir?: "left" | "right";
+  speed?: number;
+  class?: string;
+}
+const { items, dir = "left", speed = 30, class: cls } = Astro.props;
+const group = [...items, ...items];
+---
+<div class:list={["marquee__row", cls]} data-marquee data-dir={dir} data-speed={speed}>
+  <div class="marquee__track">
+    {
+      [0, 1].map((k) => (
+        <div class="marquee__group" aria-hidden={k === 1 ? "true" : undefined}>
+          {group.map((t) => (
+            <span class="marquee__item">
+              {t}
+              <svg class="marquee__star" viewBox="0 0 100 100" aria-hidden="true">
+                <path d="M50 2C54 36 64 46 98 50 64 54 54 64 50 98 46 64 36 54 2 50 36 46 46 36 50 2Z" fill="currentColor" />
+              </svg>
+            </span>
+          ))}
+        </div>
+      ))
+    }
+  </div>
+</div>

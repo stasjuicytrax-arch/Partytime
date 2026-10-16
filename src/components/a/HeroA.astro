@@ -1,0 +1,89 @@
+---
+import { Image } from "astro:assets";
+import Icon from "../Icon.astro";
+import singers from "../../assets/people/singers-mic.png";
+import oscar from "../../assets/people/oscar.png";
+import { totalRooms, minPrice, rub, activeLocations } from "../../lib/rooms";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const star = "M50 2C54 36 64 46 98 50 64 54 54 64 50 98 46 64 36 54 2 50 36 46 46 36 50 2Z";
+---
+<section class="ha grain" aria-labelledby="hero-title" data-hero-a>
+  <div class="container ha__inner">
+    <p class="ha__kicker" data-intro="fade">Караоке-лофты · Санкт-Петербург</p>
+
+    <div class="ha__comp">
+      <!-- слой 1: плашки под фото (за буквами) -->
+      <div class="ha__plate ha__plate--singers" data-depth="0.35" data-intro="plate"></div>
+
+      <!-- слой 2: гости за словом «ГРОМЧЕ» -->
+      <div class="ha__cut ha__cut--singers" data-depth="0.5" data-intro="cut">
+        <Image src={singers} alt="Две подруги поют в микрофоны" widths={[480, 820, 1200]} sizes="(max-width: 767px) 70vw, 42vw" loading="eager" fetchpriority="high" />
+      </div>
+
+      <h1 id="hero-title" class="ha__title">
+        <span class="ha__line"><span class="ha__word" data-intro="line">Вместе</span></span>
+        <span class="ha__line ha__line--2">
+          <span class="ha__word ha__word--outline outline-word" data-intro="line">и</span>
+          <span class="ha__word ha__word--mark" data-intro="line">
+            <svg class="ha__brush" viewBox="0 0 600 120" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M8 34C64 20 160 14 300 12c128-2 222 4 286 14 8 1 10 12 4 20-6 9-2 18 4 26 6 10 0 22-10 24-70 12-180 16-300 16-118 0-208-6-268-14-10-2-14-12-8-22 4-7 2-14-4-22C2 49 0 37 8 34Z" />
+            </svg>
+            <span class="ha__word-text">громче</span>
+          </span>
+        </span>
+      </h1>
+
+      <!-- рукописный дудл -->
+      <div class="ha__doodle" data-depth="0.9" aria-hidden="true">
+        <span class="ha__hand" data-intro="fade">тут поют до&nbsp;6&nbsp;утра</span>
+        <svg viewBox="0 0 220 140" fill="none" data-draw>
+          <path d="M10 118c30 10 70 6 92-20 18-21 6-44-14-38-22 7-14 40 14 44 40 6 78-26 100-74" />
+          <path d="M184 22l20 8 2 22" />
+        </svg>
+      </div>
+
+      <div class="ha__stamp" data-depth="0.5" data-intro="pop" aria-hidden="true">
+        <svg viewBox="0 0 200 200" class="ha__stamp-ring">
+          <defs><path id="stamp-c" d="M100 100m-76 0a76 76 0 1 1 152 0a76 76 0 1 1-152 0" /></defs>
+          <circle cx="100" cy="100" r="98" />
+          <text><textPath href="#stamp-c" textLength="472" lengthAdjust="spacing">ПОЁМ • ТАНЦУЕМ • ОТМЕЧАЕМ •</textPath></text>
+        </svg>
+        <span class="ha__stamp-core"></span>
+        <img class="ha__stamp-mic" src={`${base}/img/3d/mic-dynamic-color.webp`} alt="" width="400" height="400" loading="eager" />
+      </div>
+
+      <!-- стикеры-звёзды: можно таскать -->
+      <svg class="ha__star ha__star--1" viewBox="0 0 100 100" data-depth="1.2" data-drag data-intro="pop" aria-hidden="true"><path d={star} /></svg>
+      <svg class="ha__star ha__star--2" viewBox="0 0 100 100" data-depth="0.8" data-drag data-intro="pop" aria-hidden="true"><path d={star} /></svg>
+    </div>
+
+    <div class="ha__bottom">
+      <div class="ha__copy">
+        <p class="ha__lead" data-intro="fade">
+          Тематические залы с&nbsp;караоке, кухней и&nbsp;баром. Весь зал — только для вашей компании.
+        </p>
+        <div class="ha__ctas" data-intro="fade">
+          <a class="btn btn--primary" href="#rooms" data-magnetic>
+            <span>Выбрать зал</span><span class="btn__ico"><Icon name="arrow" size={20} /></span>
+          </a>
+          <a class="btn btn--ghost" href="#booking">Подобрать праздник</a>
+        </div>
+      </div>
+
+      <ul class="ha__facts" aria-label="Коротко о Party Time">
+        <li class="fact fact--white" data-depth="0.6" data-drag data-intro="pop"><b class="num">{totalRooms}</b> залов</li>
+        <li class="fact fact--saffron" data-depth="0.9" data-drag data-intro="pop">до&nbsp;<b class="num">06:00</b></li>
+        <li class="fact fact--sky" data-depth="0.7" data-drag data-intro="pop">от&nbsp;<b class="num">{rub(minPrice)}</b>/час</li>
+        <li class="fact fact--violet" data-depth="1" data-drag data-intro="pop"><b class="num">{activeLocations.length}</b> локации в&nbsp;центре</li>
+      </ul>
+
+    </div>
+
+    <!-- второй коллаж: гостья с «Оскаром» -->
+    <div class="ha__plate ha__plate--oscar" data-depth="0.7" data-intro="plate"></div>
+    <div class="ha__cut ha__cut--oscar" data-depth="0.85" data-intro="cut">
+      <Image src={oscar} alt="Гостья с коктейлем и статуэткой «Оскара»" widths={[360, 640]} sizes="(max-width: 767px) 40vw, 18vw" />
+    </div>
+  </div>
+</section>

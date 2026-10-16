@@ -1,0 +1,28 @@
+---
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+import { PHONE_MAIN, tel } from "../lib/rooms";
+import "../styles/components.css";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+<Base title="Скоро — Party Time" noindex bodyClass="soon">
+  <main class="soon__main grain">
+    <img src={`${base}/brand/logo-karaoke-loft.svg`} alt="Party Time — караоке-лофт" width="150" height="78" />
+    <h1>Скоро</h1>
+    <p>Эту страницу ещё готовим. А&nbsp;пока всё про залы, кухню и&nbsp;услуги расскажем по&nbsp;телефону.</p>
+    <div class="soon__row">
+      <a class="btn btn--primary" href={tel(PHONE_MAIN)}><span class="num">{PHONE_MAIN}</span><span class="btn__ico"><Icon name="phone" size={20} /></span></a>
+      <a class="btn btn--ghost" href={`${base}/`}>На главную</a>
+    </div>
+  </main>
+</Base>
+
+<style is:global>
+  .soon { background: var(--pt-pink); }
+  .soon__main { min-height: 100svh; display: grid; align-content: center; justify-items: start; gap: 24px; padding: var(--gutter); max-width: 1440px; margin: 0 auto; }
+  .soon__main > * { position: relative; z-index: 1; }
+  .soon__main img { width: 140px; height: auto; rotate: -2deg; }
+  .soon h1 { font-size: clamp(4rem, 18vw, 16rem); font-weight: 900; line-height: 0.85; letter-spacing: -0.05em; text-transform: uppercase; }
+  .soon p { max-width: 40ch; font-size: var(--fs-lead); }
+  .soon__row { display: flex; flex-wrap: wrap; gap: 14px; }
+</style>

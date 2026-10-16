@@ -1,0 +1,107 @@
+---
+import Icon from "./Icon.astro";
+import { PHONE_MAIN, tel } from "../lib/rooms";
+
+interface Props {
+  variant: "a" | "b";
+}
+const { variant } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const soon = `${base}/soon`;
+const nav = [
+  { href: "#rooms", label: "Залы" },
+  { href: soon, label: "Кухня & Бар" },
+  { href: soon, label: "Услуги" },
+  { href: soon, label: "Акции" },
+  { href: "#booking", label: "Контакты" },
+];
+---
+<header class={`hdr hdr--${variant}`} data-header>
+  <div class="container hdr__bar">
+    <a class="hdr__logo" href={Astro.url.pathname} aria-label="Party Time — на главную" data-party>
+      <img src={`${base}/brand/logo-karaoke-loft.svg`} alt="Party Time — караоке-лофт" width="150" height="78" />
+    </a>
+    {variant === "b" && <span class="hdr__ball" data-ball-slot aria-hidden="true"></span>}
+    <nav class="hdr__nav" aria-label="Основное меню">
+      {nav.map((n) => <a href={n.href}>{n.label}</a>)}
+    </nav>
+    <div class="hdr__right">
+      <a class="hdr__phone num" href={tel(PHONE_MAIN)}><Icon name="phone" size={18} />{PHONE_MAIN}</a>
+      <a class="btn btn--primary btn--sm hdr__cta" href="#booking" data-magnetic>
+        <span>Забронировать</span><span class="btn__ico"><Icon name="arrow" size={18} /></span>
+      </a>
+      <button type="button" class="hdr__burger" aria-label="Открыть меню" aria-expanded="false" aria-controls={`menu-${variant}`} data-burger>
+        <Icon name="menu" size={26} />
+      </button>
+    </div>
+  </div>
+  <div class="hdr__menu" id={`menu-${variant}`} data-menu>
+    <button type="button" class="hdr__menu-close" aria-label="Закрыть меню" data-menu-close><Icon name="close" size={26} /></button>
+    <img src={`${base}/brand/logo-karaoke-loft.svg`} alt="" width="132" height="69" />
+    <nav aria-label="Меню">
+      {nav.map((n) => <a href={n.href} data-menu-link>{n.label}</a>)}
+    </nav>
+    <div class="hdr__menu-foot">
+      <a class="hdr__phone num" href={tel(PHONE_MAIN)}><Icon name="phone" size={20} />{PHONE_MAIN}</a>
+      <a class="btn btn--primary" href="#booking" data-menu-link>
+        <span>Забронировать</span><span class="btn__ico"><Icon name="arrow" size={20} /></span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<script>
+  import { gsap } from "gsap";
+  import { reduced, lenis } from "../scripts/motion";
+  document.querySelectorAll<HTMLElement>("[data-header]").forEach((hdr) => {
+    const menu = hdr.querySelector<HTMLElement>("[data-menu]")!;
+    const burger = hdr.querySelector<HTMLButtonElement>("[data-burger]")!;
+    const open = () => {
+      menu.setAttribute("data-open", "");
+      burger.setAttribute("aria-expanded", "true");
+      lenis()?.stop();
+      document.documentElement.classList.add("modal-open");
+      if (!reduced()) {
+        gsap.fromTo(menu, { clipPath: "circle(0% at 92% 4%)" }, { clipPath: "circle(150% at 92% 4%)", duration: 0.7, ease: "expo.out" });
+        gsap.fromTo(menu.querySelectorAll("nav a"), { yPercent: 110, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.6, ease: "expo.out", stagger: 0.05, delay: 0.1 });
+      }
+      menu.querySelector<HTMLElement>("nav a")?.focus();
+    };
+    const close = () => {
+      menu.removeAttribute("data-open");
+      burger.setAttribute("aria-expanded", "false");
+      lenis()?.start();
+      document.documentElement.classList.remove("modal-open");
+    };
+    burger.addEventListener("click", open);
+    // фокус не уходит из открытого меню
+    menu.addEventListener("keydown", (e) => {
+      if (e.key !== "Tab") return;
+      const f = [...menu.querySelectorAll<HTMLElement>("a, button")].filter((x) => x.offsetParent !== null);
+      const first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+    // шапка: плашка после прокрутки, прячется при скролле вниз и возвращается при скролле вверх
+    let lastY = scrollY;
+    const onScroll = () => {
+      const y = scrollY;
+      hdr.classList.toggle("is-scrolled", y > 24);
+      hdr.classList.toggle("is-hidden", y > 400 && y > lastY + 4 && !menu.hasAttribute("data-open"));
+      if (y < lastY - 4) hdr.classList.remove("is-hidden");
+      lastY = y;
+    };
+    addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    // «скоро на сайте» по тапу (тултипа по hover на таче нет)
+    document.querySelectorAll<HTMLElement>(".loc--soon").forEach((b) =>
+      b.addEventListener("click", () => {
+        b.classList.add("is-tip");
+        setTimeout(() => b.classList.remove("is-tip"), 1600);
+      })
+    );
+    hdr.querySelector("[data-menu-close]")!.addEventListener("click", () => { close(); burger.focus(); });
+    menu.querySelectorAll("[data-menu-link]").forEach((a) => a.addEventListener("click", close));
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && menu.hasAttribute("data-open")) { close(); burger.focus(); } });
+  });
+</script>

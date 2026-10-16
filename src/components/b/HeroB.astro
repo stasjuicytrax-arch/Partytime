@@ -1,0 +1,94 @@
+---
+import { Image } from "astro:assets";
+import Icon from "../Icon.astro";
+import cakeGlasses from "../../assets/people/raw/cake-glasses.png";
+import guitars from "../../assets/people/raw/guitars.png";
+import { totalRooms, minPrice, rub, activeLocations } from "../../lib/rooms";
+
+// «зайчики» от шара: детерминированный разброс, чтобы SSR и клиент совпадали
+let seed = 7;
+const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+const palette = ["#ffffff", "#FE76B4", "#6CD0F0", "#A693FF", "#ffffff", "#C9E543"];
+const flecks = Array.from({ length: 46 }, (_, i) => ({
+  x: Math.round(rnd() * 1000) / 10,
+  y: Math.round(rnd() * 1000) / 10,
+  s: Math.round((0.5 + rnd() * 1.4) * 100) / 100,
+  c: palette[i % palette.length],
+  d: Math.round(rnd() * 40) / 10,
+}));
+---
+<section class="hb" aria-labelledby="hero-title" data-hero-b>
+  <div class="hb__spots" aria-hidden="true">
+    <span class="hb__spot hb__spot--violet"></span>
+    <span class="hb__spot hb__spot--pink"></span>
+    <span class="hb__spot hb__spot--sky"></span>
+  </div>
+  <div class="hb__flecks" aria-hidden="true" data-flecks>
+    {flecks.map((f) => <i style={`--x:${f.x}%;--y:${f.y}%;--s:${f.s};--c:${f.c};--d:${f.d}s`}></i>)}
+  </div>
+
+  <svg class="hb__defs" aria-hidden="true" focusable="false">
+    <filter id="duo-pink" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values=".3 .55 .15 0 0 .3 .55 .15 0 0 .3 .55 .15 0 0 0 0 0 1 0" />
+      <feComponentTransfer>
+        <feFuncR type="table" tableValues="0.1 0.62 1" />
+        <feFuncG type="table" tableValues="0.04 0.16 0.62" />
+        <feFuncB type="table" tableValues="0.22 0.5 0.84" />
+      </feComponentTransfer>
+    </filter>
+    <filter id="duo-sky" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values=".3 .55 .15 0 0 .3 .55 .15 0 0 .3 .55 .15 0 0 0 0 0 1 0" />
+      <feComponentTransfer>
+        <feFuncR type="table" tableValues="0.12 0.3 0.75" />
+        <feFuncG type="table" tableValues="0.06 0.42 0.92" />
+        <feFuncB type="table" tableValues="0.3 0.85 1" />
+      </feComponentTransfer>
+    </filter>
+  </svg>
+
+  <div class="container hb__inner">
+    <p class="hb__kicker" data-intro-b="fade">Караоке-лофты · Санкт-Петербург</p>
+
+    <div class="hb__stage">
+      <h1 id="hero-title" class="hb__title">
+        <span class="hb__line hb__line--back" data-split>Вместе</span>
+        <span class="hb__line hb__line--front" data-split>и&nbsp;громче</span>
+      </h1>
+      <!-- место шара: размер и позицию задаёт CSS, шар (WebGL) едет отсюда в шапку -->
+      <button type="button" class="hb__anchor" data-ball-anchor aria-label="Включить режим вечеринки">
+        <span class="hb__ball-fallback" aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <ul class="hb__facts" aria-label="Коротко о Party Time">
+      <li class="glass hb__fact hb__fact--1" data-float><b class="num" data-count-to={totalRooms}>{totalRooms}</b><span>тематических залов</span></li>
+      <li class="glass hb__fact hb__fact--2" data-float><span>до</span><b class="num">06:00</b><span>по&nbsp;пятницам и&nbsp;субботам</span></li>
+      <li class="glass hb__fact hb__fact--3" data-float><span>от</span><b class="num">{rub(minPrice)}</b><span>за&nbsp;час аренды</span></li>
+      <li class="glass hb__fact hb__fact--4" data-float><b class="num">{activeLocations.length}</b><span>локации в&nbsp;центре</span></li>
+    </ul>
+
+    <div class="hb__bottom">
+      <p class="hb__lead" data-intro-b="fade">
+        Тематические залы с&nbsp;караоке, кухней и&nbsp;баром. Весь зал — только для вашей компании.
+      </p>
+      <div class="hb__ctas" data-intro-b="fade">
+        <a class="btn btn--primary" href="#rooms" data-magnetic>
+          <span>Выбрать зал</span><span class="btn__ico"><Icon name="arrow" size={20} /></span>
+        </a>
+        <a class="btn btn--ghost" href="#booking">Подобрать праздник</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hb__guest hb__guest--l" data-intro-b="guest">
+    <Image src={cakeGlasses} alt="Гостья с праздничным тортом" widths={[480, 820]} sizes="(max-width: 767px) 52vw, 28vw" />
+  </div>
+  <div class="hb__guest hb__guest--r" data-intro-b="guest">
+    <Image src={guitars} alt="Подруги играют на электрогитарах" widths={[400, 700]} sizes="(max-width: 767px) 44vw, 22vw" />
+  </div>
+  <div class="hb__flash" aria-hidden="true" data-flash></div>
+</section>
+
+<div class="ball" data-ball aria-hidden="true">
+  <canvas class="ball__canvas" data-ball-canvas></canvas>
+</div>
