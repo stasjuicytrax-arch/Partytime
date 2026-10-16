@@ -101,7 +101,7 @@
 }
 .hb__line { display: block; white-space: nowrap; }
 /* слой «за шаром»: шар (fixed, z 40) ниже лицевой строки */
-.hb__line--back { position: relative; z-index: 2; color: rgb(166 147 255 / 0.32); -webkit-text-stroke: 3px rgb(255 255 255 / 0.9); paint-order: stroke fill; translate: 0 -0.22em; }
+.hb__line--back { position: relative; z-index: 2; color: #433d60; -webkit-text-stroke: 3px rgb(255 255 255 / 0.9); paint-order: stroke fill; translate: 0 -0.22em; }
 .hb__line--front {
   position: relative;
   z-index: 45;
