@@ -394,19 +394,25 @@
 .contacts { background: #19171f; }
 .contacts__main { font: 900 clamp(1.5rem, 2.4vw, 2.25rem) / 1.2 var(--font-display); color: var(--pt-white); text-decoration: none; }
 .contacts__mail { color: var(--pt-lime); }
-.contacts__grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(16px, 2vw, 28px); align-items: stretch; }
-.contacts__cards { display: grid; gap: 14px; align-content: start; }
-.loc-card { position: relative; display: grid; gap: 8px; justify-items: start; padding: clamp(22px, 2.4vw, 32px); border-radius: var(--r-lg); background: rgb(255 255 255 / 0.04); border: 1px solid rgb(255 255 255 / 0.1); }
-.loc-card h3 { font: 900 clamp(1.75rem, 2.6vw, 2.5rem) / 1 var(--font-display); text-transform: uppercase; letter-spacing: -0.02em; }
-.loc-card__pin { position: absolute; top: 22px; right: 22px; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50% 50% 4px 50%; font: 900 1rem / 1 var(--font-display); }
+.contacts__grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(16px, 2vw, 28px); align-items: stretch; }
+.contacts__side { display: grid; gap: 14px; align-content: start; }
+/* 4 локации — компактные карточки 2×2 */
+.contacts__cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.loc-card { position: relative; display: grid; gap: 6px; justify-items: start; align-content: start; padding: 20px 20px 22px; border-radius: var(--r-md); background: rgb(255 255 255 / 0.04); border: 1px solid rgb(255 255 255 / 0.1); }
+.loc-card h3 { padding-right: 44px; font: 900 clamp(1.0625rem, 1.6vw, 1.5rem) / 1.05 var(--font-display); text-transform: uppercase; letter-spacing: -0.02em; hyphens: auto; -webkit-hyphens: auto; }
+.loc-card__soon { justify-self: start; order: -1; margin-bottom: 4px; padding: 4px 10px; border-radius: var(--r-pill); background: rgb(255 255 255 / 0.1); font: 700 0.6875rem / 1 var(--font-text); letter-spacing: 0.06em; text-transform: uppercase; color: rgb(255 255 255 / 0.75); }
+.loc-card--leninskiy, .loc-card--komendantskiy { background: transparent; border-style: dashed; }
+.loc-card--leninskiy h3, .loc-card--komendantskiy h3 { padding-right: 0; }
+.loc-card__pin { position: absolute; top: 16px; right: 16px; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50% 50% 4px 50%; font: 900 1rem / 1 var(--font-display); }
 .loc-card--dumskaya .loc-card__pin { background: var(--pt-pink); color: var(--pt-deep); }
 .loc-card--mayakovskaya .loc-card__pin { background: var(--pt-violet); color: var(--pt-white); }
-.loc-card__addr { font-size: var(--fs-lead); font-weight: 600; }
+.loc-card--leninskiy .loc-card__pin, .loc-card--komendantskiy .loc-card__pin { top: 12px; width: 32px; height: 32px; font-size: 0.875rem; background: rgb(255 255 255 / 0.14); color: var(--pt-white); border: 1px dashed rgb(255 255 255 / 0.45); }
+.loc-card__addr { font-size: var(--fs-body); font-weight: 600; }
 .loc-card__metro { display: inline-flex; align-items: center; gap: 6px; color: rgb(255 255 255 / 0.7); font-size: var(--fs-small); }
-.loc-card__tel { font: 800 1.125rem / 1.4 var(--font-display); color: var(--pt-white); text-decoration: none; }
-.loc-card__hours { display: grid; gap: 4px; margin: 4px 0 10px; font-size: var(--fs-small); }
+.loc-card__tel { font: 800 1rem / 1.4 var(--font-display); color: var(--pt-white); text-decoration: none; }
+.loc-card__hours { display: grid; gap: 2px; margin: 2px 0 10px; font-size: 0.8125rem; }
 .loc-card__hours div { display: flex; gap: 12px; }
-.loc-card__hours dt { min-width: 52px; color: rgb(255 255 255 / 0.55); }
+.loc-card__hours dt { min-width: 44px; color: rgb(255 255 255 / 0.55); }
 .loc-card__hours dd { margin: 0; }
 .contacts__msg { display: flex; flex-wrap: wrap; gap: 10px; }
 .contacts__msg a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: var(--r-pill); border: 1px solid rgb(255 255 255 / 0.25); text-decoration: none; font-weight: 700; }
@@ -416,6 +422,9 @@
 @media (max-width: 1023px) {
   .contacts__grid { grid-template-columns: minmax(0, 1fr); }
   .contacts__map { min-height: 360px; }
+}
+@media (max-width: 479px) {
+  .contacts__cards { grid-template-columns: minmax(0, 1fr); }
 }
 
 /* ---------- Подвал ---------- */
