@@ -13,7 +13,7 @@ import { PROMOS } from "../../lib/content";
     <ul class="coupons" role="list">
       {PROMOS.map((p, i) => (
         <li class={`coupon coupon--${p.color}`} style={`--tilt:${[-2, 1.5, -1, 2, -1.5, 1][i]}deg`} data-reveal>
-          <button type="button" class="coupon__flip" aria-pressed="false" aria-label={`${p.title}: подробнее`} data-coupon>
+          <button type="button" class="coupon__flip" aria-pressed="false" data-coupon>
             <span class="coupon__face coupon__face--front" aria-hidden="true">
               <span class="coupon__big">{p.big}</span>
               <span class="coupon__title">{p.title}</span>

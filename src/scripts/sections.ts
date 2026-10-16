@@ -104,7 +104,7 @@ export function initFormats() {
   const pin = sec.querySelector<HTMLElement>("[data-formats-pin]")!;
   const track = sec.querySelector<HTMLElement>("[data-formats-track]")!;
   const mm = gsap.matchMedia();
-  mm.add("(min-width: 1024px) and (prefers-reduced-motion: no-preference)", () => {
+  mm.add("(min-width: 1280px) and (prefers-reduced-motion: no-preference)", () => {
     sec.classList.add("is-pinned");
     const dist = () => Math.max(0, track.scrollWidth - innerWidth);
     const tw = gsap.to(track, {

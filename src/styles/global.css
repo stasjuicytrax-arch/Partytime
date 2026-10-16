@@ -16,6 +16,7 @@ body {
   overflow-x: clip;
 }
 img, svg, video, canvas { display: block; max-width: 100%; }
+[hidden] { display: none !important; }
 button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
 a { color: inherit; text-underline-offset: 0.2em; }

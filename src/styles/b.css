@@ -253,17 +253,6 @@ html.party .vb { animation: party 0.5s steps(1) 6; }
 
 /* ---------- Каталог ---------- */
 .rc--b { background: var(--pt-deep); overflow: clip; }
-.rc--b::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: -10%;
-  width: 90vw;
-  height: 60vw;
-  translate: -50% 0;
-  background: radial-gradient(closest-side, rgb(118 89 255 / 0.22), transparent);
-  pointer-events: none;
-}
 .rc--b .rc__label { color: rgb(255 255 255 / 0.55); }
 .rc--b .w-outline { color: var(--pt-deep); -webkit-text-stroke: 2px var(--pt-white); paint-order: stroke fill; }
 .rc--b .w-mark span { color: var(--pt-lime); }
@@ -287,7 +276,7 @@ html.party .vb { animation: party 0.5s steps(1) 6; }
   border-radius: var(--r-md);
   overflow: hidden;
   background: var(--pt-storm);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--g) 38%, transparent), 0 0 18px -6px color-mix(in srgb, var(--g) 45%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--g) 38%, transparent);
   transition: box-shadow var(--dur-base) var(--ease-out), translate var(--dur-base) var(--ease-out);
 }
 .rc--b .card__link:hover, .rc--b .card__link:focus-visible {
@@ -338,7 +327,7 @@ html.party .vb { animation: party 0.5s steps(1) 6; }
 
 /* ---------- Mobile ---------- */
 @media (max-width: 900px) {
-  .hb__fact--3, .hb__fact--4 { display: none; }
+  .hb__fact--2, .hb__fact--3 { display: none; }
   .hb__fact--1 { top: 18%; }
   .hb__fact--2 { top: 64%; }
 }
@@ -352,7 +341,7 @@ html.party .vb { animation: party 0.5s steps(1) 6; }
   .hb__facts { position: relative; inset: auto; display: flex; gap: 10px; margin: 8px 0 24px; }
   .hb__fact { position: relative; inset: auto; flex: 1; max-width: none; padding: 12px 14px 14px; border-radius: 16px; }
   .hb__fact b { font-size: 1.5rem; }
-  .hb__fact--1, .hb__fact--2 { left: auto; right: auto; top: auto; bottom: auto; }
+  .hb__fact--1, .hb__fact--4 { left: auto; right: auto; top: auto; bottom: auto; }
   .hb__bottom { flex-direction: column; align-items: stretch; }
   .hb__ctas .btn { flex: 1 1 100%; justify-content: space-between; }
   .hb__ctas .btn--ghost { justify-content: center; }
