@@ -1,6 +1,7 @@
 ---
 import Icon from "../Icon.astro";
 import { networkRooms, minPrice, rub, locations } from "../../lib/rooms";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 // «зайчики» от шара: детерминированный разброс, чтобы SSR и клиент совпадали
 let seed = 7;
@@ -34,7 +35,8 @@ const flecks = Array.from({ length: 46 }, (_, i) => ({
       </h1>
       <!-- место шара: размер и позицию задаёт CSS; WebGL-шар держится на этом месте и уезжает вместе с hero -->
       <button type="button" class="hb__anchor" data-ball-anchor aria-label="Включить режим вечеринки">
-        <span class="hb__ball-fallback" aria-hidden="true"></span>
+        <!-- кадр настоящего шара: виден сразу, пока грузится WebGL (на телефоне — до первого касания) -->
+        <img class="hb__ball-fallback" src={`${base}/img/ball-poster.webp`} alt="" width="460" height="460" fetchpriority="high" decoding="async" />
       </button>
     </div>
 

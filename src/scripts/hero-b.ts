@@ -144,7 +144,16 @@ export function initHeroB(hero: HTMLElement) {
   if (reduced() || light) {
     revealPage();
     hero.classList.add("is-on");
-    whenIdle(loadBall);
+    // на телефоне 3D стартует с первым касанием/скроллом или через 6 с — до этого виден кадр шара
+    let started = false;
+    const kick = () => {
+      if (started) return;
+      started = true;
+      ["pointerdown", "touchstart", "scroll", "keydown"].forEach((ev) => removeEventListener(ev, kick));
+      whenIdle(loadBall);
+    };
+    ["pointerdown", "touchstart", "scroll", "keydown"].forEach((ev) => addEventListener(ev, kick, { passive: true, once: true }));
+    setTimeout(kick, 6000);
     if (!reduced()) {
       gsap.from(hero.querySelectorAll(".hb__fact"), { y: 24, duration: 0.8, ease: "expo.out", stagger: 0.08, delay: 0.2 });
     }

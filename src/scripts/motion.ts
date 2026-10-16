@@ -13,7 +13,8 @@ export const lenis = () => _lenis;
 
 /** Плавный скролл Lenis, синхронизированный с ScrollTrigger */
 export function initSmoothScroll() {
-  if (reduced() || _lenis) return _lenis;
+  // на тач-устройствах родной скролл лучше и дешевле
+  if (reduced() || _lenis || matchMedia("(pointer: coarse)").matches) return _lenis;
   _lenis = new Lenis({ lerp: 0.11, wheelMultiplier: 1, anchors: { offset: -24 } });
   _lenis.on("scroll", ScrollTrigger.update);
   gsap.ticker.add((t) => _lenis!.raf(t * 1000));

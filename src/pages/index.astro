@@ -58,16 +58,23 @@ const strip = ["Караоке", "Своя кухня", "Авторский ба
   initMarquee();
   initMagnetic();
   initCursor();
-  initReveals();
-  initClock();
-  initFormats();
-  initServices();
-  initCoupons();
-  initFaq();
-  initBooking(document.querySelector<HTMLElement>("[data-booking]")!);
+  const idle = (fn: () => void) => ("requestIdleCallback" in window ? requestIdleCallback(fn, { timeout: 2000 }) : setTimeout(fn, 800));
+
+  // секции ниже первого экрана: на телефоне настраиваем, когда браузер освободится после загрузки
+  const initSections = () => {
+    initReveals();
+    initClock();
+    initFormats();
+    initServices();
+    initCoupons();
+    initFaq();
+    initBooking(document.querySelector<HTMLElement>("[data-booking]")!);
+  };
+  if (matchMedia("(pointer: coarse)").matches) {
+    document.readyState === "complete" ? idle(initSections) : addEventListener("load", () => idle(initSections), { once: true });
+  } else initSections();
 
   // вау-эффекты — лениво, после загрузки страницы
-  const idle = (fn: () => void) => ("requestIdleCallback" in window ? requestIdleCallback(fn, { timeout: 2000 }) : setTimeout(fn, 800));
   // падающие буквы в подвале — физика грузится за 400px до подвала
   const stage = document.querySelector<HTMLElement>("[data-letters]");
   if (stage) {
