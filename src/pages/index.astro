@@ -12,6 +12,10 @@ import Promos from "../components/sections/Promos.astro";
 import Reviews from "../components/sections/Reviews.astro";
 import Booking from "../components/sections/Booking.astro";
 import Faq from "../components/sections/Faq.astro";
+import Contacts from "../components/sections/Contacts.astro";
+import Footer from "../components/sections/Footer.astro";
+import Messengers from "../components/Messengers.astro";
+import JsonLd from "../components/JsonLd.astro";
 import "../styles/components.css";
 import "../styles/b.css";
 import "../styles/sections.css";
@@ -19,6 +23,7 @@ import "../styles/sections.css";
 const strip = ["Караоке", "Своя кухня", "Авторский бар", "PS5 и Nintendo Switch", "Без пробкового сбора", "До 06:00", "Только свои"];
 ---
 <Base theme="#151515" favicon="blue" bodyClass="vb">
+  <JsonLd slot="head" />
   <SiteHeader variant="b" />
   <main>
     <HeroB />
@@ -37,7 +42,10 @@ const strip = ["Караоке", "Своя кухня", "Авторский ба
     <Reviews />
     <Booking />
     <Faq />
+    <Contacts />
   </main>
+  <Footer />
+  <Messengers />
 </Base>
 
 <script>
@@ -60,6 +68,18 @@ const strip = ["Караоке", "Своя кухня", "Авторский ба
 
   // вау-эффекты — лениво, после загрузки страницы
   const idle = (fn: () => void) => ("requestIdleCallback" in window ? requestIdleCallback(fn, { timeout: 2000 }) : setTimeout(fn, 800));
+  // падающие буквы в подвале — физика грузится за 400px до подвала
+  const stage = document.querySelector<HTMLElement>("[data-letters]");
+  if (stage) {
+    const io = new IntersectionObserver(async (en) => {
+      if (!en[0].isIntersecting) return;
+      io.disconnect();
+      const { initLetters } = await import("../scripts/fx/letters");
+      initLetters(stage);
+    }, { rootMargin: "400px" });
+    io.observe(stage);
+  }
+
   addEventListener("load", () =>
     idle(async () => {
       const { initLiquid } = await import("../scripts/fx/liquid");

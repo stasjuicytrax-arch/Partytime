@@ -380,6 +380,89 @@
   .faq__head { position: static; }
 }
 
+/* ---------- 09 Контакты ---------- */
+.contacts { background: #19171f; }
+.contacts__main { font: 900 clamp(1.5rem, 2.4vw, 2.25rem) / 1.2 var(--font-display); color: var(--pt-white); text-decoration: none; }
+.contacts__mail { color: var(--pt-lime); }
+.contacts__grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(16px, 2vw, 28px); align-items: stretch; }
+.contacts__cards { display: grid; gap: 14px; align-content: start; }
+.loc-card { position: relative; display: grid; gap: 8px; justify-items: start; padding: clamp(22px, 2.4vw, 32px); border-radius: var(--r-lg); background: rgb(255 255 255 / 0.04); border: 1px solid rgb(255 255 255 / 0.1); }
+.loc-card h3 { font: 900 clamp(1.75rem, 2.6vw, 2.5rem) / 1 var(--font-display); text-transform: uppercase; letter-spacing: -0.02em; }
+.loc-card__pin { position: absolute; top: 22px; right: 22px; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50% 50% 50% 4px; rotate: -45deg; font: 900 1rem / 1 var(--font-display); }
+.loc-card--dumskaya .loc-card__pin { background: var(--pt-pink); color: var(--pt-deep); }
+.loc-card--mayakovskaya .loc-card__pin { background: var(--pt-violet); color: var(--pt-white); }
+.loc-card__addr { font-size: var(--fs-lead); font-weight: 600; }
+.loc-card__metro { display: inline-flex; align-items: center; gap: 6px; color: rgb(255 255 255 / 0.7); font-size: var(--fs-small); }
+.loc-card__tel { font: 800 1.125rem / 1.4 var(--font-display); color: var(--pt-white); text-decoration: none; }
+.loc-card__hours { display: grid; gap: 4px; margin: 4px 0 10px; font-size: var(--fs-small); }
+.loc-card__hours div { display: flex; gap: 12px; }
+.loc-card__hours dt { min-width: 52px; color: rgb(255 255 255 / 0.55); }
+.loc-card__hours dd { margin: 0; }
+.contacts__msg { display: flex; flex-wrap: wrap; gap: 10px; }
+.contacts__msg a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: var(--r-pill); border: 1px solid rgb(255 255 255 / 0.25); text-decoration: none; font-weight: 700; }
+.contacts__msg a:hover { background: var(--pt-white); color: var(--pt-deep); }
+.contacts__map { position: relative; min-height: 460px; overflow: hidden; border-radius: var(--r-lg); border: 1px solid rgb(255 255 255 / 0.1); background: #222; }
+.contacts__map iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; filter: invert(0.92) hue-rotate(185deg) saturate(1.3) brightness(0.95); }
+@media (max-width: 1023px) {
+  .contacts__grid { grid-template-columns: 1fr; }
+  .contacts__map { min-height: 360px; }
+}
+
+/* ---------- Подвал ---------- */
+.ft { position: relative; overflow: hidden; background: #0d0d0e; border-top: 1px solid rgb(255 255 255 / 0.08); color: var(--pt-white); }
+.ft__cols { display: grid; grid-template-columns: 1.3fr 1fr 1fr 1fr; gap: 28px; padding-block: clamp(48px, 6vw, 80px) 0; }
+.ft__cols nav { display: grid; gap: 10px; align-content: start; }
+.ft__cols b { margin-bottom: 6px; font: 800 0.875rem / 1 var(--font-display); text-transform: uppercase; letter-spacing: 0.02em; }
+.ft__cols nav a { color: rgb(255 255 255 / 0.72); text-decoration: none; font-size: var(--fs-small); }
+.ft__cols nav a:hover { color: var(--pt-lime); }
+.ft__cols small { display: block; margin-top: 2px; font-size: 0.75rem; color: rgb(255 255 255 / 0.45); }
+.ft__brand { display: grid; gap: 14px; justify-items: start; align-content: start; }
+.ft__brand img { width: 170px; height: auto; }
+.ft__tel { font: 900 1.375rem / 1 var(--font-display); color: var(--pt-white); text-decoration: none; }
+.ft__msg { display: flex; gap: 14px; }
+.ft__msg a { color: var(--pt-lime); font-weight: 700; }
+.ft__stage { position: relative; height: clamp(300px, 46vh, 520px); touch-action: pan-y; user-select: none; cursor: grab; }
+.ft__stage:active { cursor: grabbing; }
+.ft-letter {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  place-items: center;
+  padding: 0.04em 0.1em 0.02em;
+  border-radius: 0.14em;
+  font: 900 clamp(4.5rem, 13vw, 12rem) / 0.9 var(--font-display);
+  color: var(--pt-deep);
+  will-change: transform;
+  transform: translate(-200%, -200%);
+}
+.ft-letter--lime { background: var(--pt-lime); }
+.ft-letter--pink { background: var(--pt-pink); }
+.ft-letter--white { background: var(--pt-white); }
+.ft-letter--sky { background: var(--pt-sky); }
+.ft-letter--saffron { background: var(--pt-saffron); }
+.ft-letter--violet { background: var(--pt-violet); color: var(--pt-white); }
+.ft__stage.is-static { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: center; gap: 0.1em; padding-bottom: 24px; }
+.ft__stage.is-static .ft-letter { position: static; transform: none; }
+.ft__copy { padding-block: 16px 28px; font-size: var(--fs-small); color: rgb(255 255 255 / 0.5); }
+@media (max-width: 899px) { .ft__cols { grid-template-columns: 1fr 1fr; } .ft__brand { grid-column: 1 / -1; } }
+@media (max-width: 767px) { .ft-letter { font-size: 15vw; } .ft__stage { height: 300px; } }
+
+/* ---------- Плавающая кнопка мессенджеров ---------- */
+.msgr { position: fixed; right: clamp(14px, 2vw, 28px); bottom: calc(clamp(14px, 2vw, 28px) + env(safe-area-inset-bottom)); z-index: 45; display: grid; justify-items: end; gap: 10px; opacity: 0; translate: 0 20px; pointer-events: none; transition: opacity 0.4s, translate 0.5s var(--ease-out); }
+.msgr.is-on { opacity: 1; translate: 0 0; pointer-events: auto; }
+.msgr__list { display: grid; gap: 8px; justify-items: end; }
+.msgr__list li { opacity: 0; translate: 0 10px; pointer-events: none; transition: opacity 0.25s, translate 0.35s var(--ease-out); }
+.msgr.is-open .msgr__list li { opacity: 1; translate: 0 0; pointer-events: auto; }
+.msgr.is-open .msgr__list li:nth-child(2) { transition-delay: 0.05s; }
+.msgr__item { display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px; border-radius: var(--r-pill); background: var(--pt-white); color: var(--pt-deep); font-weight: 700; text-decoration: none; box-shadow: 0 12px 30px -10px rgb(0 0 0 / 0.6); }
+.msgr__item:hover { background: var(--pt-lime); }
+.msgr__btn { display: inline-flex; align-items: center; gap: 10px; min-height: 56px; padding: 0 8px 0 20px; border: 0; border-radius: var(--r-pill); background: var(--pt-lime); color: var(--pt-deep); font: 700 0.9375rem / 1 var(--font-text); box-shadow: 0 14px 40px -12px rgb(201 229 67 / 0.7); }
+.msgr__ico { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--pt-deep); color: var(--pt-lime); }
+.msgr__i-close, .msgr.is-open .msgr__i-chat { display: none; }
+.msgr.is-open .msgr__i-close { display: block; }
+@media (max-width: 599px) { .msgr__label { display: none; } .msgr__btn { padding: 0 8px; } }
+
 /* ---------- 06 Отзывы: встречные ленты ---------- */
 .reviews { background: var(--pt-deep); overflow: clip; }
 .reviews__link { display: inline-flex; align-items: center; gap: 8px; color: var(--pt-lime); font-weight: 700; text-decoration: none; border-bottom: 1px solid currentColor; }

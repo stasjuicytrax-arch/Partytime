@@ -82,6 +82,57 @@ export function initHeroB(hero: HTMLElement) {
     }
   };
 
+  /* ---------- «Проверить микрофон»: шар слушает голос (Web Audio, локально) ---------- */
+  const micBtn = hero.querySelector<HTMLButtonElement>("[data-mic-check]");
+  if (micBtn) {
+    const label = hero.querySelector<HTMLElement>("[data-mic-label]")!;
+    const status = hero.querySelector<HTMLElement>("[data-mic-status]")!;
+    const bars = [...micBtn.querySelectorAll<HTMLElement>(".hb__mic-eq i")];
+    let meter: import("./fx/voice").VoiceMeter | null = null;
+    let raf = 0;
+    let timer = 0;
+    const stop = (msg = "") => {
+      cancelAnimationFrame(raf);
+      clearTimeout(timer);
+      meter?.stop();
+      meter = null;
+      ball?.setLevel(0);
+      bars.forEach((b) => (b.style.transform = ""));
+      micBtn.setAttribute("aria-pressed", "false");
+      label.textContent = "Проверить микрофон";
+      status.textContent = msg;
+    };
+    const tick = () => {
+      if (!meter) return;
+      const { level, bands } = meter.read();
+      bars.forEach((b, i) => (b.style.transform = `scaleY(${0.2 + bands[i * 3] * 0.8})`));
+      if (!reduced()) ball?.setLevel(level);
+      raf = requestAnimationFrame(tick);
+    };
+    micBtn.addEventListener("click", async () => {
+      if (meter) return stop();
+      if (!navigator.mediaDevices?.getUserMedia) {
+        status.textContent = "Браузер не умеет слушать микрофон.";
+        return;
+      }
+      status.textContent = "Разрешите доступ к микрофону…";
+      try {
+        const { startVoiceMeter } = await import("./fx/voice");
+        meter = await startVoiceMeter(16);
+        micBtn.setAttribute("aria-pressed", "true");
+        label.textContent = "Выключить микрофон";
+        status.textContent = "Пойте! Звук никуда не отправляется.";
+        tick();
+        timer = window.setTimeout(() => stop("Минута прошла — микрофон выключен."), 60000);
+      } catch (e) {
+        status.textContent = (e as DOMException)?.name === "NotAllowedError" ? "Доступ не дали — ничего страшного." : "Не получилось включить микрофон.";
+      }
+    });
+    document.addEventListener("visibilitychange", () => document.hidden && meter && stop());
+    // уехали с первого экрана — выключаем
+    new IntersectionObserver((en) => !en[0].isIntersecting && meter && stop()).observe(hero);
+  }
+
   /* ---------- интро ---------- */
   const lines = [...hero.querySelectorAll<HTMLElement>("[data-split]")];
   if (reduced()) {

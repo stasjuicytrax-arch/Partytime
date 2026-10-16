@@ -46,9 +46,17 @@ const flecks = Array.from({ length: 46 }, (_, i) => ({
     </ul>
 
     <div class="hb__bottom">
-      <p class="hb__lead" data-intro-b="fade">
-        Тематические залы с&nbsp;караоке, кухней и&nbsp;баром. Весь зал — только для вашей компании.
-      </p>
+      <div class="hb__copy" data-intro-b="fade">
+        <p class="hb__lead">
+          Тематические залы с&nbsp;караоке, кухней и&nbsp;баром. Весь зал — только для вашей компании.
+        </p>
+        <!-- «Проверить микрофон»: шар реагирует на голос, звук не покидает браузер -->
+        <button type="button" class="hb__mic" aria-pressed="false" data-mic-check>
+          <span class="hb__mic-eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+          <span data-mic-label>Проверить микрофон</span>
+        </button>
+        <p class="hb__mic-status" data-mic-status aria-live="polite"></p>
+      </div>
       <div class="hb__ctas" data-intro-b="fade">
         <a class="btn btn--primary" href="#rooms" data-magnetic>
           <span>Выбрать зал</span><span class="btn__ico"><Icon name="arrow" size={20} /></span>

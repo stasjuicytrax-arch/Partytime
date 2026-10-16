@@ -1,0 +1,40 @@
+---
+import { FOOTER, PHONE_MAIN, MESSENGERS } from "../../lib/content";
+import { tel } from "../../lib/rooms";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const href = (h: string) => (h === "soon" ? `${base}/soon` : h);
+const word = ["P", "A", "R", "T", "Y", "T", "I", "M", "E"];
+const fills = ["lime", "pink", "white", "sky", "violet", "pink", "lime", "white", "saffron"];
+---
+<footer class="ft" aria-label="Подвал сайта">
+  <div class="container ft__cols">
+    <div class="ft__brand">
+      <img src={`${base}/brand/logo-primary.svg`} alt="Party Time — пространство для праздника" width="170" height="86" loading="lazy" />
+      <a class="ft__tel num" href={tel(PHONE_MAIN)}>{PHONE_MAIN}</a>
+      <div class="ft__msg">
+        <a href={MESSENGERS.telegram.href} target="_blank" rel="noopener">Telegram</a>
+        <a href={MESSENGERS.vk.href} target="_blank" rel="noopener">VK</a>
+      </div>
+    </div>
+    <nav aria-label="Гостям">
+      <b>Гостям</b>
+      {FOOTER.guests.map((l) => <a href={href(l.href)}>{l.label}</a>)}
+    </nav>
+    <nav aria-label="Компания">
+      <b>Компания</b>
+      {FOOTER.company.map((l) => (
+        <a href={href(l.href)}>{l.label}{"note" in l && l.note && <small>{l.note}</small>}</a>
+      ))}
+    </nav>
+    <nav aria-label="Документы">
+      <b>Документы</b>
+      {FOOTER.docs.map((l) => <a href={href(l.href)}>{l.label}</a>)}
+    </nav>
+  </div>
+
+  <div class="ft__stage" data-letters aria-hidden="true">
+    {word.map((l, i) => <span class={`ft-letter ft-letter--${fills[i]}`} data-letter>{l}</span>)}
+  </div>
+
+  <p class="container ft__copy">© 2026 Party Time. Пространство для праздника.</p>
+</footer>

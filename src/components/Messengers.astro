@@ -1,0 +1,44 @@
+---
+// Плавающая кнопка «Написать нам» (правый нижний угол), появляется после первого экрана.
+// MAX — ссылку заказчик пока не дал [уточнить], кнопка не выводится.
+import Icon from "./Icon.astro";
+import { MESSENGERS } from "../lib/content";
+const items = [MESSENGERS.telegram, MESSENGERS.vk, MESSENGERS.max].filter((m) => m.href);
+---
+<div class="msgr" data-msgr>
+  <ul class="msgr__list" id="msgr-list" data-msgr-list>
+    {items.map((m) => (
+      <li><a class="msgr__item" href={m.href} target="_blank" rel="noopener">{m.label}</a></li>
+    ))}
+  </ul>
+  <button type="button" class="msgr__btn" aria-expanded="false" aria-controls="msgr-list" data-msgr-btn>
+    <span class="msgr__label">Написать нам</span>
+    <span class="msgr__ico" aria-hidden="true"><Icon name="chat" size={22} class="msgr__i-chat" /><Icon name="close" size={20} class="msgr__i-close" /></span>
+  </button>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-msgr]");
+  if (root) {
+    const btn = root.querySelector<HTMLButtonElement>("[data-msgr-btn]")!;
+    btn.addEventListener("click", () => {
+      const open = btn.getAttribute("aria-expanded") !== "true";
+      btn.setAttribute("aria-expanded", String(open));
+      root.classList.toggle("is-open", open);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && root.classList.contains("is-open")) {
+        btn.click();
+        btn.focus();
+      }
+    });
+    // появляется после первого экрана и прячется у подвала, где свои контакты
+    const onScroll = () => {
+      const footer = document.querySelector(".ft");
+      const nearFooter = footer ? footer.getBoundingClientRect().top < innerHeight * 0.8 : false;
+      root.classList.toggle("is-on", scrollY > innerHeight * 0.8 && !nearFooter);
+    };
+    addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+  }
+</script>

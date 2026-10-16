@@ -1,0 +1,52 @@
+---
+import Icon from "../Icon.astro";
+import { activeLocations, tel } from "../../lib/rooms";
+import { HOURS, GEO, PHONE_MAIN, EMAIL, MESSENGERS } from "../../lib/content";
+
+const route = (id: string) => `https://yandex.ru/maps/?rtext=~${GEO[id].lat},${GEO[id].lon}&rtt=auto`;
+const c = { lat: (GEO.dumskaya.lat + GEO.mayakovskaya.lat) / 2, lon: (GEO.dumskaya.lon + GEO.mayakovskaya.lon) / 2 };
+const pts = activeLocations.map((l, i) => `${GEO[l.id].lon},${GEO[l.id].lat},pm2${i ? "vv" : "pn"}l${i + 1}`).join("~");
+const map = `https://yandex.ru/map-widget/v1/?ll=${c.lon},${c.lat}&z=14&pt=${pts}`;
+---
+<section class="sec contacts" id="contacts" aria-labelledby="contacts-title">
+  <div class="container">
+    <header class="sec__head">
+      <p class="sec__label">09 — Контакты</p>
+      <h2 id="contacts-title" class="sec__title">Приходите <span class="sec__accent">петь</span></h2>
+      <p class="sec__lead">
+        <a class="contacts__main num" href={tel(PHONE_MAIN)}>{PHONE_MAIN}</a><br />
+        <a class="contacts__mail" href={`mailto:${EMAIL}`}>{EMAIL}</a>
+      </p>
+    </header>
+
+    <div class="contacts__grid">
+      <div class="contacts__cards">
+        {activeLocations.map((l, i) => (
+          <article class={`loc-card loc-card--${l.id}`}>
+            <span class="loc-card__pin num" aria-hidden="true">{i + 1}</span>
+            <h3>{l.name}</h3>
+            <p class="loc-card__addr">{l.address}</p>
+            <p class="loc-card__metro"><Icon name="pin" size={16} /> м.&nbsp;{l.metro}</p>
+            <a class="loc-card__tel num" href={tel(l.phone!)}>{l.phone}</a>
+            <dl class="loc-card__hours">
+              {HOURS.map((h) => (
+                <div><dt>{h.days}</dt><dd class="num">{h.time}</dd></div>
+              ))}
+            </dl>
+            <a class="btn btn--primary btn--sm" href={route(l.id)} target="_blank" rel="noopener">
+              <span>Маршрут</span><span class="btn__ico"><Icon name="arrow" size={18} /></span>
+            </a>
+          </article>
+        ))}
+        <div class="contacts__msg">
+          <a href={MESSENGERS.telegram.href} target="_blank" rel="noopener">Telegram</a>
+          <a href={MESSENGERS.vk.href} target="_blank" rel="noopener">VK</a>
+          <a href={MESSENGERS.channel.href} target="_blank" rel="noopener">Канал с акциями</a>
+        </div>
+      </div>
+      <div class="contacts__map">
+        <iframe src={map} title="Party Time на карте: Думская и Маяковская" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+  </div>
+</section>

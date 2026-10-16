@@ -1,0 +1,36 @@
+---
+// Разметка Organization + 2 × EntertainmentBusiness (Думская, Маяковская). FAQPage — в секции FAQ.
+import { activeLocations } from "../lib/rooms";
+import { PHONE_MAIN, EMAIL, MESSENGERS, GEO } from "../lib/content";
+const site = new URL(import.meta.env.BASE_URL, Astro.site).toString();
+const hours = [
+  { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday"], opens: "15:00", closes: "03:00" },
+  { "@type": "OpeningHoursSpecification", dayOfWeek: ["Friday", "Saturday"], opens: "12:00", closes: "06:00" },
+  { "@type": "OpeningHoursSpecification", dayOfWeek: "Sunday", opens: "12:00", closes: "03:00" },
+];
+const org = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": `${site}#org`,
+  name: "Party Time",
+  slogan: "Пространство для праздника",
+  url: site,
+  logo: `${site}brand/logo-primary.svg`,
+  telephone: PHONE_MAIN,
+  email: EMAIL,
+  sameAs: [MESSENGERS.channel.href],
+};
+const places = activeLocations.map((l) => ({
+  "@context": "https://schema.org",
+  "@type": "EntertainmentBusiness",
+  name: `Party Time — ${l.name}`,
+  parentOrganization: { "@id": `${site}#org` },
+  url: site,
+  telephone: l.phone,
+  priceRange: "₽₽",
+  address: { "@type": "PostalAddress", streetAddress: l.address, addressLocality: "Санкт-Петербург", addressCountry: "RU" },
+  geo: { "@type": "GeoCoordinates", latitude: GEO[l.id].lat, longitude: GEO[l.id].lon },
+  openingHoursSpecification: hours,
+}));
+---
+<script type="application/ld+json" set:html={JSON.stringify([org, ...places])} />
