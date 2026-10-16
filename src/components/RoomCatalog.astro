@@ -106,7 +106,7 @@ const sizes = "(max-width: 559px) 112vw, (max-width: 767px) 56vw, (max-width: 10
             hidden={r.loc !== DEFAULT_LOC}
             style={`--g: ${groupById[r.group].color}; --tilt: ${[-1, 0.6, -0.4, 1, -0.8, 0.3][i % 6]}deg`}
           >
-            <a class="card__link" href={`#room-${r.slug}`} aria-label={`${r.title}, ${r.locName}: смотреть зал`}>
+            <a class="card__link" href={`#room-${r.slug}`}>
               <div class="card__media" data-count={r.images.length}>
                 {r.images.map((im, j) => (
                   <img

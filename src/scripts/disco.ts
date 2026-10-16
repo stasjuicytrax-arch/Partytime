@@ -32,7 +32,7 @@ export function createDiscoBall(canvas: HTMLCanvasElement, opts: { mobile?: bool
   /* ---------- окружение: тёмный зал, усыпанный цветными огнями ----------
      Процедурная equirect-текстура: много мелких пятен разного цвета, чтобы каждая
      грань ловила свой блик, плюс пара мощных белых софитов. */
-  const envTex = makeClubEnv(renderer);
+  const envTex = makeClubEnv(renderer, 11, opts.mobile ? 0.5 : 1);
   scene.environment = envTex;
 
   /* ---------- шар: кольца квадратных зеркал ---------- */

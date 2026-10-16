@@ -135,15 +135,24 @@ export function initHeroB(hero: HTMLElement) {
 
   /* ---------- интро ---------- */
   const lines = [...hero.querySelectorAll<HTMLElement>("[data-split]")];
-  if (reduced()) {
+  // телефон / слабое железо: заголовок и текст видны сразу, шар — когда браузер освободится
+  const light = matchMedia("(max-width: 767px)").matches || (navigator.hardwareConcurrency || 8) <= 4;
+  const whenIdle = (fn: () => void) => {
+    const go = () => ("requestIdleCallback" in window ? requestIdleCallback(fn, { timeout: 2500 }) : setTimeout(fn, 1200));
+    document.readyState === "complete" ? go() : addEventListener("load", go, { once: true });
+  };
+  if (reduced() || light) {
     revealPage();
     hero.classList.add("is-on");
-    loadBall();
+    whenIdle(loadBall);
+    if (!reduced()) {
+      gsap.from(hero.querySelectorAll(".hb__fact"), { y: 24, duration: 0.8, ease: "expo.out", stagger: 0.08, delay: 0.2 });
+    }
     return;
   }
 
   const h1 = hero.querySelector("h1");
-  h1?.setAttribute("aria-label", (h1.textContent || "").replace(/s+/g, " ").trim());
+  h1?.setAttribute("aria-label", (h1.textContent || "").replace(/\s+/g, " ").trim());
   lines.forEach((l) => l.setAttribute("aria-hidden", "true"));
   const split = lines.map((l) => new SplitType(l, { types: "chars", tagName: "span" }));
   const chars = split.flatMap((s) => s.chars ?? []);
@@ -172,9 +181,7 @@ export function initHeroB(hero: HTMLElement) {
     .to(flash, { opacity: 0, duration: 0.7, ease: "power2.out" }, 0.63)
     .fromTo(wrap, { opacity: 0 }, { opacity: 1, duration: 0.5 }, 0.55)
     .from(canvas, { scale: 0.3, rotate: -40, duration: 1.4, ease: "back.out(1.4)" }, 0.55)
-    .from(facts, { y: 40, opacity: 0, scale: 0.9, duration: 0.9, ease: "expo.out", stagger: 0.1 }, 0.9)
-    .from(hero.querySelectorAll("[data-intro-b]"), { y: 28, opacity: 0, duration: 0.9, ease: "expo.out", stagger: 0.08 }, 1.0);
-  gsap.set(hero.querySelectorAll("[data-intro-b]"), { visibility: "visible" });
+    .from(facts, { y: 40, opacity: 0, scale: 0.9, duration: 0.9, ease: "expo.out", stagger: 0.1 }, 0.9);
 
   // счётчик «36»
   hero.querySelectorAll<HTMLElement>("[data-count-to]").forEach((el) => {

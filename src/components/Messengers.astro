@@ -11,7 +11,7 @@ const items = [MESSENGERS.telegram, MESSENGERS.vk, MESSENGERS.max].filter((m) =>
       <li><a class="msgr__item" href={m.href} target="_blank" rel="noopener">{m.label}</a></li>
     ))}
   </ul>
-  <button type="button" class="msgr__btn" aria-expanded="false" aria-controls="msgr-list" data-msgr-btn>
+  <button type="button" class="msgr__btn" aria-label="Написать нам" aria-expanded="false" aria-controls="msgr-list" data-msgr-btn>
     <span class="msgr__label">Написать нам</span>
     <span class="msgr__ico" aria-hidden="true"><Icon name="chat" size={22} class="msgr__i-chat" /><Icon name="close" size={20} class="msgr__i-close" /></span>
   </button>

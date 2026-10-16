@@ -2,18 +2,20 @@
 // Процедурная equirect-текстура: много мелких пятен палитры, чтобы каждая грань/изгиб ловили свой блик.
 import * as THREE from "three";
 
-export function makeClubEnv(renderer: THREE.WebGLRenderer, seed = 11): THREE.Texture {
+/** scale < 1 — уменьшенная текстура для телефонов (меньше работы для PMREM) */
+export function makeClubEnv(renderer: THREE.WebGLRenderer, seed = 11, scale = 1): THREE.Texture {
   const pmrem = new THREE.PMREMGenerator(renderer);
   const env = document.createElement("canvas");
-  env.width = 1024;
-  env.height = 512;
+  env.width = Math.round(1024 * scale);
+  env.height = Math.round(512 * scale);
   const g = env.getContext("2d")!;
-  const bg = g.createLinearGradient(0, 0, 0, env.height);
+  g.scale(scale, scale);
+  const bg = g.createLinearGradient(0, 0, 0, 512);
   bg.addColorStop(0, "#1d1636");
   bg.addColorStop(0.5, "#120f1c");
   bg.addColorStop(1, "#08080a");
   g.fillStyle = bg;
-  g.fillRect(0, 0, env.width, env.height);
+  g.fillRect(0, 0, 1024, 512);
   const cols = ["#FE76B4", "#7659FF", "#6CD0F0", "#C9E543", "#FFFFFF", "#FA3E35", "#A693FF", "#FFC548"];
   let sd = seed;
   const r = () => ((sd = (sd * 16807) % 2147483647) / 2147483647);

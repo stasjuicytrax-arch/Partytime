@@ -2,7 +2,9 @@
 .vb { background: var(--pt-deep); color: var(--pt-white); scrollbar-color: var(--pt-violet) var(--pt-deep); }
 .vb .cursor { --cursor: var(--pt-white); }
 .vb .cursor.is-cta::before { mix-blend-mode: normal; opacity: 0.85; }
-.is-intro .vb [data-intro-b], .is-intro .vb .hb__line, .is-intro .vb .hb__fact { visibility: hidden; }
+@media (min-width: 768px) {
+  .is-intro .vb .hb__line, .is-intro .vb .hb__fact { visibility: hidden; }
+}
 
 .glass {
   background: var(--glass-bg);
@@ -328,8 +330,8 @@ html.party .vb { animation: party 0.5s steps(1) 6; }
 /* ---------- Mobile ---------- */
 @media (max-width: 900px) {
   .hb__fact--2, .hb__fact--3 { display: none; }
-  .hb__fact--1 { top: 18%; }
-  .hb__fact--2 { top: 64%; }
+  .hb__fact--1 { top: 16%; }
+  .hb__fact--4 { left: auto; right: var(--gutter); top: 14%; }
 }
 @media (max-width: 767px) {
   .hb { --fs-hero: 13.4vw; min-height: 100svh; }
