@@ -21,8 +21,9 @@ import "../styles/b.css";
 import "../styles/sections.css";
 
 const strip = ["Караоке", "Своя кухня", "Авторский бар", "PS5 и Nintendo Switch", "Без пробкового сбора", "До 06:00", "Только свои"];
+const ballPoster = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/img/ball-poster.webp`;
 ---
-<Base theme="#151515" favicon="blue" bodyClass="vb">
+<Base theme="#151515" favicon="blue" bodyClass="vb" preloadImage={ballPoster}>
   <JsonLd slot="head" />
   <SiteHeader variant="b" />
   <main>
