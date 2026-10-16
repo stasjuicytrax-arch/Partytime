@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://stasjuicytrax-arch.github.io/Partytime/sitemap-index.xml

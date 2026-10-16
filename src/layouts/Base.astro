@@ -1,0 +1,51 @@
+---
+import "@fontsource-variable/unbounded";
+import "@fontsource-variable/onest";
+import "@fontsource/caveat/700.css";
+import "../styles/global.css";
+import unboundedWoff2 from "@fontsource-variable/unbounded/files/unbounded-cyrillic-wght-normal.woff2?url";
+import { seo } from "../config/seo";
+
+interface Props {
+  title?: string;
+  description?: string;
+  theme?: string;
+  favicon?: "pink" | "blue" | "yellow";
+  bodyClass?: string;
+  noindex?: boolean;
+}
+const {
+  title = seo.title,
+  description = seo.description,
+  theme = "#FE76B4",
+  favicon = "pink",
+  bodyClass,
+  noindex = false,
+} = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content={theme} />
+    <link rel="icon" type="image/svg+xml" href={`${base}/brand/favicon-${favicon}.svg`} />
+    <link rel="preload" href={unboundedWoff2} as="font" type="font/woff2" crossorigin />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <slot name="head" />
+  </head>
+  <body class={bodyClass}>
+    <slot />
+  </body>
+</html>

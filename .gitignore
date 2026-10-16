@@ -1,0 +1,20 @@
+node_modules/
+dist/
+.astro/
+Logo/
+PT Брендбук.pdf
+*.ai
+.DS_Store
+Thumbs.db
+.env
+.env.*
+# оригиналы фото залов (скачиваются scripts/download-assets.mjs), в репо — только WebP
+public/img/rooms/*/[0-9][0-9].jpg
+public/img/rooms/*/[0-9][0-9].png
+public/img/rooms/*/[0-9][0-9].webp
+# impeccable: локальные артефакты ревью
+.impeccable/review/
+.impeccable/config.local.json
+# локальные установки скиллов (переустанавливаются: npx impeccable install, npx skills add)
+.claude/
+.agents/
