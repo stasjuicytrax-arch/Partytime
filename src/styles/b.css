@@ -72,7 +72,6 @@
 @keyframes flecks { to { rotate: 360deg; } }
 @keyframes twinkle { 50% { scale: 0.4; filter: brightness(0.6); } }
 
-.hb__defs { position: absolute; width: 0; height: 0; }
 
 .hb__inner {
   position: relative;
@@ -201,14 +200,6 @@
 .hb__lead { max-width: 34ch; font-size: var(--fs-lead); font-weight: 500; line-height: 1.4; color: rgb(255 255 255 / 0.88); }
 .hb__ctas { display: flex; flex-wrap: wrap; gap: 14px; }
 
-/* гости в дуотоне по краям */
-.hb__guest { position: absolute; bottom: 0; z-index: 1; pointer-events: none; opacity: 0.9; }
-/* низ фото растворяется в фоне маской (не градиентом в цвет фона — на цветных пятнах он читался как чёрная плашка) */
-.hb__guest img { width: 100%; height: auto; -webkit-mask-image: linear-gradient(#000 55%, transparent 96%); mask-image: linear-gradient(#000 55%, transparent 96%); }
-.hb__guest--l { left: -7vw; width: clamp(200px, 22vw, 360px); opacity: 0.6; }
-.hb__guest--l img { filter: url(#duo-pink); }
-.hb__guest--r { right: -2vw; width: clamp(180px, 21vw, 340px); }
-.hb__guest--r img { filter: url(#duo-sky); }
 
 .hb__flash { position: absolute; inset: 0; z-index: 60; background: var(--pt-white); opacity: 0; pointer-events: none; }
 
@@ -337,8 +328,6 @@ html.party .vb { animation: party 0.5s steps(1) 6; }
   .hb__bottom { flex-direction: column; align-items: stretch; }
   .hb__ctas .btn { flex: 1 1 100%; justify-content: space-between; }
   .hb__ctas .btn--ghost { justify-content: center; }
-  .hb__guest--l { width: 46vw; left: -12vw; opacity: 0.45; }
-  .hb__guest--r { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hb__spot, .hb__flecks { animation: none; }

@@ -1,0 +1,48 @@
+---
+import Lab from "../../layouts/Lab.astro";
+---
+<Lab
+  n={1}
+  title="Зайчики от шара"
+  lead="Шар остаётся в первом экране, а его отражения продолжают бежать по следующим секциям. Прокрутите вниз: при быстром скролле пятна ускоряются и вытягиваются, на остановке — мерцают."
+  notes={[
+    "<b>Лёгкий:</b> обычный 2D-canvas, не WebGL",
+    "<b>Телефон:</b> 16 пятен вместо 38, 30 кадров/с",
+    "<b>Без анимации</b> (reduced-motion): статичные блики",
+    "Работает только между hero и подвалом",
+  ]}
+>
+  <div data-flecks-zone>
+    <section class="lab-sec">
+      <div class="container">
+        <h2>Весь зал — ваш</h2>
+        <p>Отдельный зал под вашу компанию: никаких чужих столиков и очереди к микрофону.</p>
+      </div>
+    </section>
+    <section class="lab-sec lab-sec--storm">
+      <div class="container">
+        <h2>Повод найдётся</h2>
+        <p>День рождения, девичник, корпоратив или просто караоке-вечер.</p>
+      </div>
+    </section>
+    <section class="lab-sec lab-sec--violet">
+      <div class="container">
+        <h2>Гости говорят громко</h2>
+        <p>Отлично отдохнули в лофте «Диско». Чисто и уютно, можно приносить свои закуски.</p>
+      </div>
+    </section>
+    <section class="lab-sec">
+      <div class="container">
+        <h2>Часто спрашивают</h2>
+        <p>Что входит в аренду? Можно со своей едой? Минимальное время — 1 час.</p>
+      </div>
+    </section>
+  </div>
+</Lab>
+
+<script>
+  import { initSmoothScroll } from "../../scripts/motion";
+  import { createFlecks } from "../../scripts/fx/flecks";
+  initSmoothScroll();
+  createFlecks({ zone: document.querySelector<HTMLElement>("[data-flecks-zone]") }).start();
+</script>

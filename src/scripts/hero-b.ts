@@ -137,13 +137,12 @@ export function initHeroB(hero: HTMLElement) {
     gsap.to(f, { y: i % 2 ? 14 : -14, duration: 3.2 + i * 0.6, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 2 + i * 0.2 });
   });
 
-  // параллакс пятен и гостей от курсора
+  // стеклянные карточки чуть смещаются от курсора — глубина вокруг шара
   if (finePointer()) {
-    const guests = [...hero.querySelectorAll<HTMLElement>(".hb__guest")];
-    const gx = guests.map((g) => gsap.quickTo(g, "x", { duration: 1.2, ease: "power3.out" }));
+    const fx = facts.map((f) => gsap.quickTo(f, "x", { duration: 1.2, ease: "power3.out" }));
     hero.addEventListener("pointermove", (e) => {
       const nx = e.clientX / innerWidth - 0.5;
-      gx.forEach((q, i) => q(nx * (i ? -26 : 26)));
+      fx.forEach((q, i) => q(nx * (i % 2 ? -22 : 22)));
     });
   }
 }

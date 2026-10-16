@@ -1,9 +1,6 @@
 ---
-import { Image } from "astro:assets";
 import Icon from "../Icon.astro";
-import cakeGlasses from "../../assets/people/raw/cake-glasses.png";
-import guitars from "../../assets/people/raw/guitars.png";
-import { networkRooms, minPrice, rub, activeLocations } from "../../lib/rooms";
+import { networkRooms, minPrice, rub, locations } from "../../lib/rooms";
 
 // «зайчики» от шара: детерминированный разброс, чтобы SSR и клиент совпадали
 let seed = 7;
@@ -27,25 +24,6 @@ const flecks = Array.from({ length: 46 }, (_, i) => ({
     {flecks.map((f) => <i style={`--x:${f.x}%;--y:${f.y}%;--s:${f.s};--c:${f.c};--d:${f.d}s`}></i>)}
   </div>
 
-  <svg class="hb__defs" aria-hidden="true" focusable="false">
-    <filter id="duo-pink" color-interpolation-filters="sRGB">
-      <feColorMatrix type="matrix" values=".3 .55 .15 0 0 .3 .55 .15 0 0 .3 .55 .15 0 0 0 0 0 1 0" />
-      <feComponentTransfer>
-        <feFuncR type="table" tableValues="0.1 0.62 1" />
-        <feFuncG type="table" tableValues="0.04 0.16 0.62" />
-        <feFuncB type="table" tableValues="0.22 0.5 0.84" />
-      </feComponentTransfer>
-    </filter>
-    <filter id="duo-sky" color-interpolation-filters="sRGB">
-      <feColorMatrix type="matrix" values=".3 .55 .15 0 0 .3 .55 .15 0 0 .3 .55 .15 0 0 0 0 0 1 0" />
-      <feComponentTransfer>
-        <feFuncR type="table" tableValues="0.12 0.3 0.75" />
-        <feFuncG type="table" tableValues="0.06 0.42 0.92" />
-        <feFuncB type="table" tableValues="0.3 0.85 1" />
-      </feComponentTransfer>
-    </filter>
-  </svg>
-
   <div class="container hb__inner">
     <p class="hb__kicker" data-intro-b="fade">Караоке-лофты · Санкт-Петербург</p>
 
@@ -64,7 +42,7 @@ const flecks = Array.from({ length: 46 }, (_, i) => ({
       <li class="glass hb__fact hb__fact--1" data-float><b class="num" data-count-to={networkRooms}>{networkRooms}</b><span>тематических залов</span></li>
       <li class="glass hb__fact hb__fact--2" data-float><span>до</span><b class="num">06:00</b><span>по&nbsp;пятницам и&nbsp;субботам</span></li>
       <li class="glass hb__fact hb__fact--3" data-float><span>от</span><b class="num">{rub(minPrice)}</b><span>за&nbsp;час аренды</span></li>
-      <li class="glass hb__fact hb__fact--4" data-float><b class="num">{activeLocations.length}</b><span>локации в&nbsp;центре</span></li>
+      <li class="glass hb__fact hb__fact--4" data-float><b class="num">{locations.length}</b><span>локации в&nbsp;Петербурге</span></li>
     </ul>
 
     <div class="hb__bottom">
@@ -80,12 +58,6 @@ const flecks = Array.from({ length: 46 }, (_, i) => ({
     </div>
   </div>
 
-  <div class="hb__guest hb__guest--l" data-intro-b="guest">
-    <Image src={cakeGlasses} alt="Гостья с праздничным тортом" widths={[480, 820]} sizes="(max-width: 767px) 52vw, 28vw" />
-  </div>
-  <div class="hb__guest hb__guest--r" data-intro-b="guest">
-    <Image src={guitars} alt="Подруги играют на электрогитарах" widths={[400, 700]} sizes="(max-width: 767px) 44vw, 22vw" />
-  </div>
   <div class="hb__flash" aria-hidden="true" data-flash></div>
 </section>
 

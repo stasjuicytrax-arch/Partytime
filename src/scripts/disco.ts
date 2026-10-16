@@ -1,12 +1,15 @@
 // Диско-шар на Three.js: зеркальные грани (InstancedMesh), отражения в цветах палитры
 // через PMREM-окружение из цветных «софитов», вращение и реакция на курсор.
 import * as THREE from "three";
+import { makeClubEnv } from "./fx/club-env";
 
 export interface DiscoBall {
   setPointer(x: number, y: number): void;
   powerOn(duration?: number): void;
   resize(): void;
   setSpin(mult: number): void;
+  /** 0..1 — громкость с микрофона: шар пульсирует, вспыхивает и ускоряется */
+  setLevel(v: number): void;
   renderOnce(): void;
   start(): void;
   stop(): void;
@@ -29,44 +32,7 @@ export function createDiscoBall(canvas: HTMLCanvasElement, opts: { mobile?: bool
   /* ---------- окружение: тёмный зал, усыпанный цветными огнями ----------
      Процедурная equirect-текстура: много мелких пятен разного цвета, чтобы каждая
      грань ловила свой блик, плюс пара мощных белых софитов. */
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  const env = document.createElement("canvas");
-  env.width = 1024;
-  env.height = 512;
-  const g = env.getContext("2d")!;
-  const bg = g.createLinearGradient(0, 0, 0, env.height);
-  bg.addColorStop(0, "#1d1636");
-  bg.addColorStop(0.5, "#120f1c");
-  bg.addColorStop(1, "#08080a");
-  g.fillStyle = bg;
-  g.fillRect(0, 0, env.width, env.height);
-  const cols = ["#FE76B4", "#7659FF", "#6CD0F0", "#C9E543", "#FFFFFF", "#FA3E35", "#A693FF", "#FFC548"];
-  let sd = 11;
-  const r = () => ((sd = (sd * 16807) % 2147483647) / 2147483647);
-  const spot = (x: number, y: number, rad: number, col: string, a = 1) => {
-    const gr = g.createRadialGradient(x, y, 0, x, y, rad);
-    gr.addColorStop(0, col);
-    gr.addColorStop(0.35, col);
-    gr.addColorStop(1, "rgba(0,0,0,0)");
-    g.globalAlpha = a;
-    g.fillStyle = gr;
-    g.beginPath();
-    g.arc(x, y, rad, 0, Math.PI * 2);
-    g.fill();
-  };
-  g.globalCompositeOperation = "lighter";
-  for (let i = 0; i < 26; i++) spot(r() * 1024, 80 + r() * 300, 60 + r() * 90, cols[i % 4], 0.35);
-  for (let i = 0; i < 220; i++) spot(r() * 1024, r() * 512, 4 + r() * 16, cols[Math.floor(r() * cols.length)], 0.9);
-  spot(300, 110, 46, "#FFFFFF", 1);
-  spot(760, 150, 30, "#FFFFFF", 1);
-  spot(540, 70, 22, "#FFFFFF", 1);
-  g.globalCompositeOperation = "source-over";
-  g.globalAlpha = 1;
-  const envMap = new THREE.CanvasTexture(env);
-  envMap.mapping = THREE.EquirectangularReflectionMapping;
-  envMap.colorSpace = THREE.SRGBColorSpace;
-  const envTex = pmrem.fromEquirectangular(envMap).texture;
-  envMap.dispose();
+  const envTex = makeClubEnv(renderer);
   scene.environment = envTex;
 
   /* ---------- шар: кольца квадратных зеркал ---------- */
@@ -129,6 +95,8 @@ export function createDiscoBall(canvas: HTMLCanvasElement, opts: { mobile?: bool
   let powerSpeed = 1;
   let spin = 0.32;
   let spinMult = 1;
+  let level = 0;
+  let levelS = 0;
   const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
   let raf = 0;
   let running = false;
@@ -151,15 +119,17 @@ export function createDiscoBall(canvas: HTMLCanvasElement, opts: { mobile?: bool
     pointer.x += (pointer.tx - pointer.x) * Math.min(1, dt * 3);
     pointer.y += (pointer.ty - pointer.y) * Math.min(1, dt * 3);
 
-    ball.rotation.y += dt * spin * spinMult * (0.35 + power * 0.65);
+    levelS += (level - levelS) * Math.min(1, dt * 12);
+    ball.rotation.y += dt * spin * (spinMult + levelS * 6) * (0.35 + power * 0.65);
+    ball.scale.setScalar(1 + levelS * 0.12);
     tilt.rotation.x = pointer.y * 0.35;
     tilt.rotation.y = pointer.x * 0.45;
 
-    mirrorMat.envMapIntensity = 0.2 + power * 2.1;
+    mirrorMat.envMapIntensity = 0.2 + power * 2.1 + levelS * 2.4;
     lights.forEach((l, i) => {
       const a = t * (0.5 + i * 0.17) + (i * Math.PI) / 2;
       l.position.set(Math.cos(a) * 2.6, Math.sin(a * 0.8) * 1.6 + (i - 1.5) * 0.4, 2.2 + Math.sin(a) * 0.6);
-      l.intensity = lightPower[i] * power;
+      l.intensity = lightPower[i] * (power + levelS * 2.5);
     });
     renderer.render(scene, camera);
   }
@@ -182,6 +152,9 @@ export function createDiscoBall(canvas: HTMLCanvasElement, opts: { mobile?: bool
       powerSpeed = 1.2 / duration;
     },
     resize,
+    setLevel(v) {
+      level = Math.max(0, Math.min(1, v));
+    },
     setSpin(mult) {
       spinMult = mult;
     },

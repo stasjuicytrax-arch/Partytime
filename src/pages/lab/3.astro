@@ -1,0 +1,122 @@
+---
+import Lab from "../../layouts/Lab.astro";
+import Icon from "../../components/Icon.astro";
+---
+<Lab
+  n={3}
+  title="Проверить микрофон"
+  lead="Кнопка спрашивает доступ к микрофону, и шар с эквалайзером начинают «слушать»: громче поёте — ярче вспыхивают грани и быстрее крутится шар. Попробуйте спеть или хлопнуть в ладоши."
+  notes={[
+    "<b>Приватно:</b> звук обрабатывается в браузере, не записывается и никуда не уходит",
+    "Без разрешения — ничего не включается",
+    "<b>Выключается</b> кнопкой или само через 60 секунд",
+    "<b>Без анимации:</b> эквалайзер работает, шар не крутится",
+  ]}
+>
+  <section class="lab-sec voice-demo" data-voice>
+    <div class="container voice-demo__grid">
+      <div class="voice-demo__ball">
+        <canvas data-voice-canvas aria-hidden="true"></canvas>
+      </div>
+      <div class="voice-demo__panel">
+        <div class="voice-demo__eq" aria-hidden="true">
+          {Array.from({ length: 16 }, () => <span></span>)}
+        </div>
+        <button type="button" class="btn btn--primary voice-demo__btn" data-voice-btn aria-pressed="false">
+          <span data-voice-label>Проверить микрофон</span>
+          <span class="btn__ico"><Icon name="arrow" size={20} /></span>
+        </button>
+        <p class="voice-demo__status" data-voice-status aria-live="polite">Раз-раз… Нажмите и скажите что-нибудь.</p>
+      </div>
+    </div>
+  </section>
+</Lab>
+
+<style is:global>
+  .voice-demo__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+  .voice-demo__ball { position: relative; aspect-ratio: 1; }
+  .voice-demo__ball::before { content: ""; position: absolute; inset: -10%; border-radius: 50%; background: radial-gradient(closest-side, rgb(166 147 255 / calc(0.25 + var(--lvl, 0) * 0.5)), transparent); transition: background 0.1s; }
+  .voice-demo__ball canvas { position: relative; width: 100%; height: 100%; }
+  .voice-demo__panel { display: grid; gap: 28px; justify-items: start; }
+  .voice-demo__eq { display: flex; align-items: flex-end; gap: 6px; width: 100%; height: 160px; }
+  .voice-demo__eq span { flex: 1; height: 6%; border-radius: 6px; background: linear-gradient(to top, var(--pt-violet), var(--pt-pink) 60%, var(--pt-lime)); transition: height 0.08s linear; }
+  .voice-demo__btn[aria-pressed="true"] { background: var(--pt-pink); border-color: var(--pt-pink); }
+  .voice-demo__status { min-height: 1.5em; color: rgb(255 255 255 / 0.75); }
+  @media (max-width: 860px) { .voice-demo__grid { grid-template-columns: 1fr; } .voice-demo__ball { width: 72%; margin: 0 auto; } }
+</style>
+
+<script>
+  import { reduced } from "../../scripts/motion";
+  import type { DiscoBall } from "../../scripts/disco";
+  import type { VoiceMeter } from "../../scripts/fx/voice";
+  const root = document.querySelector<HTMLElement>("[data-voice]")!;
+  const canvas = root.querySelector<HTMLCanvasElement>("[data-voice-canvas]")!;
+  const btn = root.querySelector<HTMLButtonElement>("[data-voice-btn]")!;
+  const label = root.querySelector<HTMLElement>("[data-voice-label]")!;
+  const status = root.querySelector<HTMLElement>("[data-voice-status]")!;
+  const bars = [...root.querySelectorAll<HTMLElement>(".voice-demo__eq span")];
+  let ball: DiscoBall | null = null;
+  let meter: VoiceMeter | null = null;
+  let raf = 0;
+  let timer = 0;
+
+  (async () => {
+    const { createDiscoBall } = await import("../../scripts/disco");
+    ball = createDiscoBall(canvas, { mobile: matchMedia("(max-width: 767px)").matches });
+    ball.resize();
+    if (reduced()) ball.renderOnce();
+    else {
+      ball.start();
+      ball.powerOn(1.2);
+    }
+  })();
+
+  function tick() {
+    if (!meter) return;
+    const { level, bands } = meter.read();
+    bars.forEach((b, i) => (b.style.height = `${6 + bands[i] * 94}%`));
+    root.style.setProperty("--lvl", level.toFixed(3));
+    if (!reduced()) ball?.setLevel(level);
+    raf = requestAnimationFrame(tick);
+  }
+
+  function stop(msg = "Микрофон выключен.") {
+    cancelAnimationFrame(raf);
+    clearTimeout(timer);
+    meter?.stop();
+    meter = null;
+    ball?.setLevel(0);
+    bars.forEach((b) => (b.style.height = ""));
+    root.style.removeProperty("--lvl");
+    btn.setAttribute("aria-pressed", "false");
+    label.textContent = "Проверить микрофон";
+    status.textContent = msg;
+  }
+
+  btn.addEventListener("click", async () => {
+    if (meter) return stop();
+    if (!navigator.mediaDevices?.getUserMedia) {
+      status.textContent = "Этот браузер не умеет слушать микрофон.";
+      return;
+    }
+    status.textContent = "Разрешите доступ к микрофону во всплывающем окне…";
+    try {
+      const { startVoiceMeter } = await import("../../scripts/fx/voice");
+      meter = await startVoiceMeter(bars.length);
+      btn.setAttribute("aria-pressed", "true");
+      label.textContent = "Выключить микрофон";
+      status.textContent = "Слушаем! Пойте громче — шар отвечает. Звук никуда не отправляется.";
+      tick();
+      timer = window.setTimeout(() => stop("Минута прошла — выключили микрофон."), 60000);
+    } catch (e) {
+      const name = (e as DOMException)?.name;
+      status.textContent =
+        name === "NotAllowedError"
+          ? "Доступ не дали — ничего страшного, без него всё работает."
+          : name === "NotFoundError"
+            ? "Микрофон не найден."
+            : "Не получилось включить микрофон.";
+    }
+  });
+  document.addEventListener("visibilitychange", () => document.hidden && meter && stop());
+</script>

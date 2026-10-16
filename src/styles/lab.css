@@ -1,0 +1,65 @@
+/* ===== Демо-стенд эффектов ===== */
+.lab { min-height: 100svh; }
+.lab__bar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px var(--gutter);
+  background: rgb(21 21 21 / 0.72);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgb(255 255 255 / 0.08);
+}
+.lab__logo { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; font: 700 0.8125rem / 1 var(--font-text); letter-spacing: 0.08em; text-transform: uppercase; color: rgb(255 255 255 / 0.7); }
+.lab__logo img { width: 92px; height: auto; }
+.lab__nav { display: flex; gap: 6px; }
+.lab__nav a {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgb(255 255 255 / 0.2);
+  font: 800 0.9375rem / 1 var(--font-display);
+  text-decoration: none;
+  transition: background-color var(--dur-fast), color var(--dur-fast);
+}
+.lab__nav a:hover { border-color: var(--pt-lime); }
+.lab__nav a[aria-current="page"] { background: var(--pt-lime); border-color: var(--pt-lime); color: var(--pt-deep); }
+
+.lab__intro { padding-block: clamp(32px, 5vw, 64px) clamp(24px, 3vw, 40px); display: grid; gap: 14px; }
+.lab__num { font: 700 var(--fs-label) / 1 var(--font-text); letter-spacing: 0.1em; color: var(--pt-lime); }
+.lab__intro h1 { font-size: clamp(2.25rem, 5.4vw, 4.5rem); font-weight: 900; line-height: 0.95; letter-spacing: -0.03em; text-transform: uppercase; }
+.lab__lead { max-width: 62ch; font-size: var(--fs-lead); color: rgb(255 255 255 / 0.82); }
+.lab__notes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.lab__notes li { padding: 8px 14px; border-radius: var(--r-pill); border: 1px solid rgb(255 255 255 / 0.16); font-size: var(--fs-small); color: rgb(255 255 255 / 0.78); }
+.lab__notes b { color: var(--pt-white); }
+
+.lab-sec { position: relative; padding-block: var(--section-y); border-top: 1px solid rgb(255 255 255 / 0.06); }
+.lab-sec h2 { font-size: clamp(2.5rem, 7vw, 6rem); font-weight: 900; line-height: 0.92; letter-spacing: -0.035em; text-transform: uppercase; }
+.lab-sec p { max-width: 46ch; margin-top: 20px; font-size: var(--fs-lead); color: rgb(255 255 255 / 0.75); }
+.lab-sec--storm { background: var(--pt-storm); }
+.lab-sec--violet { background: #1b1530; }
+
+/* индекс лаборатории */
+.lab-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 16px; padding-bottom: 80px; }
+.lab-list a {
+  display: grid;
+  gap: 10px;
+  min-height: 220px;
+  align-content: space-between;
+  padding: 24px;
+  border-radius: var(--r-md);
+  background: rgb(255 255 255 / 0.05);
+  border: 1px solid rgb(255 255 255 / 0.12);
+  text-decoration: none;
+  transition: border-color var(--dur-fast), translate var(--dur-base) var(--ease-out);
+}
+.lab-list a:hover { border-color: var(--pt-lime); translate: 0 -4px; }
+.lab-list b { font: 900 clamp(1.5rem, 2.4vw, 2rem) / 1 var(--font-display); text-transform: uppercase; letter-spacing: -0.02em; }
+.lab-list span { color: rgb(255 255 255 / 0.72); font-size: var(--fs-small); }
+.lab-list i { font-style: normal; font: 800 0.875rem / 1 var(--font-display); color: var(--pt-lime); }

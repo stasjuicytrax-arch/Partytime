@@ -1,0 +1,147 @@
+---
+import Lab from "../../layouts/Lab.astro";
+const steps = [
+  { q: "Когда?", opts: ["Сегодня", "Завтра", "В пятницу", "Выбрать дату"] },
+  { q: "Сколько гостей?", opts: ["2–4", "6–8", "8–10", "15–20"] },
+  { q: "Где?", opts: ["Думская", "Маяковская", "Не важно, подберите"] },
+  { q: "Какой повод?", opts: ["ДР", "Караоке", "Девичник", "Корпоратив", "Свой вариант"] },
+  { q: "Что добавить?", opts: ["+2 микрофона", "EvoBox / X-Star", "Приставки", "Декор и фотозона"] },
+  { q: "Контакты", opts: [] },
+];
+---
+<Lab
+  n={2}
+  title="Хромированный микрофон"
+  lead="3D-микрофон рядом с пошаговой формой бронирования: на каждом шаге он поворачивается, а после отправки заявки из него вылетает 3D-конфетти. Пройдите шаги и нажмите «Отправить заявку»."
+  notes={[
+    "<b>Ленивая загрузка:</b> 3D подгружается, когда форма на экране",
+    "<b>Телефон:</b> 140 конфетти вместо 320, меньше пикселей",
+    "<b>Без анимации:</b> микрофон стоит, конфетти нет",
+    "Здесь форма-заглушка, настоящая — в шаге 2",
+  ]}
+>
+  <section class="lab-sec mic-demo" data-mic-demo>
+    <div class="container mic-demo__grid">
+      <div class="mic-demo__form">
+        <div class="eq" aria-hidden="true">
+          {steps.map((_, i) => <span data-eq={i}></span>)}
+        </div>
+        <p class="mic-demo__count num" data-count>Шаг 1 из {steps.length}</p>
+        {steps.map((s, i) => (
+          <fieldset class="mic-demo__step" data-step={i} hidden={i > 0}>
+            <legend>{s.q}</legend>
+            {s.opts.length ? (
+              <div class="mic-demo__opts">
+                {s.opts.map((o) => <button type="button" class="chip">{o}</button>)}
+              </div>
+            ) : (
+              <div class="mic-demo__opts">
+                <input class="mic-demo__input" placeholder="Имя" aria-label="Имя" />
+                <input class="mic-demo__input" placeholder="+7 (___) ___-__-__" aria-label="Телефон" inputmode="tel" />
+              </div>
+            )}
+          </fieldset>
+        ))}
+        <div class="mic-demo__success" data-success hidden>
+          <h3>Заявка у&nbsp;нас!</h3>
+          <p>Перезвоним в&nbsp;течение 2&nbsp;минут.</p>
+        </div>
+        <div class="mic-demo__nav">
+          <button type="button" class="btn btn--ghost" data-back>Назад</button>
+          <button type="button" class="btn btn--primary" data-next><span data-next-label>Дальше</span><span class="btn__ico">→</span></button>
+        </div>
+      </div>
+      <div class="mic-demo__stage">
+        <canvas data-mic-canvas aria-hidden="true"></canvas>
+      </div>
+    </div>
+  </section>
+</Lab>
+
+<style is:global>
+  .mic-demo__grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 40px; align-items: center; }
+  .mic-demo__form { display: grid; gap: 20px; }
+  .eq { display: flex; gap: 6px; align-items: flex-end; height: 44px; }
+  .eq span { flex: 1; height: 18%; border-radius: 4px; background: rgb(255 255 255 / 0.12); transition: height 0.5s var(--ease-pop), background-color 0.3s; }
+  .eq span.is-done { height: 100%; background: var(--pt-lime); }
+  .eq span.is-now { height: 62%; background: var(--pt-pink); }
+  .mic-demo__count { font: 600 var(--fs-label) / 1 var(--font-text); letter-spacing: 0.08em; text-transform: uppercase; color: rgb(255 255 255 / 0.6); }
+  .mic-demo__step { border: 0; padding: 0; margin: 0; }
+  .mic-demo__step legend { margin-bottom: 18px; font: 900 clamp(2rem, 4vw, 3.5rem) / 1 var(--font-display); letter-spacing: -0.03em; text-transform: uppercase; }
+  .mic-demo__opts { display: flex; flex-wrap: wrap; gap: 10px; }
+  .mic-demo .chip { background: transparent; border: 1px solid rgb(255 255 255 / 0.25); color: var(--pt-white); }
+  .mic-demo .chip[aria-pressed="true"] { background: var(--pt-lime); color: var(--pt-deep); border-color: var(--pt-lime); }
+  .mic-demo__input { min-height: 56px; min-width: 240px; padding: 0 18px; border-radius: var(--r-xs); border: 1px solid rgb(255 255 255 / 0.25); background: rgb(255 255 255 / 0.06); color: var(--pt-white); }
+  .mic-demo__nav { display: flex; gap: 12px; }
+  .mic-demo__nav .btn__ico { font-weight: 800; }
+  .mic-demo__success h3 { font: 900 clamp(2.25rem, 4.5vw, 4rem) / 1 var(--font-display); text-transform: uppercase; color: var(--pt-lime); }
+  .mic-demo__stage { position: relative; aspect-ratio: 1; }
+  .mic-demo__stage canvas { width: 100%; height: 100%; }
+  @media (max-width: 860px) {
+    .mic-demo__grid { grid-template-columns: 1fr; }
+    .mic-demo__stage { order: -1; width: 70%; margin: 0 auto -20px; }
+  }
+</style>
+
+<script>
+  import { reduced } from "../../scripts/motion";
+  const root = document.querySelector<HTMLElement>("[data-mic-demo]")!;
+  const steps = [...root.querySelectorAll<HTMLElement>("[data-step]")];
+  const eq = [...root.querySelectorAll<HTMLElement>("[data-eq]")];
+  const count = root.querySelector<HTMLElement>("[data-count]")!;
+  const next = root.querySelector<HTMLButtonElement>("[data-next]")!;
+  const nextLabel = root.querySelector<HTMLElement>("[data-next-label]")!;
+  const back = root.querySelector<HTMLButtonElement>("[data-back]")!;
+  const success = root.querySelector<HTMLElement>("[data-success]")!;
+  const canvas = root.querySelector<HTMLCanvasElement>("[data-mic-canvas]")!;
+  let i = 0;
+  let mic: import("../../scripts/fx/mic3d").Mic3D | null = null;
+
+  root.querySelectorAll<HTMLButtonElement>(".chip").forEach((c) =>
+    c.addEventListener("click", () => c.setAttribute("aria-pressed", c.getAttribute("aria-pressed") === "true" ? "false" : "true"))
+  );
+
+  function render() {
+    steps.forEach((s, k) => (s.hidden = k !== i));
+    eq.forEach((b, k) => {
+      b.classList.toggle("is-done", k < i);
+      b.classList.toggle("is-now", k === i);
+    });
+    count.textContent = `Шаг ${i + 1} из ${steps.length}`;
+    nextLabel.textContent = i === steps.length - 1 ? "Отправить заявку" : "Дальше";
+    back.disabled = i === 0;
+    mic?.setStep(i, steps.length);
+  }
+  next.addEventListener("click", () => {
+    if (i < steps.length - 1) {
+      i++;
+      render();
+    } else {
+      steps.forEach((s) => (s.hidden = true));
+      eq.forEach((b) => b.classList.add("is-done"));
+      success.hidden = false;
+      count.textContent = "Готово";
+      next.disabled = true;
+      mic?.celebrate();
+    }
+  });
+  back.addEventListener("click", () => {
+    if (i > 0) {
+      i--;
+      render();
+    }
+  });
+  render();
+
+  // 3D подгружаем, только когда сцена в зоне видимости
+  const io = new IntersectionObserver(async (entries) => {
+    if (!entries[0].isIntersecting || mic) return;
+    io.disconnect();
+    const { createMic } = await import("../../scripts/fx/mic3d");
+    mic = createMic(canvas, { mobile: matchMedia("(max-width: 767px)").matches, reduced: reduced() });
+    mic.setStep(i, steps.length);
+    mic.start();
+    addEventListener("resize", () => mic?.resize());
+  }, { rootMargin: "200px" });
+  io.observe(canvas);
+</script>
