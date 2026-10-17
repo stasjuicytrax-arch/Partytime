@@ -289,7 +289,7 @@
 .card__title { overflow-wrap: break-word; hyphens: auto; font-size: var(--fs-h3); font-weight: 800; line-height: 1.05; letter-spacing: -0.015em; text-transform: uppercase; }
 .card__tag { margin-top: 6px; font-size: var(--fs-small); line-height: 1.4; }
 
-/* «Показать ещё»: последний ряд уходит в затемнение, кнопка поверх */
+/* «Показать ещё»: низ последнего ряда слегка уходит в затемнение, кнопка — под карточками */
 .rc__grid { position: relative; }
 .rc__grid.is-clipped::after {
   content: "";
@@ -298,11 +298,11 @@
   right: -2%;
   bottom: -2px;
   z-index: 4;
-  height: clamp(180px, 22vw, 320px);
+  height: clamp(90px, 9vw, 150px);
   background: linear-gradient(transparent, var(--hint-bg, var(--pt-deep)) 82%);
   pointer-events: none;
 }
-.rc__more { position: relative; z-index: 6; display: flex; justify-content: center; margin-top: -88px; }
+.rc__more { position: relative; z-index: 6; display: flex; justify-content: center; margin-top: clamp(24px, 3vw, 40px); }
 .rc__more[hidden] { display: none; }
 .rc__more-btn { --btn-h: 64px; padding-left: 32px; font-size: 1.0625rem; }
 .rc__empty[hidden] { display: none; }
@@ -329,7 +329,8 @@
   display: grid;
   grid-template-columns: minmax(0, 1.55fr) minmax(320px, 1fr);
   width: min(1320px, 100%);
-  min-height: min(760px, calc(100svh - 80px));
+  /* окно всегда в экране: фото слева на всю высоту, правая колонка прокручивается внутри */
+  height: min(820px, calc(100svh - 2 * clamp(0px, 3vw, 40px)));
   overflow: hidden;
 }
 .rm__close {
@@ -345,7 +346,7 @@
   transition: rotate var(--dur-base) var(--ease-pop), background-color var(--dur-fast);
 }
 .rm__close:hover { rotate: 90deg; }
-.rm__gallery { position: relative; overflow: hidden; touch-action: pan-y; user-select: none; min-height: 320px; }
+.rm__gallery { position: relative; overflow: hidden; touch-action: pan-y; user-select: none; min-height: 0; }
 .rm__track { display: flex; height: 100%; transition: transform 0.6s var(--ease-out); }
 .rm__slide { flex: 0 0 100%; margin: 0; }
 .rm__slide img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
@@ -427,12 +428,12 @@
   background: transparent;
   color: inherit;
   text-align: left;
-  transition: border-color var(--dur-fast), translate var(--dur-base) var(--ease-out);
+  transition: border-color var(--dur-fast), translate var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
 }
-.rm__sim-card:hover, .rm__sim-card:focus-visible { border-color: var(--g); translate: 0 -3px; }
-.rm__sim-card img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; margin-bottom: 6px; }
+.rm__sim-card:hover, .rm__sim-card:focus-visible { border-color: var(--g); translate: -2px -3px; box-shadow: 5px 5px 0 var(--g); }
+.rm__sim-card img { width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; margin-bottom: 6px; }
 .rm__sim-title { padding: 0 12px; font: 800 0.9375rem / 1.1 var(--font-display); text-transform: uppercase; overflow-wrap: anywhere; }
-.rm__sim-meta { padding: 0 12px; font-size: 0.75rem; opacity: 0.75; }
+.rm__sim-meta { padding: 0 12px; font-size: 0.75rem; opacity: 0.85; }
 .rm__price b { font: 900 clamp(1.75rem, 2.4vw, 2.25rem) / 1 var(--font-display); letter-spacing: -0.02em; }
 .modal-open { overflow: hidden; }
 
@@ -440,7 +441,7 @@
   .rm { padding: 0; }
   .rm[open] { display: block; }
   /* без backdrop-filter/transform: иначе fixed-футер привязывается к панели, а не к экрану */
-  .rm__panel { grid-template-columns: 1fr; min-height: 100%; border-radius: 0 !important; border: 0 !important; box-shadow: none !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  .rm__panel { grid-template-columns: 1fr; height: auto; min-height: 100%; border-radius: 0 !important; border: 0 !important; box-shadow: none !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
   .rm__gallery { aspect-ratio: 4 / 3; min-height: 0; }
   .rm__info { padding: 24px 20px 32px; overflow: visible; }
   .rm__close { position: fixed; top: 12px; right: 12px; }

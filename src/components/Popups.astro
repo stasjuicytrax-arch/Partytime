@@ -30,7 +30,7 @@ const pops = [
 
 <script>
   import { reachGoal } from "../lib/analytics";
-  import { reduced } from "../scripts/motion";
+  import { reduced, lenis } from "../scripts/motion";
 
   const DAY = 24 * 60 * 60 * 1000;
   const ss = {
@@ -46,7 +46,21 @@ const pops = [
   const closedRecently = (id: string) => Date.now() - Number(ls.get(`pt:pop-${id}-closed`) || 0) < DAY;
   const shownThisVisit = (id: string) => ss.get(`pt:pop-${id}-shown`) === "1";
   // не мешаем, пока открыта модалка зала, меню или другой поп-ап
-  const busy = () => !!document.querySelector("dialog[open], .hdr__menu[data-open], .pop:not([hidden])");
+  // и пока человек заполняет форму: фокус в ней, форма в экране или уже пройден хотя бы один шаг
+  const formEl = document.querySelector<HTMLElement>("[data-booking]");
+  let formOnScreen = false;
+  if (formEl) new IntersectionObserver((en) => (formOnScreen = en[0].isIntersecting)).observe(formEl);
+  const formStarted = () => {
+    try { return Number(JSON.parse(ls.get("pt:booking") || "{}").step || 0) > 0; } catch { return false; }
+  };
+  const busy = () =>
+    !!document.querySelector("dialog[open], .hdr__menu[data-open], .pop:not([hidden])") ||
+    !!document.activeElement?.closest("[data-booking]") ||
+    formOnScreen ||
+    formStarted();
+  // всё, кроме поп-апа и нижней панели мессенджеров, недоступно, пока поп-ап открыт
+  const behind = () => [...document.querySelectorAll<HTMLElement>("body > header, body > main, body > footer, [data-msgr]")];
+  let openEl: HTMLElement | null = null;
 
   const goals = { warm: ["popup_tg_show", "popup_tg_click"], exit: ["exit_popup_show", "exit_popup_click"] } as const;
   let lastFocus: HTMLElement | null = null;
@@ -57,7 +71,10 @@ const pops = [
     ss.set(`pt:pop-${id}-shown`, "1");
     lastFocus = document.activeElement as HTMLElement;
     el.hidden = false;
+    openEl = el;
     document.documentElement.classList.add("pop-open");
+    behind().forEach((b) => (b.inert = true));
+    lenis()?.stop();
     if (!reduced()) {
       el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 250, easing: "ease-out" });
       el.querySelector(".pop__card")!.animate(
@@ -73,7 +90,10 @@ const pops = [
   function hide(el: HTMLElement) {
     if (el.hidden) return;
     el.hidden = true;
+    openEl = null;
     document.documentElement.classList.remove("pop-open");
+    behind().forEach((b) => (b.inert = false));
+    lenis()?.start();
     ls.set(`pt:pop-${el.dataset.pop}-closed`, String(Date.now()));
     lastFocus?.focus({ preventScroll: true });
   }
@@ -86,13 +106,17 @@ const pops = [
       hide(el);
     });
     el.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") return hide(el);
       if (e.key !== "Tab") return;
       const f = [...el.querySelectorAll<HTMLElement>("button, a")];
       const first = f[0], last = f[f.length - 1];
       if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     });
+  });
+
+  // Esc закрывает, даже если фокус ушёл с поп-апа
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && openEl) hide(openEl);
   });
 
   /* ---------- «прогрев»: 2+ зала или 40+ секунд ---------- */
@@ -115,14 +139,19 @@ const pops = [
       if (!e.relatedTarget && e.clientY <= 0 && sinceStart() > 4000) show("exit");
     });
   } else {
-    let lastY = scrollY, lastT = performance.now();
+    // резкий скролл вверх из глубины страницы, который за ~1,5 с доходит до самого верха
+    // (≈ «уходит к адресной строке»), и только после 30+ секунд на сайте
+    let lastY = scrollY, lastT = performance.now(), flickAt = 0;
     addEventListener("scroll", () => {
       const now = performance.now();
       const v = (scrollY - lastY) / Math.max(1, now - lastT); // px/мс
       lastY = scrollY;
       lastT = now;
-      // резкий скролл вверх (≈ «уходит наверх, к адресной строке») после 30+ секунд
-      if (v < -2.5 && scrollY > 600 && sinceStart() >= 30000) show("exit");
+      if (v < -2.5 && scrollY > 1200) flickAt = now;
+      if (flickAt && now - flickAt < 1500 && scrollY < 400 && sinceStart() >= 30000) {
+        flickAt = 0;
+        show("exit");
+      }
     }, { passive: true });
   }
 </script>

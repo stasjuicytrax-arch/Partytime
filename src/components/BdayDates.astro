@@ -41,9 +41,12 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     const upd = () => {
       const bday = kind() === "bday";
       text.textContent = bday ? OFFER.bday : OFFER.dates;
-      link.href = botUrl(bday ? "site_bday" : "site_dates");
+      // с выбранной датой метка становится site_bday_20261121 — бот сразу знает день
+      const d = date.value ? `_${date.value.replace(/-/g, "")}` : "";
+      link.href = botUrl(`${bday ? "site_bday" : "site_dates"}${d}`);
     };
     root.addEventListener("change", upd);
+    date.addEventListener("input", upd);
     link.addEventListener("click", () => reachGoal("bday_dates_click", { place: "formats", kind: kind(), date: date.value || null }));
     upd();
   });

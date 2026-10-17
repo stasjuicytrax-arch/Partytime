@@ -22,7 +22,7 @@ const hasMax = !!MESSENGERS.max.href;
 
 <!-- ПК: плавающая кнопка -->
 <div class="msgr" data-msgr data-place="fab">
-  <ul class="msgr__list" id="msgr-list">
+  <ul class="msgr__list" id="msgr-list" inert>
     <li><a class="msgr__item msgr__item--tg" href={tg} target="_blank" rel="noopener" data-bot-dynamic>Telegram</a></li>
     <li><a class="msgr__item" href={MESSENGERS.vk.href} target="_blank" rel="noopener">VK</a></li>
     {hasMax && <li><a class="msgr__item" href={MESSENGERS.max.href} target="_blank" rel="noopener">MAX</a></li>}
@@ -44,6 +44,8 @@ const hasMax = !!MESSENGERS.max.href;
     const toggle = (open: boolean) => {
       btn.setAttribute("aria-expanded", String(open));
       root.classList.toggle("is-open", open);
+      // закрытый список не ловит Tab
+      root.querySelector<HTMLElement>("#msgr-list")!.inert = !open;
     };
     btn.addEventListener("click", () => toggle(btn.getAttribute("aria-expanded") !== "true"));
     document.addEventListener("keydown", (e) => {

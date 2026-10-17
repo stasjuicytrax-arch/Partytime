@@ -82,13 +82,22 @@ const nav = [
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     });
     // шапка: плашка после прокрутки, прячется при скролле вниз и возвращается при скролле вверх
-    let lastY = scrollY;
+    // с запасом в 60 px: мелкие шаги прокрутки (медленный скролл, хвост инерции) не дёргают шапку
+    let anchorY = scrollY;
+    let hidden = false;
     const onScroll = () => {
       const y = scrollY;
       hdr.classList.toggle("is-scrolled", y > 24);
-      hdr.classList.toggle("is-hidden", y > 400 && y > lastY + 4 && !menu.hasAttribute("data-open"));
-      if (y < lastY - 4) hdr.classList.remove("is-hidden");
-      lastY = y;
+      if (y < 400 || menu.hasAttribute("data-open")) {
+        hidden = false;
+        anchorY = y;
+      } else if (hidden ? y > anchorY : y < anchorY) {
+        anchorY = y; // направление не сменилось — двигаем точку отсчёта
+      } else if (Math.abs(y - anchorY) > 60) {
+        hidden = !hidden;
+        anchorY = y;
+      }
+      hdr.classList.toggle("is-hidden", hidden);
     };
     addEventListener("scroll", onScroll, { passive: true });
     onScroll();

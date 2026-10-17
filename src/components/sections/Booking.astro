@@ -31,10 +31,15 @@ const icon3d = (n: string) => `${base}/img/3d/${n}-dynamic-premium.webp`;
           {steps.map((_, i) => <span data-eq={i}></span>)}
         </div>
         <p class="bk__count num" data-count aria-live="polite">Шаг 1 из {steps.length}</p>
+        <!-- выбранный в каталоге зал виден на всех шагах -->
+        <p class="bk__picked" data-room hidden>
+          Зал: <b data-room-title></b>
+          <button type="button" class="bk__unpick" data-room-clear aria-label="Убрать выбранный зал"><Icon name="close" size={16} /></button>
+        </p>
 
         <!-- 1. Повод — один тап -->
         <fieldset class="bk__step" data-step="0">
-          <legend>{steps[0]}</legend>
+          <legend tabindex="-1">{steps[0]}</legend>
           <div class="bk__occ" role="radiogroup" aria-label="Повод">
             {FORM.occasions.map((o) => (
               <label class="bk__occ-card">
@@ -54,7 +59,7 @@ const icon3d = (n: string) => `${base}/img/3d/${n}-dynamic-premium.webp`;
 
         <!-- 2. Гости -->
         <fieldset class="bk__step" data-step="1" hidden>
-          <legend>{steps[1]}</legend>
+          <legend tabindex="-1">{steps[1]}</legend>
           <div class="bk__steppers">
             {[["adults", "Взрослые", 6, 1], ["kids", "Дети", 0, 0]].map(([n, label, v, min]) => (
               <div class="bk__stepper" data-stepper>
@@ -69,22 +74,18 @@ const icon3d = (n: string) => `${base}/img/3d/${n}-dynamic-premium.webp`;
 
         <!-- 3. Где -->
         <fieldset class="bk__step" data-step="2" hidden>
-          <legend>{steps[2]}</legend>
+          <legend tabindex="-1">{steps[2]}</legend>
           <div class="bk__group" role="radiogroup" aria-label="Локация">
             {FORM.places.map((p, i) => (
               <label class="bk__chip bk__chip--big"><input type="radio" name="place" value={p.id} checked={i === 2} /><span>{p.label}</span></label>
             ))}
           </div>
-          <p class="bk__picked" data-room hidden>
-            Зал: <b data-room-title></b>
-            <button type="button" class="bk__unpick" data-room-clear aria-label="Убрать выбранный зал"><Icon name="close" size={16} /></button>
-          </p>
           <p class="bk__hint">Зал можно выбрать в&nbsp;<a href="#rooms">каталоге</a> — кнопка «Забронировать этот зал» подставит его сюда.</p>
         </fieldset>
 
         <!-- 4. Когда + ответвление в бота (подарок ко ДР / свободные даты) -->
         <fieldset class="bk__step" data-step="3" hidden>
-          <legend>{steps[3]}</legend>
+          <legend tabindex="-1">{steps[3]}</legend>
           <div class="bk__row">
             <label class="bk__field">
               <span>Дата</span>
@@ -102,18 +103,15 @@ const icon3d = (n: string) => `${base}/img/3d/${n}-dynamic-premium.webp`;
               <label class="bk__chip"><input type="radio" name="duration" value={d} checked={i === 2} /><span>{d}</span></label>
             ))}
           </div>
-          <div class="bk__branch" data-branch hidden data-place="form_branch">
-            <p data-branch-text>{OFFER.dates}</p>
-            <a class="btn btn--sm bk__branch-btn" href={botUrl("site_dates")} target="_blank" rel="noopener" data-branch-link>
-              <span>Открыть Telegram</span><span class="btn__ico"><Icon name="arrow" size={18} /></span>
-            </a>
-          </div>
+          <p class="bk__branch" data-branch hidden data-place="form_branch">
+            <a href={botUrl("site_dates")} target="_blank" rel="noopener" data-branch-link><span data-branch-text>{OFFER.dates}</span>&nbsp;→</a>
+          </p>
           <p class="bk__hint">Бронь на&nbsp;сегодня — быстрее по&nbsp;телефону <a href={tel(PHONE_MAIN)} class="num">{PHONE_MAIN}</a></p>
         </fieldset>
 
         <!-- 5. Что добавить -->
         <fieldset class="bk__step" data-step="4" hidden>
-          <legend>{steps[4]}</legend>
+          <legend tabindex="-1">{steps[4]}</legend>
           <div class="bk__group" aria-label="Дополнительно">
             {FORM.extras.map((x) => (
               <label class="bk__chip"><input type="checkbox" name="extras" value={x} /><span>{x}</span></label>
@@ -124,7 +122,7 @@ const icon3d = (n: string) => `${base}/img/3d/${n}-dynamic-premium.webp`;
 
         <!-- 6. Контакты — строго последними -->
         <fieldset class="bk__step" data-step="5" hidden>
-          <legend>{steps[5]}</legend>
+          <legend tabindex="-1">{steps[5]}</legend>
           <div class="bk__row">
             <label class="bk__field">
               <span>Имя</span>

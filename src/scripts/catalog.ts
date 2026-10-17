@@ -242,6 +242,7 @@ export function initCatalog(root: HTMLElement) {
   const roomTg = dialog.querySelector<HTMLAnchorElement>("[data-room-tg]")!;
   const panel = dialog.querySelector<HTMLElement>(".rm__panel")!;
   let current: ClientRoom | null = null;
+  let pushed = false;
   let slide = 0;
 
   /** 3–4 зала той же группы: сначала та же локация, затем другая; без текущего */
@@ -271,12 +272,18 @@ export function initCatalog(root: HTMLElement) {
     swapTo(to);
   });
 
+  const focusTitle = () => {
+    const t = dialog.querySelector<HTMLElement>("#rm-title")!;
+    t.tabIndex = -1;
+    t.focus({ preventScroll: true });
+  };
   /** переход к другому залу внутри открытой модалки — без закрытия */
   function swapTo(slug: string) {
     if (reduced()) {
       open(slug);
       dialog.scrollTo({ top: 0 });
       panel.querySelector<HTMLElement>(".rm__info")?.scrollTo({ top: 0 });
+      focusTitle();
       return;
     }
     const parts = panel.querySelectorAll(".rm__gallery, .rm__info > *:not(.rm__foot)");
@@ -290,6 +297,7 @@ export function initCatalog(root: HTMLElement) {
         open(slug);
         dialog.scrollTo({ top: 0 });
         panel.querySelector<HTMLElement>(".rm__info")?.scrollTo({ top: 0 });
+        focusTitle();
         gsap.fromTo(parts, { opacity: 0, x: 24 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out", stagger: 0.02, clearProps: "opacity,transform" });
       },
     });
@@ -351,7 +359,14 @@ export function initCatalog(root: HTMLElement) {
         gsap.fromTo(dialog, { "--veil": 0 }, { "--veil": 1, duration: 0.4 });
       }
     }
-    if (push) history.replaceState(null, "", `${location.pathname}${location.search}#room-${slug}`);
+    if (push) {
+      const url = `${location.pathname}${location.search}#room-${slug}`;
+      // первое открытие — новая запись истории (системная «Назад» закроет модалку), смена зала — замена записи
+      if (!pushed) {
+        history.pushState({ ptRoom: true }, "", url);
+        pushed = true;
+      } else history.replaceState({ ptRoom: true }, "", url);
+    }
   }
 
   function close() {
@@ -360,7 +375,10 @@ export function initCatalog(root: HTMLElement) {
       dialog.close();
       lenis()?.start();
       document.documentElement.classList.remove("modal-open");
-      if (location.hash.startsWith("#room-")) history.replaceState(null, "", location.pathname + location.search);
+      if (pushed) {
+        pushed = false;
+        history.back(); // убираем свою запись: «Назад» после закрытия не откроет модалку снова
+      } else if (location.hash.startsWith("#room-")) history.replaceState(null, "", location.pathname + location.search);
       lastFocus?.focus({ preventScroll: true });
       current = null;
     };
@@ -427,6 +445,9 @@ export function initCatalog(root: HTMLElement) {
       const saved = JSON.parse(localStorage.getItem("pt:booking") || "{}");
       localStorage.setItem("pt:booking", JSON.stringify({ ...saved, loc, room: slug }));
     } catch {}
+    pushed = false;
+    // после перехода к форме поп-ап «прогрева» уже не показываем
+    try { sessionStorage.setItem("pt:pop-warm-shown", "1"); } catch {}
     close();
     const qs = new URLSearchParams({ loc, room: slug });
     setTimeout(() => {
@@ -449,7 +470,10 @@ export function initCatalog(root: HTMLElement) {
         apply(false);
       }
       open(m[1], false);
-    } else if (dialog.open) close();
+    } else if (dialog.open) {
+      pushed = false; // запись уже снята системной «Назад»
+      close();
+    }
   };
   window.addEventListener("hashchange", fromHash);
   fromHash();

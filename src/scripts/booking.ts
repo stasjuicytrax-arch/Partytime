@@ -125,7 +125,8 @@ export function initBooking(root: HTMLElement) {
     const bday = occasion() === "ДР";
     branch.hidden = !date.value;
     branchText.textContent = bday ? OFFER.bday : OFFER.dates;
-    branchLink.href = botUrl(bday ? "site_bday" : "site_dates");
+    // дата едет в метку: site_bday_20261121 — бот сразу знает, о каком дне речь
+    branchLink.href = botUrl(`${bday ? "site_bday" : "site_dates"}_${date.value.replace(/-/g, "")}`);
     branchLink.dataset.kind = bday ? "bday" : "dates";
   };
   branchLink.addEventListener("click", () => reachGoal("bday_dates_click", { place: "form", kind: branchLink.dataset.kind }));
@@ -140,12 +141,21 @@ export function initBooking(root: HTMLElement) {
       i = 1;
       save();
       render(1);
+      focusStep();
     }, reduced() ? 0 : 260);
   };
+  // вперёд — только по тапу/клику или Enter/пробелу; стрелки просто листают варианты
   form.querySelectorAll<HTMLInputElement>('input[name="occasion"]').forEach((r) => {
-    r.addEventListener("change", advanceFromOccasion);
-    // повторный тап по уже выбранной карточке — тоже вперёд
-    r.closest("label")!.addEventListener("click", () => r.checked && advanceFromOccasion());
+    r.closest("label")!.addEventListener("click", (e) => {
+      if (e.detail > 0) setTimeout(advanceFromOccasion, 0);
+    });
+    r.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      e.preventDefault();
+      r.checked = true;
+      r.dispatchEvent(new Event("change", { bubbles: true }));
+      advanceFromOccasion();
+    });
   });
   form.addEventListener("change", () => {
     toggleOther();
@@ -187,6 +197,9 @@ export function initBooking(root: HTMLElement) {
     return "";
   }
 
+  // после смены шага фокус — на заголовок шага: экранный диктор прочитает, куда попали
+  const focusStep = () => steps[i].querySelector<HTMLElement>("legend")?.focus({ preventScroll: true });
+
   function render(dir = 1) {
     steps.forEach((s, k) => (s.hidden = k !== i));
     eq.forEach((b, k) => {
@@ -220,7 +233,7 @@ export function initBooking(root: HTMLElement) {
       i++;
       save();
       render(1);
-      steps[i].querySelector<HTMLElement>("input, select, button")?.focus({ preventScroll: true });
+      focusStep();
       return;
     }
     // отправка
@@ -267,6 +280,7 @@ export function initBooking(root: HTMLElement) {
     i--;
     save();
     render(-1);
+    focusStep();
   });
 
   // предзаполнение: «Забронировать этот зал» и «Хочу так»

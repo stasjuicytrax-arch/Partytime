@@ -15,7 +15,7 @@
 
 /* ---------- Шапка (фиксированная, стекло после прокрутки) ---------- */
 .hdr--b.is-hidden { translate: 0 -110%; }
-.hdr--b { color: var(--pt-white); transition: background-color var(--dur-base), backdrop-filter var(--dur-base), box-shadow var(--dur-base); }
+.hdr--b { color: var(--pt-white); transition: background-color var(--dur-base), backdrop-filter var(--dur-base), box-shadow var(--dur-base), translate var(--dur-base) var(--ease-out); }
 .hdr--b.is-scrolled { background: rgb(21 21 21 / 0.62); -webkit-backdrop-filter: blur(16px) saturate(1.4); backdrop-filter: blur(16px) saturate(1.4); box-shadow: 0 1px 0 rgb(255 255 255 / 0.08); }
 .hdr--b .hdr__bar { min-height: 80px; }
 .hdr--b .hdr__burger { background: rgb(255 255 255 / 0.1); border: 1px solid rgb(255 255 255 / 0.25); color: var(--pt-white); }
@@ -301,7 +301,7 @@ html.party .vb { animation: party 0.5s steps(1) 6; }
 .rc--b .card__cta { bottom: auto; top: 46%; background: var(--pt-lime); color: var(--pt-deep); }
 
 /* ---------- Модалка ---------- */
-.rm--b .rm__panel { background: rgb(28 28 30 / 0.92); border: 1px solid rgb(255 255 255 / 0.14); border-radius: var(--r-lg); color: var(--pt-white); box-shadow: 0 0 0 1px color-mix(in srgb, var(--g) 40%, transparent), 0 40px 120px -30px color-mix(in srgb, var(--g) 60%, transparent); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px); }
+.rm--b .rm__panel { background: rgb(28 28 30 / 0.92); border: 1px solid rgb(255 255 255 / 0.14); border-radius: var(--r-lg); color: var(--pt-white); box-shadow: 0 0 0 1px color-mix(in srgb, var(--g) 40%, transparent), 0 40px 120px -40px color-mix(in srgb, var(--g) 30%, transparent); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px); }
 .rm--b::backdrop { background: rgb(10 10 12 / 0.75); }
 .rm--b .rm__gallery { background: #000; }
 .rm--b .rm__close, .rm--b .rm__nav { background: rgb(255 255 255 / 0.12); border: 1px solid rgb(255 255 255 / 0.25); color: var(--pt-white); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }

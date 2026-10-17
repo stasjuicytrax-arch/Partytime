@@ -302,7 +302,7 @@
 .coupon__title { max-width: 68%; font: 900 clamp(1.125rem, 1.6vw, 1.5rem) / 1.05 var(--font-display); text-transform: uppercase; letter-spacing: -0.01em; }
 .coupon__face--back .coupon__title { max-width: none; }
 .coupon__text { font-size: var(--fs-body); color: var(--pt-storm); }
-.coupon__hint { position: absolute; right: 22px; top: 20px; display: inline-flex; align-items: center; gap: 4px; font: 700 0.75rem / 1 var(--font-text); }
+.coupon__hint { position: absolute; right: 22px; top: 20px; display: inline-flex; align-items: center; gap: 4px; font: 700 0.75rem / 1 var(--font-text); padding: 5px 9px; border-radius: 999px; background: rgb(21 21 21 / 0.88); color: var(--pt-white); }
 .coupon__link { position: absolute; z-index: 2; left: 26px; bottom: 18px; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-weight: 700; color: var(--pt-deep); opacity: 0; pointer-events: none; transition: opacity 0.3s 0.3s; }
 .coupon:hover .coupon__link, .coupon:has([aria-pressed="true"]) .coupon__link { opacity: 1; pointer-events: auto; }
 .coupon--pink { --c: var(--pt-pink); }
@@ -332,9 +332,10 @@
 .bk__eq span.is-now { height: 62%; background: var(--pt-pink); }
 .bk__count { font: 600 var(--fs-label) / 1 var(--font-text); letter-spacing: 0.08em; text-transform: uppercase; color: rgb(255 255 255 / 0.6); }
 .bk__step { display: grid; gap: 18px; min-width: 0; margin: 0; padding: 0; border: 0; }
+.bk__step legend:focus:not(:focus-visible) { outline: none; }
 .bk__step legend { margin-bottom: 18px; padding: 0; font: 900 clamp(2rem, 3.6vw, 3.25rem) / 1 var(--font-display); letter-spacing: -0.03em; text-transform: uppercase; }
 .bk__row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.bk__field { display: grid; gap: 8px; font: 600 var(--fs-small) / 1.2 var(--font-text); color: rgb(255 255 255 / 0.7); }
+.bk__field { display: grid; gap: 8px; font: 600 var(--fs-small) / 1.2 var(--font-text); color: rgb(255 255 255 / 0.85); }
 .bk__field input, .bk__field select, .bk__stepper input {
   width: 100%;
   min-height: 56px;
@@ -410,10 +411,10 @@
 .bk__tg a:hover { color: var(--pt-white); }
 
 /* ответвление «Подарок ко ДР / свободные даты» */
-.bk__branch { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 18px; padding: 16px 18px; border: var(--border); border-color: var(--pt-deep); border-radius: 18px; background: var(--pt-sky); color: var(--pt-deep); box-shadow: 5px 5px 0 var(--pt-pink); }
-.bk__branch p { max-width: 30ch; font: 800 1rem / 1.25 var(--font-display); text-transform: uppercase; }
-.bk__branch-btn { background: var(--pt-deep); color: var(--pt-white); border-color: var(--pt-deep); }
-.bk__branch-btn .btn__ico { background: var(--pt-lime); color: var(--pt-deep); }
+/* ответвление в бота на шаге «Когда?» — тихая ссылка, не спорит с кнопкой «Дальше» */
+.bk__branch { font-size: var(--fs-small); }
+.bk__branch a { color: var(--pt-sky); font-weight: 600; text-underline-offset: 3px; }
+.bk__branch a:hover { color: var(--pt-white); }
 
 .bk__error { min-height: 1.4em; color: var(--pt-coral-l); font-weight: 600; }
 .bk__error:empty { min-height: 0; }
