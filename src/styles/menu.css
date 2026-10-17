@@ -1,0 +1,163 @@
+/* Страница меню «Кухня & Бар» — мир варианта B «Ночной лофт».
+   Цена всегда в одном взгляде от названия; декор — в заголовках разделов, не в строках с ценами. */
+
+.menu-page { background: var(--pt-deep); }
+.menu-page [id] { scroll-margin-top: 150px; }
+
+/* ---------- обложка ---------- */
+.mh { position: relative; overflow: hidden; padding: clamp(128px, 14vw, 180px) 0 clamp(36px, 5vw, 64px); color: var(--pt-white); }
+.mh::before {
+  content: "";
+  position: absolute;
+  inset: -20% -10% auto;
+  height: 120%;
+  background:
+    radial-gradient(40% 50% at 78% 30%, rgb(118 89 255 / 0.32), transparent 70%),
+    radial-gradient(35% 45% at 18% 60%, rgb(254 118 180 / 0.18), transparent 70%);
+  pointer-events: none;
+}
+.mh__in { position: relative; display: grid; gap: 18px; justify-items: start; }
+.mh__title { font: 900 clamp(3.25rem, 11vw, 10rem) / 0.86 var(--font-display); letter-spacing: -0.045em; text-transform: uppercase; }
+.mh__title span { display: block; color: var(--pt-lime); }
+.mh__lead { max-width: 30ch; font-size: var(--fs-lead); color: rgb(255 255 255 / 0.86); }
+.mh__kitchen { max-width: 46ch; font-size: var(--fs-small); color: rgb(255 255 255 / 0.7); }
+.mh__kitchen a { color: var(--pt-white); font-weight: 700; text-underline-offset: 3px; white-space: nowrap; }
+.mh__kitchen a:hover { color: var(--pt-lime); }
+.mh__cut { position: absolute; z-index: -0; width: clamp(96px, 11vw, 168px); height: auto; filter: drop-shadow(0 24px 32px rgb(0 0 0 / 0.55)); pointer-events: none; }
+.mh__cut--1 { right: clamp(150px, 20vw, 330px); bottom: -6px; rotate: -10deg; }
+.mh__cut--2 { right: var(--gutter); top: 4px; width: clamp(120px, 14vw, 210px); rotate: 8deg; }
+
+/* ---------- полоса разделов ---------- */
+.mnav { position: sticky; top: 0; z-index: 40; padding: 10px 0; background: rgb(21 21 21 / 0.86); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-block: 1px solid rgb(255 255 255 / 0.08); transition: top var(--dur-base) var(--ease-out); }
+/* шапка видна — полоса едет под ней */
+body:has(.hdr:not(.is-hidden)) .mnav { top: 80px; }
+.mnav__in { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+.mnav__in::-webkit-scrollbar { display: none; }
+.mnav a {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 0 8px 0 18px;
+  border: 1px solid rgb(255 255 255 / 0.16);
+  border-radius: var(--r-pill);
+  color: var(--pt-white);
+  font: 800 0.9375rem / 1 var(--font-text);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color var(--dur-fast), border-color var(--dur-fast), color var(--dur-fast);
+}
+.mnav a b { padding: 8px 10px; border-radius: var(--r-pill); background: rgb(255 255 255 / 0.08); font: 700 0.75rem / 1 var(--font-text); color: var(--c); }
+.mnav a:hover { border-color: var(--c); }
+.mnav a[aria-current] { background: var(--c); border-color: var(--c); color: var(--pt-deep); }
+.mnav a[aria-current] b { background: rgb(21 21 21 / 0.14); color: var(--pt-deep); }
+
+/* ---------- раздел ---------- */
+.ms { position: relative; padding-block: clamp(56px, 7vw, 104px) 0; color: var(--pt-white); }
+/* заголовок раздела целиком, слова не рвутся; подпись — под ним */
+.ms__head { display: grid; justify-items: start; gap: 14px; margin-bottom: clamp(24px, 3vw, 40px); }
+.ms__title { font: 900 clamp(2.25rem, 6vw, 5.5rem) / 0.9 var(--font-display); letter-spacing: -0.04em; text-transform: uppercase; color: var(--c); overflow-wrap: break-word; }
+.ms__lead { max-width: 44ch; font-size: var(--fs-lead); color: rgb(255 255 255 / 0.82); }
+.ms__lead a { color: var(--c); font-weight: 700; text-underline-offset: 3px; }
+.ms__lead b { color: var(--pt-white); }
+
+.ms__groups { display: grid; gap: clamp(28px, 3vw, 44px); }
+/* лонги и крепкое — две колонки панелей */
+.ms__groups--rows, .ms__groups--bottles, .ms__groups--wine { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 16px; }
+.mg { min-width: 0; }
+.mg--rows, .mg--bottles, .mg--wine { padding: clamp(18px, 2vw, 26px); border-radius: var(--r-md); background: rgb(255 255 255 / 0.035); border: 1px solid rgb(255 255 255 / 0.09); }
+.mg__title { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: 14px; font: 800 clamp(1rem, 1.4vw, 1.25rem) / 1.1 var(--font-display); text-transform: uppercase; }
+.mg--cards .mg__title { font-size: clamp(1.125rem, 1.8vw, 1.5rem); }
+.mg__note { padding: 6px 10px; border-radius: var(--r-pill); background: rgb(255 255 255 / 0.08); font: 600 0.75rem / 1 var(--font-text); text-transform: none; color: rgb(255 255 255 / 0.8); }
+.mg__promo { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px 5px 6px; border-radius: var(--r-pill); background: var(--pt-pink); color: var(--pt-deep); font: 700 0.75rem / 1 var(--font-text); text-transform: none; rotate: -3deg; }
+.mg__promo b { padding: 4px 8px; border-radius: var(--r-pill); background: var(--pt-deep); color: var(--pt-pink); font: 900 0.8125rem / 1 var(--font-display); }
+
+/* сеты, пунши, кувшины — карточки с ценой-наклейкой */
+.mcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 14px; }
+.mcard { position: relative; display: grid; gap: 10px; align-content: start; padding: 22px 22px 24px; border-radius: var(--r-md); background: linear-gradient(160deg, rgb(255 255 255 / 0.07), rgb(255 255 255 / 0.02)); border: 1px solid rgb(255 255 255 / 0.1); overflow: hidden; }
+/* фото коктейля в правом нижнем углу: место под него — только у текста описания, название во всю ширину */
+.mcard.has-pic > :is(.mcard__desc, .mcard__ingr, .mcard__save) { margin-right: clamp(96px, 10vw, 118px); }
+.mcard__price { justify-self: start; display: grid; gap: 4px; padding: 10px 14px 9px; border-radius: 14px; background: var(--c); color: var(--pt-deep); box-shadow: 4px 4px 0 var(--pt-white); rotate: -2deg; margin-bottom: 6px; }
+.mcard__price b { font: 900 clamp(1.375rem, 2vw, 1.75rem) / 1 var(--font-display); letter-spacing: -0.02em; white-space: nowrap; }
+.mcard__price span { font: 700 0.75rem / 1 var(--font-text); }
+.mcard__name { font: 900 clamp(1.25rem, 1.9vw, 1.625rem) / 1.05 var(--font-display); text-transform: uppercase; letter-spacing: -0.02em; overflow-wrap: break-word; hyphens: auto; }
+.mcard__chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.mcard__chips span { padding: 6px 10px; border-radius: var(--r-pill); border: 1px solid rgb(255 255 255 / 0.2); font: 600 0.75rem / 1 var(--font-text); }
+.mcard__chips .is-per { border-color: transparent; background: rgb(255 255 255 / 0.1); }
+.mcard__desc { font-size: var(--fs-small); line-height: 1.5; color: rgb(255 255 255 / 0.82); }
+.mcard__ingr { font-size: 0.8125rem; line-height: 1.5; color: rgb(255 255 255 / 0.62); }
+.mcard__ingr b { color: rgb(255 255 255 / 0.9); font-weight: 600; }
+.mcard__save { justify-self: start; padding: 7px 12px; border-radius: var(--r-pill); background: var(--pt-lime); color: var(--pt-deep); font: 700 0.75rem / 1 var(--font-text); }
+.mcard__pic { position: absolute; right: 8px; bottom: 0; width: clamp(92px, 10vw, 120px); height: auto; filter: drop-shadow(0 18px 24px rgb(0 0 0 / 0.5)); rotate: 6deg; }
+
+/* лонги, сидр — строки «название … цена» */
+.mrows { display: grid; }
+.mrow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 16px; align-items: start; padding: 12px 0; border-top: 1px solid rgb(255 255 255 / 0.08); }
+.mrow:first-child { border-top: 0; padding-top: 2px; }
+.mrow__name { font-weight: 700; line-height: 1.3; }
+.mrow__meta { margin-top: 3px; font-size: 0.8125rem; line-height: 1.45; color: rgb(255 255 255 / 0.6); }
+.mrow__meta span { color: rgb(255 255 255 / 0.85); white-space: nowrap; }
+.mrow__price { padding: 6px 12px; border-radius: var(--r-pill); background: var(--c); color: var(--pt-deep); font: 800 0.9375rem / 1 var(--font-display); white-space: nowrap; }
+
+/* шоты — круглые «подставки» */
+.mshots { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 12px; }
+.mshot { display: grid; gap: 8px; align-content: start; padding: 20px; border-radius: var(--r-md); border: 1px solid rgb(255 255 255 / 0.12); background: rgb(255 255 255 / 0.03); transition: border-color var(--dur-fast); }
+.mshot:hover { border-color: var(--c); }
+.mshot__name { font: 900 1.25rem / 1.05 var(--font-display); text-transform: uppercase; letter-spacing: -0.02em; }
+.mshot__ingr { font-size: 0.8125rem; line-height: 1.45; color: rgb(255 255 255 / 0.7); }
+.mshot__foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 4px; }
+.mshot__foot b { padding: 6px 12px; border-radius: var(--r-pill); background: var(--c); color: var(--pt-deep); font: 800 0.9375rem / 1 var(--font-display); }
+.mshot__foot span { font-size: 0.8125rem; color: rgb(255 255 255 / 0.6); }
+
+/* крепкое — бутылка / порция */
+.mtab { display: grid; }
+.mtab__hd, .mtab__r { display: grid; grid-template-columns: minmax(0, 1fr) 78px 70px; gap: 12px; align-items: start; }
+.mtab__hd { padding-bottom: 8px; font: 600 0.6875rem / 1 var(--font-text); letter-spacing: 0.06em; text-transform: uppercase; color: rgb(255 255 255 / 0.5); }
+.mtab__hd span:not(:first-child) { text-align: right; }
+.mtab__hd span:first-child { visibility: hidden; }
+.mtab__r { padding: 12px 0; border-top: 1px solid rgb(255 255 255 / 0.08); }
+.mtab__name p:first-child { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; line-height: 1.3; }
+.mtab__abv { font-size: 0.75rem; color: rgb(255 255 255 / 0.55); white-space: nowrap; }
+.mtab__meta { margin-top: 2px; font-size: 0.75rem; color: var(--c); font-weight: 600; }
+.mtab__desc { margin-top: 4px; font-size: 0.8125rem; line-height: 1.45; color: rgb(255 255 255 / 0.62); }
+.mtab__p { text-align: right; font: 700 0.9375rem / 1.3 var(--font-display); white-space: nowrap; }
+.mtab__p--hi { color: var(--c); }
+
+/* вино — цены по объёмам */
+.mwine { display: grid; }
+.mwine__r { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 16px; align-items: start; padding: 12px 0; border-top: 1px solid rgb(255 255 255 / 0.08); }
+.mwine__r:first-child { border-top: 0; padding-top: 2px; }
+.mwine__r p:first-child { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; line-height: 1.3; }
+.mwine__pills { display: grid; gap: 6px; justify-items: end; }
+.mwine__pills span { display: inline-flex; align-items: center; gap: 8px; padding: 5px 6px 5px 12px; border-radius: var(--r-pill); background: var(--c); color: var(--pt-white); font: 800 0.9375rem / 1 var(--font-display); white-space: nowrap; }
+.mwine__pills i { padding: 4px 8px; border-radius: var(--r-pill); background: rgb(21 21 21 / 0.35); font: 600 0.6875rem / 1 var(--font-text); font-style: normal; }
+
+/* ---------- финал ---------- */
+.mcta { padding-block: clamp(72px, 9vw, 128px); color: var(--pt-white); }
+.mcta__in { display: grid; gap: 22px; justify-items: start; }
+.mcta__title { font: 900 clamp(2.25rem, 6vw, 5rem) / 0.92 var(--font-display); letter-spacing: -0.04em; text-transform: uppercase; }
+.mcta__title span { display: block; color: var(--pt-lime); }
+.mcta__row { display: flex; flex-wrap: wrap; gap: 12px; }
+.mcta__tg { background: var(--pt-sky); color: var(--pt-deep); border: var(--border); box-shadow: var(--shadow-pop); padding: 0 24px; }
+.mcta__tg:hover { translate: -2px -2px; box-shadow: var(--shadow-pop-hover); }
+.mcta__legal { font-size: 0.75rem; color: rgb(255 255 255 / 0.5); }
+
+@media (max-width: 1023px) {
+  .ms__groups--rows, .ms__groups--bottles, .ms__groups--wine { grid-template-columns: minmax(0, 1fr); }
+  body:has(.hdr:not(.is-hidden)) .mnav { top: 72px; }
+}
+@media (max-width: 767px) {
+  .menu-page [id] { scroll-margin-top: 130px; }
+  .mh__cut--1 { display: none; }
+  .mh__cut--2 { top: auto; bottom: 8px; width: 92px; opacity: 0.9; }
+  .mh__lead { max-width: 22ch; }
+  .mnav a { min-height: 42px; padding-left: 14px; font-size: 0.875rem; }
+  .mcard.has-pic > :is(.mcard__desc, .mcard__ingr, .mcard__save) { margin-right: 84px; }
+  .mcard__pic { width: 84px; }
+  .mtab__hd, .mtab__r { grid-template-columns: minmax(0, 1fr) 70px 58px; gap: 8px; }
+  .mtab__p { font-size: 0.875rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mnav { transition: none; }
+}

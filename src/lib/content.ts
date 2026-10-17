@@ -44,7 +44,7 @@ export const FORMATS = [
 /* ---------- 6. Всё для праздника ---------- */
 export const SERVICES = [
   { id: "karaoke", title: "Караоке", icon: "mic", text: "В каждом зале караоке через YouTube. Хотите как в студии — EvoBox или X-Star с планшетом и очередью песен: 1 500 ₽ на всю бронь или 500 ₽/час.", link: null },
-  { id: "kitchen", title: "Кухня & бар", icon: "glass", text: "Горячее и закуски подаём во время вечеринки или готовим к началу.", link: { label: "Смотреть меню", href: "soon" } },
+  { id: "kitchen", title: "Кухня & бар", icon: "glass", text: "Горячее и закуски подаём во время вечеринки или готовим к началу.", link: { label: "Смотреть меню", href: "menu" } },
   { id: "own-food", title: "Своя еда — можно", icon: "gift", text: "Приносите еду, торт и напитки. «Праздничная сервировка» — 100 ₽/гость; набор посуды «Комфорт» — 100 ₽/гость. Лёд всегда есть.", link: null },
   { id: "games", title: "Игры", icon: "headphone", text: "PlayStation 4/5, Nintendo Switch и настолки на каждой локации.", link: null },
   { id: "cinema", title: "Кино и трансляции", icon: "camera", text: "Большой экран и объёмный звук: фильмы, матчи, презентации (с вашего ноутбука).", link: null },
@@ -56,7 +56,7 @@ export const PROMOS = [
   { id: "bday", title: "ДР длится две недели", text: "Неделя до и неделя после вашей даты: весь бар −20%.", big: "−20%", color: "pink", link: null },
   { id: "3plus1", title: "Акция 3+1", text: "Условия уточняйте у менеджера.", big: "3+1", color: "lime", link: null, todo: true },
   { id: "mafia", title: "Мафия по четвергам", text: "Вступайте в закрытый чат и записывайтесь на игры.", big: "ЧТ", color: "violet", link: null },
-  { id: "menu", title: "Новое меню", text: "Обновили вкус, бар и формат.", big: "NEW", color: "saffron", link: null },
+  { id: "menu", title: "Новое меню", text: "Обновили вкус, бар и формат.", big: "NEW", color: "saffron", link: { label: "Смотреть меню", href: "menu" } },
   { id: "tg", title: "Telegram", text: "Подпишитесь — скидки и спецпредложения первыми.", big: "TG", color: "sky", link: { label: "Подписаться", href: "https://t.me/PARTY_TIME_SPB_BOT?start=site_promo_tg" } },
   { id: "loyalty", title: "Баллы лояльности", text: "Копите баллы за праздники и меняйте на скидки.", big: "%", color: "coral", link: null },
 ];
@@ -122,7 +122,7 @@ export const GEO: Record<string, { lat: number; lon: number }> = {
 export const FOOTER = {
   guests: [
     { label: "Залы", href: "#rooms" },
-    { label: "Кухня & Бар", href: "soon" },
+    { label: "Кухня & Бар", href: "menu" },
     { label: "Услуги", href: "soon" },
     { label: "Акции", href: "#promos" },
     { label: "Вопросы и ответы", href: "#faq" },

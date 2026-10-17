@@ -3,7 +3,7 @@ import { FOOTER, PHONE_MAIN, MESSENGERS } from "../../lib/content";
 import { tel } from "../../lib/rooms";
 import { botUrl } from "../../lib/bot";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-const href = (h: string) => (h === "soon" ? `${base}/soon` : h);
+const href = (h: string) => (h === "soon" || h === "menu" ? `${base}/${h}` : h);
 const word = ["P", "A", "R", "T", "Y", "T", "I", "M", "E"];
 const fills = ["lime", "pink", "white", "sky", "violet", "pink", "lime", "white", "saffron"];
 ---

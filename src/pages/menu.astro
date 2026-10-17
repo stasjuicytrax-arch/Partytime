@@ -1,0 +1,226 @@
+---
+// Меню «Кухня & Бар»: позиции и цены — из content/menu.json (барная карта v2, разобрана из вёрстки).
+// Оформление — в мире варианта B «Ночной лофт». Ничего не добавляем сверх данных меню.
+import Base from "../layouts/Base.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import Footer from "../components/sections/Footer.astro";
+import Messengers from "../components/Messengers.astro";
+import Icon from "../components/Icon.astro";
+import menu from "../../content/menu.json";
+import { PHONE_MAIN, tel, rub } from "../lib/rooms";
+import { botUrl } from "../lib/bot";
+import "../styles/components.css";
+import "../styles/b.css";
+import "../styles/sections.css";
+import "../styles/menu.css";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const img = (f: string) => `${base}/img/menu/${f}`;
+
+type Item = Record<string, any>;
+type Group = { title: string | null; note: string | null; kind: string; items: Item[]; cols?: string[]; promo?: { badge: string; label: string } };
+type Section = { id: string; title: string; lead: string | null; groups: Group[] };
+const sections = menu.sections as Section[];
+
+// цвет раздела — из палитры бренда
+const color: Record<string, string> = { group: "lime", longs: "sky", shots: "pink", spirits: "saffron", wine: "violet", cider: "green" };
+// «от N ₽» для полосы разделов — считаем по данным, а не переписываем руками
+const minOf = (s: Section) =>
+  Math.min(
+    ...s.groups.flatMap((g) =>
+      g.items.flatMap((i) => [i.price, i.portion, ...(i.prices ?? []).map((p: Item) => p.price)].filter((n) => typeof n === "number"))
+    )
+  );
+// «₽ за 12 шотов» → «за 12 шотов»
+const unit = (u: string | null) => (u ? u.replace(/^₽\s*/, "") : "");
+// в подзаголовке шотов «Крепкое» — ссылка на раздел
+const lead = (s: Section) =>
+  s.lead ? s.lead.replace(/«Крепкое»\s*\./, '<a href="#spirits">«Крепкое»</a>.').replace(/от 159 ₽/, "<b>от&nbsp;159&nbsp;₽</b>") : "";
+const priceHtml = (n: number) => rub(n).replace(" ₽", "&nbsp;₽");
+---
+<Base
+  title="Барная карта — Party Time"
+  description="Коктейли, сеты и пунши на компанию, шоты, крепкое бутылкой или порцией, вино и сидр. Цены бара Party Time."
+  bodyClass="vb menu-page"
+>
+  <SiteHeader variant="b" home={false} />
+  <main id="main" tabindex="-1">
+    <section class="mh" aria-labelledby="mh-title">
+      <div class="container mh__in">
+        <p class="sec__label">Кухня &amp; Бар</p>
+        <h1 id="mh-title" class="mh__title">Барная <span>карта</span></h1>
+        <p class="mh__lead">От сета шотов на&nbsp;весь стол до&nbsp;бокала на&nbsp;одного.</p>
+        <p class="mh__kitchen">
+          Меню кухни расскажет менеджер:
+          <a class="num" href={tel(PHONE_MAIN)}>{PHONE_MAIN}</a> или <a href={botUrl("site_menu_kitchen")} target="_blank" rel="noopener">в&nbsp;Telegram</a>.
+        </p>
+        {menu.hero.map((f, i) => <img class={`mh__cut mh__cut--${i + 1}`} src={img(f)} alt="" width="240" height="340" decoding="async" />)}
+      </div>
+    </section>
+
+    <nav class="mnav" aria-label="Разделы меню" data-mnav>
+      <div class="container mnav__in">
+        {sections.map((s) => (
+          <a href={`#${s.id}`} style={`--c: var(--pt-${color[s.id]})`} data-mnav-link={s.id}>
+            {s.title}<b class="num">от&nbsp;<Fragment set:html={priceHtml(minOf(s))} /></b>
+          </a>
+        ))}
+      </div>
+    </nav>
+
+    {sections.map((s) => (
+      <section class={`ms ms--${s.groups[0]?.kind}`} id={s.id} aria-labelledby={`${s.id}-t`} style={`--c: var(--pt-${color[s.id]})`} data-place={`menu_${s.id}`}>
+        <div class="container">
+          <header class="ms__head">
+            <h2 id={`${s.id}-t`} class="ms__title">{s.title}</h2>
+            {s.lead && <p class="ms__lead" set:html={lead(s)} />}
+          </header>
+
+          <div class={`ms__groups ms__groups--${s.groups[0]?.kind}`}>
+            {s.groups.map((g) => (
+              <div class={`mg mg--${g.kind}`}>
+                {g.title && (
+                  <h3 class="mg__title">
+                    {g.title}
+                    {g.note && <span class="mg__note">{g.note}</span>}
+                    {g.promo && <span class="mg__promo"><b>{g.promo.badge}</b>{g.promo.label}</span>}
+                  </h3>
+                )}
+
+                {g.kind === "cards" && (
+                  <div class="mcards">
+                    {g.items.map((i) => (
+                      <article class={`mcard${i.pic ? " has-pic" : ""}`}>
+                        <p class="mcard__price"><b class="num" set:html={priceHtml(i.price)} />{unit(i.unit) && <span>{unit(i.unit)}</span>}</p>
+                        <h4 class="mcard__name">{i.name}</h4>
+                        {(i.abv || i.per) && (
+                          <p class="mcard__chips">
+                            {i.abv && <span>{i.abv}</span>}
+                            {i.per && <span class="is-per">{i.per}</span>}
+                          </p>
+                        )}
+                        {i.desc && <p class="mcard__desc">{i.desc}</p>}
+                        <p class="mcard__ingr">{i.ingr} {i.vol && <b>{i.vol}</b>}</p>
+                        {i.save && <p class="mcard__save">{i.save}</p>}
+                        {i.pic && <img class="mcard__pic" src={img(i.pic)} alt="" width="200" height="300" loading="lazy" decoding="async" />}
+                      </article>
+                    ))}
+                  </div>
+                )}
+
+                {g.kind === "rows" && (
+                  <ul class="mrows" role="list">
+                    {g.items.map((i) => (
+                      <li class="mrow">
+                        <div class="mrow__l">
+                          <p class="mrow__name">{i.name}</p>
+                          {(i.ingr || i.vol) && <p class="mrow__meta">{i.ingr} {i.vol && <span class="num">{i.vol}</span>}</p>}
+                        </div>
+                        <p class="mrow__price num" set:html={priceHtml(i.price)} />
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {g.kind === "shots" && (
+                  <ul class="mshots" role="list">
+                    {g.items.map((i) => (
+                      <li class="mshot">
+                        <p class="mshot__name">{i.name}</p>
+                        <p class="mshot__ingr">{i.ingr}</p>
+                        <p class="mshot__foot"><b class="num" set:html={priceHtml(i.price)} /><span class="num">{i.vol}</span></p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {g.kind === "bottles" && (
+                  <div class="mtab" role="table" aria-label={g.title ?? s.title}>
+                    <div class="mtab__hd" role="row">
+                      <span role="columnheader">Позиция</span>
+                      {(g.cols ?? ["бутылка", "порция"]).map((c) => <span role="columnheader">{c}</span>)}
+                    </div>
+                    {g.items.map((i) => (
+                      <div class="mtab__r" role="row">
+                        <div class="mtab__name" role="cell">
+                          <p><b>{i.name}</b>{i.abv && <span class="mtab__abv">{i.abv}</span>}</p>
+                          <p class="mtab__meta">{[i.origin, i.vol].filter(Boolean).join(" · ")}</p>
+                          {i.desc && <p class="mtab__desc">{i.desc}</p>}
+                        </div>
+                        <p class="mtab__p num" role="cell" set:html={priceHtml(i.bottle)} />
+                        <p class="mtab__p mtab__p--hi num" role="cell" set:html={priceHtml(i.portion)} />
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {g.kind === "wine" && (
+                  <ul class="mwine" role="list">
+                    {g.items.map((i) => (
+                      <li class="mwine__r">
+                        <div>
+                          <p><b>{i.name}</b>{i.abv && <span class="mtab__abv">{i.abv}</span>}</p>
+                          {i.origin && <p class="mtab__meta">{i.origin}</p>}
+                          {i.desc && <p class="mtab__desc">{i.desc}</p>}
+                        </div>
+                        <p class="mwine__pills">
+                          {i.prices.map((p: Item) => <span class="num"><i>{p.vol}</i><Fragment set:html={priceHtml(p.price)} /></span>)}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    ))}
+
+    <section class="mcta" aria-labelledby="mcta-t" data-place="menu_cta">
+      <div class="container mcta__in">
+        <h2 id="mcta-t" class="mcta__title">Бар ждёт <span>вашу компанию</span></h2>
+        <div class="mcta__row">
+          <a class="btn btn--primary" href={`${base}/#booking`}><span>Забронировать зал</span><span class="btn__ico"><Icon name="arrow" size={20} /></span></a>
+          <a class="btn mcta__tg" href={botUrl("site_menu")} target="_blank" rel="noopener"><span>Спросить в&nbsp;Telegram</span></a>
+        </div>
+        <p class="mcta__legal">Цены указаны в&nbsp;рублях. Продажа алкоголя лицам младше 18&nbsp;лет запрещена.</p>
+      </div>
+    </section>
+  </main>
+  <Footer />
+  <Messengers />
+</Base>
+
+<script>
+  import { initSmoothScroll } from "../scripts/motion";
+  initSmoothScroll();
+
+  // активный раздел подсвечивается в полосе разделов, полоса докручивается до него
+  const links = [...document.querySelectorAll<HTMLAnchorElement>("[data-mnav-link]")];
+  const bar = document.querySelector<HTMLElement>(".mnav__in");
+  const setActive = (id: string) => {
+    links.forEach((a) => {
+      const on = a.dataset.mnavLink === id;
+      a.toggleAttribute("aria-current", on);
+      if (on && bar) bar.scrollTo({ left: a.offsetLeft - 16, behavior: "smooth" });
+    });
+  };
+  const io = new IntersectionObserver(
+    (en) => en.forEach((e) => e.isIntersecting && setActive((e.target as HTMLElement).id)),
+    { rootMargin: "-45% 0px -50% 0px" }
+  );
+  document.querySelectorAll<HTMLElement>("section.ms").forEach((s) => io.observe(s));
+
+  // падающие буквы в подвале — как на главной, лениво
+  const stage = document.querySelector<HTMLElement>("[data-letters]");
+  if (stage) {
+    const lio = new IntersectionObserver(async (en) => {
+      if (!en[0].isIntersecting) return;
+      lio.disconnect();
+      const { initLetters } = await import("../scripts/fx/letters");
+      initLetters(stage);
+    }, { rootMargin: "400px" });
+    lio.observe(stage);
+  }
+</script>

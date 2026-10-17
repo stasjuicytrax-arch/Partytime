@@ -1,6 +1,9 @@
 ---
 import Icon from "../Icon.astro";
 import { PROMOS } from "../../lib/content";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+// внешние ссылки — в новой вкладке, свои страницы (menu) — внутри сайта
+const ext = (h: string) => /^https?:/.test(h);
 ---
 <section class="sec promos" id="promos" aria-labelledby="promos-title">
   <div class="container">
@@ -25,7 +28,7 @@ import { PROMOS } from "../../lib/content";
             </span>
           </button>
           {p.link && (
-            <a class="coupon__link" href={p.link.href} target="_blank" rel="noopener">{p.link.label} <Icon name="arrow" size={16} /></a>
+            <a class="coupon__link" href={ext(p.link.href) ? p.link.href : `${base}/${p.link.href}`} target={ext(p.link.href) ? "_blank" : undefined} rel={ext(p.link.href) ? "noopener" : undefined}>{p.link.label} <Icon name="arrow" size={16} /></a>
           )}
         </li>
       ))}
