@@ -266,15 +266,36 @@ export function initCatalog(root: HTMLElement) {
     const same = data.filter((x) => x.group === r.group && x.slug !== r.slug);
     return [...same.filter((x) => x.loc === r.loc), ...same.filter((x) => x.loc !== r.loc)].slice(0, 4);
   }
+  // «Залы поменьше»: ближайшая меньшая группа вместимости, потом ещё меньше; своя локация — первой
+  const groupOrder = ["2-4", "6-8", "8-10", "15-20"];
+  function smallerThan(r: ClientRoom) {
+    const gi = groupOrder.indexOf(r.group);
+    return data
+      .filter((x) => groupOrder.indexOf(x.group) < gi)
+      .sort((a, b) => groupOrder.indexOf(b.group) - groupOrder.indexOf(a.group) || Number(b.loc === r.loc) - Number(a.loc === r.loc))
+      .slice(0, 4);
+  }
+  let simTab: "same" | "smaller" = "same";
+  const simTabs = [...dialog.querySelectorAll<HTMLButtonElement>("[data-simtab]")];
+  // значки для карточек «Похожие залы»: гости и площадь
+  const icoGuests = '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 10a7 7 0 0 1 14 0M16 3.5a4 4 0 0 1 0 7.5M18 14a6 6 0 0 1 4 7"/></svg>';
+  const icoArea = '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M3 3h18v18H3zM3 9h4M3 15h2M9 3v4M15 3v2"/></svg>';
   const esc = (t: string) => t.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
   function renderSimilar(r: ClientRoom) {
-    const list = similarTo(r);
-    simBox.hidden = list.length === 0;
+    const lists = { same: similarTo(r), smaller: smallerThan(r) };
+    // пустую вкладку не показываем; если выбранная опустела — переключаемся на другую
+    simTabs.forEach((t) => (t.hidden = lists[t.dataset.simtab as "same" | "smaller"].length === 0));
+    if (!lists[simTab].length) simTab = lists.same.length ? "same" : "smaller";
+    simTabs.forEach((t) => t.setAttribute("aria-selected", String(t.dataset.simtab === simTab)));
+    simList.setAttribute("aria-labelledby", `rm-tab-${simTab}`);
+    const list = lists[simTab];
+    simBox.hidden = !lists.same.length && !lists.smaller.length;
     simList.innerHTML = list
       .map(
         (x) => `<li><button type="button" class="rm__sim-card" data-sim="${x.slug}" style="--g: var(--c-cap-${x.group})">
           <img src="${x.images[0].src.replace("-960.", "-480.")}" alt="" width="480" height="320" loading="lazy" decoding="async">
           <span class="rm__sim-title">${esc(x.title)}</span>
+          <span class="rm__sim-facts"><span>${icoGuests}${esc(x.capacity)}</span>${x.area ? `<span>${icoArea}${x.area}&nbsp;м²</span>` : ""}</span>
           <span class="rm__sim-meta">${esc(x.locName)} · от ${esc(x.price)}</span>
         </button></li>`
       )
@@ -284,8 +305,28 @@ export function initCatalog(root: HTMLElement) {
     const b = (e.target as HTMLElement).closest<HTMLButtonElement>("[data-sim]");
     if (!b || !current) return;
     const to = b.dataset.sim!;
-    reachGoal("similar_room_click", { from: current.slug, to });
+    reachGoal("similar_room_click", { from: current.slug, to, list: simTab });
     swapTo(to);
+  });
+
+  simTabs.forEach((t) =>
+    t.addEventListener("click", () => {
+      if (!current || simTab === t.dataset.simtab) return;
+      simTab = t.dataset.simtab as "same" | "smaller";
+      renderSimilar(current);
+      if (!reduced()) gsap.fromTo(simList.children, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3, stagger: 0.04, ease: "power2.out", clearProps: "all" });
+    })
+  );
+  // стрелки влево/вправо переключают вкладки
+  dialog.querySelector(".rm__simtabs")?.addEventListener("keydown", (e) => {
+    const k = (e as KeyboardEvent).key;
+    if (k !== "ArrowLeft" && k !== "ArrowRight") return;
+    e.stopPropagation();
+    const vis = simTabs.filter((t) => !t.hidden);
+    const i = vis.findIndex((t) => t.dataset.simtab === simTab);
+    const nx = vis[(i + (k === "ArrowRight" ? 1 : -1) + vis.length) % vis.length];
+    nx.focus();
+    nx.click();
   });
 
   const focusTitle = () => {

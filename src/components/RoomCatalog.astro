@@ -189,8 +189,12 @@ const sizes = "(max-width: 559px) 112vw, (max-width: 767px) 56vw, (max-width: 10
       <div class="rm__thumbs" data-thumbs role="group" aria-label="Фотографии зала"></div>
       <!-- ПК: ряд под фото, виден сразу; телефон: после описания -->
       <div class="rm__similar" data-similar>
-        <h4>Похожие залы</h4>
-        <ul class="rm__sim" data-sim-list></ul>
+        <!-- две вкладки: та же вместимость / залы на компанию поменьше -->
+        <div class="rm__simtabs" role="tablist" aria-label="Другие залы">
+          <button type="button" role="tab" id="rm-tab-same" aria-controls="rm-sim-list" aria-selected="true" data-simtab="same">Похожие залы</button>
+          <button type="button" role="tab" id="rm-tab-smaller" aria-controls="rm-sim-list" aria-selected="false" data-simtab="smaller">Залы поменьше</button>
+        </div>
+        <ul class="rm__sim" id="rm-sim-list" role="tabpanel" aria-labelledby="rm-tab-same" data-sim-list></ul>
       </div>
       <div class="rm__info">
         <div class="rm__body">
