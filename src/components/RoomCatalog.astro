@@ -184,6 +184,10 @@ const sizes = "(max-width: 559px) 112vw, (max-width: 767px) 56vw, (max-width: 10
           <Icon name="next" />
         </button>
         <span class="rm__count num" data-counter></span>
+        <!-- на последнем фото: не впечатлил зал — сразу к следующему -->
+        <button type="button" class="rm__nextroom" data-next-room="photo" hidden>
+          <span>Следующий зал:</span> <b data-next-name></b><Icon name="next" size={18} />
+        </button>
       </div>
       <!-- превью всех фото зала под большим фото -->
       <div class="rm__thumbs" data-thumbs role="group" aria-label="Фотографии зала"></div>
@@ -197,6 +201,12 @@ const sizes = "(max-width: 559px) 112vw, (max-width: 767px) 56vw, (max-width: 10
         <ul class="rm__sim" id="rm-sim-list" role="tabpanel" aria-labelledby="rm-tab-same" data-sim-list></ul>
       </div>
       <div class="rm__info">
+        <!-- листалка залов: в том же порядке и с теми же фильтрами, что в каталоге -->
+        <div class="rm__pager" data-pager>
+          <button type="button" data-room-step="-1" aria-label="Предыдущий зал"><Icon name="prev" size={18} /></button>
+          <span class="num" data-pager-count aria-live="polite"></span>
+          <button type="button" data-room-step="1" aria-label="Следующий зал"><Icon name="next" size={18} /></button>
+        </div>
         <div class="rm__body">
         <p class="rm__loc" data-f="loc"></p>
         <h3 id="rm-title" class="rm__title" data-f="title"></h3>
@@ -213,6 +223,16 @@ const sizes = "(max-width: 559px) 112vw, (max-width: 767px) 56vw, (max-width: 10
           </ul>
         </div>
         <p class="rm__promo">{PROMO}</p>
+        <!-- в конце описания — следующий зал -->
+        <button type="button" class="rm__nextcard" data-next-room="card">
+          <img data-next-img alt="" width="480" height="320" loading="lazy" decoding="async" />
+          <span class="rm__nextcard-text">
+            <span class="rm__nextcard-label">Следующий зал</span>
+            <b data-next-name></b>
+            <span class="rm__sim-facts" data-next-facts></span>
+          </span>
+          <Icon name="next" size={22} />
+        </button>
         </div>
         <div class="rm__foot" data-place="room_modal">
           <a class="btn btn--primary rm__book" href="#booking" data-book>

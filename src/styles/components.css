@@ -371,7 +371,28 @@
 .rm__count { position: absolute; left: 16px; bottom: 16px; z-index: 2; padding: 6px 12px; border-radius: var(--r-pill); font: 700 0.8125rem / 1 var(--font-text); }
 .rm__count:empty { display: none; }
 /* правая колонка: описание прокручивается, кнопки — под ним */
-.rm__info { grid-area: info; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
+.rm__info { position: relative; grid-area: info; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
+/* листание залов: «‹ 3 из 18 ›» — на уровне крестика, слева */
+.rm__pager { position: absolute; top: 20px; left: clamp(24px, 2.6vw, 40px); z-index: 4; display: flex; align-items: center; gap: 6px; }
+.rm__pager[hidden] { display: none; }
+.rm__pager button { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgb(127 127 127 / 0.4); background: none; color: inherit; transition: background-color var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast); }
+.rm__pager button:hover { background: var(--pt-lime); border-color: var(--pt-lime); color: var(--pt-deep); }
+.rm__pager span { min-width: 64px; text-align: center; font: 700 0.8125rem / 1 var(--font-text); opacity: 0.8; }
+/* последнее фото: кнопка «Следующий зал» */
+.rm__nextroom { position: absolute; right: 16px; bottom: 16px; z-index: 3; display: inline-flex; align-items: center; gap: 6px; max-width: calc(100% - 120px); min-height: 44px; padding: 0 12px 0 16px; border: var(--border); border-radius: var(--r-pill); background: var(--pt-lime); color: var(--pt-deep); font: 600 0.875rem / 1 var(--font-text); box-shadow: var(--shadow-pop); white-space: nowrap; }
+.rm__nextroom b { overflow: hidden; text-overflow: ellipsis; font-weight: 800; }
+.rm__nextroom svg { flex: none; }
+.rm__nextroom:hover { translate: -2px -2px; box-shadow: var(--shadow-pop-hover); }
+.rm__nextroom[hidden] { display: none; }
+/* конец описания: карточка следующего зала */
+.rm__nextcard { display: grid; grid-template-columns: 104px minmax(0, 1fr) auto; gap: 14px; align-items: center; width: 100%; margin-top: 4px; padding: 10px 16px 10px 10px; border: 1px solid rgb(127 127 127 / 0.3); border-radius: 18px; background: none; color: inherit; text-align: left; transition: border-color var(--dur-fast), translate var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out); }
+.rm__nextcard:hover, .rm__nextcard:focus-visible { border-color: var(--g); translate: -2px -3px; box-shadow: 5px 5px 0 var(--g); }
+.rm__nextcard[hidden] { display: none; }
+.rm__nextcard img { width: 104px; height: 70px; border-radius: 12px; object-fit: cover; }
+.rm__nextcard-text { display: grid; gap: 4px; min-width: 0; }
+.rm__nextcard-label { font: 700 0.6875rem / 1 var(--font-text); letter-spacing: 0.06em; text-transform: uppercase; color: var(--g, var(--pt-lime)); }
+.rm__nextcard b { font: 900 1.0625rem / 1.1 var(--font-display); text-transform: uppercase; overflow-wrap: anywhere; }
+.rm__nextcard .rm__sim-facts { padding: 0; }
 /* описание прокручивается само (колесо мыши работает: окно помечено data-lenis-prevent) */
 .rm__body { flex: 1 1 auto; min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 16px; padding: clamp(24px, 2.6vw, 40px); padding-top: clamp(72px, 6vw, 84px); overflow: auto; overscroll-behavior: contain; }
 .rm__loc { font: 600 var(--fs-label) / 1 var(--font-text); letter-spacing: 0.08em; text-transform: uppercase; }
@@ -467,6 +488,8 @@
   .rm__panel { grid-template-columns: 1fr; grid-template-rows: none; grid-template-areas: "gallery" "thumbs" "info" "similar"; height: auto; min-height: 100%; border-radius: 0 !important; border: 0 !important; box-shadow: none !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
   .rm__gallery { aspect-ratio: 4 / 3; min-height: 0; }
   .rm__info { display: block; }
+  .rm__pager { position: static; padding: 16px 20px 0; }
+  .rm__nextroom { right: 12px; bottom: 12px; max-width: calc(100% - 100px); }
   .rm__body { padding: 24px 20px 24px; overflow: visible; }
   .rm__similar { padding: 0 20px 112px; }
   .rm__sim { grid-template-columns: repeat(2, minmax(0, 1fr)); }

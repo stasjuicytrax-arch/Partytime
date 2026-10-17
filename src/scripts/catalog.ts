@@ -257,6 +257,10 @@ export function initCatalog(root: HTMLElement) {
   const simBox = dialog.querySelector<HTMLElement>("[data-similar]")!;
   const roomTg = dialog.querySelector<HTMLAnchorElement>("[data-room-tg]")!;
   const panel = dialog.querySelector<HTMLElement>(".rm__panel")!;
+  const pager = dialog.querySelector<HTMLElement>("[data-pager]")!;
+  const pagerCount = dialog.querySelector<HTMLElement>("[data-pager-count]")!;
+  const nextPhotoBtn = dialog.querySelector<HTMLButtonElement>('[data-next-room="photo"]')!;
+  const nextCard = dialog.querySelector<HTMLButtonElement>('[data-next-room="card"]')!;
   let current: ClientRoom | null = null;
   let pushed = false;
   let slide = 0;
@@ -380,7 +384,50 @@ export function initCatalog(root: HTMLElement) {
     track.querySelectorAll("img").forEach((im, k) => {
       if (Math.abs(k - slide) <= 1) im.loading = "eager";
     });
+    // последнее фото — предлагаем следующий зал
+    nextPhotoBtn.hidden = slide !== n - 1 || roomSeq().length < 2;
   }
+
+  /* ---------- листание залов внутри окна ---------- */
+  // порядок — как в каталоге с текущими фильтрами; если зал открыт по ссылке вне фильтра — все залы его локации
+  function roomSeq(): ClientRoom[] {
+    if (!current) return [];
+    const inFilter = data.filter((x) => x.loc === state.loc && (state.group === "all" || x.group === state.group));
+    return inFilter.some((x) => x.slug === current!.slug) ? inFilter : data.filter((x) => x.loc === current!.loc);
+  }
+  function neighbor(dir: 1 | -1) {
+    const seq = roomSeq();
+    const i = seq.findIndex((x) => x.slug === current?.slug);
+    return seq.length > 1 ? seq[(i + dir + seq.length) % seq.length] : null;
+  }
+  function renderPager(r: ClientRoom) {
+    const seq = roomSeq();
+    const i = seq.findIndex((x) => x.slug === r.slug);
+    pager.hidden = seq.length < 2;
+    pagerCount.textContent = `${i + 1} из ${seq.length}`;
+    const nx = neighbor(1);
+    nextCard.hidden = !nx;
+    if (!nx) return;
+    dialog.querySelectorAll<HTMLElement>("[data-next-name]").forEach((el) => (el.textContent = nx.title));
+    const im = nextCard.querySelector<HTMLImageElement>("[data-next-img]")!;
+    im.src = nx.images[0].src.replace("-960.", "-480.");
+    nextCard.style.setProperty("--g", `var(--c-cap-${nx.group})`);
+    nextCard.querySelector<HTMLElement>("[data-next-facts]")!.innerHTML =
+      `<span>${icoGuests}${esc(nx.capacity)}</span>` + (nx.area ? `<span>${icoArea}${nx.area}&nbsp;м²</span>` : "") + `<span>от ${esc(nx.price)}</span>`;
+  }
+  function stepRoom(dir: 1 | -1, place: string) {
+    const to = neighbor(dir);
+    if (!to || !current) return;
+    reachGoal("room_next", { from: current.slug, to: to.slug, dir, place });
+    swapTo(to.slug);
+  }
+  pager.addEventListener("click", (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLButtonElement>("[data-room-step]");
+    if (b) stepRoom(Number(b.dataset.roomStep) as 1 | -1, "pager");
+  });
+  dialog.querySelectorAll<HTMLButtonElement>("[data-next-room]").forEach((b) =>
+    b.addEventListener("click", () => stepRoom(1, b.dataset.nextRoom!))
+  );
 
   function open(slug: string, push = true) {
     const r = bySlug.get(slug);
@@ -412,6 +459,7 @@ export function initCatalog(root: HTMLElement) {
     const multi = r.images.length > 1;
     thumbs.hidden = !multi;
     prev.hidden = next.hidden = !multi;
+    renderPager(r);
     go(0, true);
     renderSimilar(r);
     roomTg.href = botUrl(roomTag(r.slug));

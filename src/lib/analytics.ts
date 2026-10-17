@@ -19,6 +19,7 @@ export type Goal =
   | "bday_dates_click"
   | "room_open"
   | "similar_room_click"
+  | "room_next"
   | `form_step_${1 | 2 | 3 | 4 | 5 | 6}`
   | "form_submit"
   | "form_to_telegram";
