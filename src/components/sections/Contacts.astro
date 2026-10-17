@@ -30,7 +30,6 @@ const map = `https://yandex.ru/map-widget/v1/?ll=${c.lon},${c.lat}&z=14&pt=${pts
         {locations.map((l, i) => (
           <article class={`loc-card loc-card--${l.id}`}>
             <span class="loc-card__pin num" aria-hidden="true">{i + 1}</span>
-            {!l.active && <span class="loc-card__soon">Скоро на&nbsp;сайте</span>}
             <h3>{l.name}</h3>
             <p class="loc-card__addr">{l.address}</p>
             <p class="loc-card__metro"><Icon name="pin" size={16} /> м.&nbsp;{l.metro}</p>

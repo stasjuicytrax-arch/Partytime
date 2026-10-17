@@ -78,6 +78,8 @@ export const FORM = {
   places: [
     { id: "dumskaya", label: "Думская" },
     { id: "mayakovskaya", label: "Маяковская" },
+    { id: "leninskiy", label: "Ленинский" },
+    { id: "komendantskiy", label: "Комендантский" },
     { id: "any", label: "Не важно, подберите" },
   ],
   /** шаг 1 формы — один тап; icon — 3D-иконка из public/img/3d */

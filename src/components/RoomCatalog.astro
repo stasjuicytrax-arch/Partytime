@@ -13,7 +13,10 @@ import {
   roomAlt,
   roomsClientData,
   totalRooms,
+  tel,
+  PHONE_MAIN,
 } from "../lib/rooms";
+import { botUrl } from "../lib/bot";
 
 interface Props {
   variant: "a" | "b";
@@ -45,39 +48,24 @@ const sizes = "(max-width: 559px) 112vw, (max-width: 767px) 56vw, (max-width: 10
       <div class="rc__scroll" data-scroll-hint>
       <div class="rc__locs" role="group" aria-label="Локация">
         {
-          locations.map((l) =>
-            l.active ? (
-              <button
-                type="button"
-                class="loc"
-                data-loc={l.id}
-                aria-pressed={l.id === DEFAULT_LOC ? "true" : "false"}
-                style={`--loc: var(--c-loc-${l.id})`}
-              >
-                <span class="loc__name">{l.name}</span>
-                <span class="loc__meta">{l.rooms} залов · {l.address}</span>
-              </button>
-            ) : (
-              <button
-                type="button"
-                class="loc loc--soon"
-                aria-disabled="true"
-                aria-describedby={`tip-${l.id}`}
-              >
-                <span class="loc__name">{l.name}</span>
-                <span class="loc__badge">скоро</span>
-                <span class="loc__tip" role="tooltip" id={`tip-${l.id}`}>
-                  Скоро на&nbsp;сайте
-                </span>
-              </button>
-            )
-          )
+          locations.map((l) => (
+            <button
+              type="button"
+              class="loc"
+              data-loc={l.id}
+              aria-pressed={l.id === DEFAULT_LOC ? "true" : "false"}
+              style={`--loc: var(--c-loc-${l.id})`}
+            >
+              <span class="loc__name">{l.name}</span>
+              <span class="loc__meta">{l.active ? `${l.rooms} залов · ${l.address}` : l.address}</span>
+            </button>
+          ))
         }
       </div>
         <span class="rc__hint" aria-hidden="true"><Icon name="next" size={18} /></span>
       </div>
 
-      <div class="rc__scroll" data-scroll-hint>
+      <div class="rc__scroll" data-scroll-hint data-filters-wrap>
       <div class="rc__filters" role="group" aria-label="Сколько гостей">
         <button type="button" class="chip" data-group="all" aria-pressed="true">
           Все <span class="chip__n num" data-count="all">{countIn(DEFAULT_LOC)}</span>
@@ -160,13 +148,29 @@ const sizes = "(max-width: 559px) 112vw, (max-width: 767px) 56vw, (max-width: 10
       </button>
     </div>
 
+    <!-- локации, залы которых ещё не в каталоге: адрес и быстрый контакт [уточнить: список залов] -->
+    {locations.filter((l) => !l.active).map((l) => (
+      <div class="rc__newloc" data-newloc={l.id} data-place={`rooms_${l.id}`} hidden style={`--loc: var(--c-loc-${l.id})`}>
+        <div class="rc__newloc-text">
+          <p class="rc__newloc-name">{l.name}</p>
+          <p class="rc__newloc-addr">{l.address} · м.&nbsp;{l.metro}</p>
+          <p>Подберём зал на&nbsp;{l.name === "Ленинский" ? "Ленинском" : "Комендантском"} под вашу компанию&nbsp;— напишите в&nbsp;Telegram или позвоните.</p>
+        </div>
+        <div class="rc__newloc-cta">
+          <a class="btn btn--primary" href={botUrl(`site_rooms_${l.id}`)} target="_blank" rel="noopener"><span>Подобрать зал в&nbsp;Telegram</span><span class="btn__ico"><Icon name="arrow" size={18} /></span></a>
+          <a class="btn btn--ghost num" href={tel(PHONE_MAIN)}><Icon name="phone" size={18} />{PHONE_MAIN}</a>
+          <a class="rc__newloc-book" href="#booking" data-newloc-book={l.id}>Оставить заявку на&nbsp;этой локации →</a>
+        </div>
+      </div>
+    ))}
+
     <div class="rc__empty" data-empty hidden>
       <p>На&nbsp;этой локации нет залов для такой компании.</p>
       <button type="button" class="chip" data-reset>Показать все залы</button>
     </div>
   </div>
 
-  <dialog class={`rm rm--${variant}`} aria-labelledby="rm-title" data-modal>
+  <dialog class={`rm rm--${variant}`} aria-labelledby="rm-title" data-modal data-lenis-prevent>
     <div class="rm__panel">
       <button type="button" class="rm__close" data-close aria-label="Закрыть">
         <Icon name="close" />
@@ -181,7 +185,13 @@ const sizes = "(max-width: 559px) 112vw, (max-width: 767px) 56vw, (max-width: 10
         </button>
         <span class="rm__count num" data-counter></span>
       </div>
+      <!-- ПК: ряд под фото, виден сразу; телефон: после описания -->
+      <div class="rm__similar" data-similar>
+        <h4>Похожие залы</h4>
+        <ul class="rm__sim" data-sim-list></ul>
+      </div>
       <div class="rm__info">
+        <div class="rm__body">
         <p class="rm__loc" data-f="loc"></p>
         <h3 id="rm-title" class="rm__title" data-f="title"></h3>
         <p class="rm__tagline" data-f="tagline"></p>
@@ -197,9 +207,6 @@ const sizes = "(max-width: 559px) 112vw, (max-width: 767px) 56vw, (max-width: 10
           </ul>
         </div>
         <p class="rm__promo">{PROMO}</p>
-        <div class="rm__similar" data-similar>
-          <h4>Похожие залы</h4>
-          <ul class="rm__sim" data-sim-list></ul>
         </div>
         <div class="rm__foot" data-place="room_modal">
           <a class="btn btn--primary rm__book" href="#booking" data-book>

@@ -77,7 +77,7 @@ const icon3d = (n: string) => `${base}/img/3d/${n}-dynamic-premium.webp`;
           <legend tabindex="-1">{steps[2]}</legend>
           <div class="bk__group" role="radiogroup" aria-label="Локация">
             {FORM.places.map((p, i) => (
-              <label class="bk__chip bk__chip--big"><input type="radio" name="place" value={p.id} checked={i === 2} /><span>{p.label}</span></label>
+              <label class="bk__chip bk__chip--big"><input type="radio" name="place" value={p.id} checked={p.id === "any"} /><span>{p.label}</span></label>
             ))}
           </div>
           <p class="bk__hint">Зал можно выбрать в&nbsp;<a href="#rooms">каталоге</a> — кнопка «Забронировать этот зал» подставит его сюда.</p>

@@ -66,6 +66,9 @@ export function initCatalog(root: HTMLElement) {
   const chips = [...root.querySelectorAll<HTMLButtonElement>(".chip[data-group]")];
   const status = root.querySelector<HTMLElement>("[data-status]")!;
   const empty = root.querySelector<HTMLElement>("[data-empty]")!;
+  // локации без залов в каталоге: вместо сетки — карточка с адресом и контактом
+  const newLocs = [...root.querySelectorAll<HTMLElement>("[data-newloc]")];
+  const filtersWrap = root.querySelector<HTMLElement>("[data-filters-wrap]");
 
   const params = new URLSearchParams(location.search);
   const state = {
@@ -109,13 +112,17 @@ export function initCatalog(root: HTMLElement) {
         showFirst(el);
       }
     });
-    empty.hidden = shown > 0;
+    const isNew = newLocs.some((n) => n.dataset.newloc === state.loc);
+    newLocs.forEach((n) => (n.hidden = n.dataset.newloc !== state.loc));
+    if (filtersWrap) filtersWrap.hidden = isNew;
+    grid0.hidden = isNew;
+    empty.hidden = shown > 0 || isNew;
     const rest = shown - visible;
     more.hidden = rest <= 0;
     grid0.classList.toggle("is-clipped", rest > 0);
     moreLabel.textContent = `Показать ещё ${rest} ${plural(rest, ["зал", "зала", "залов"])}`;
     const locName = locBtns.find((b) => b.dataset.loc === state.loc)?.querySelector(".loc__name")?.textContent;
-    status.textContent = `${locName}: ${shown} ${plural(shown, ["зал", "зала", "залов"])}`;
+    status.textContent = isNew ? `${locName}: подберём зал по телефону или в Telegram` : `${locName}: ${shown} ${plural(shown, ["зал", "зала", "залов"])}`;
 
     if (flipState) {
       Flip.from(flipState, {
@@ -140,6 +147,10 @@ export function initCatalog(root: HTMLElement) {
       state.expanded = false;
       apply();
     })
+  );
+  // «Оставить заявку на этой локации» → форма с выбранной локацией
+  root.querySelectorAll<HTMLAnchorElement>("[data-newloc-book]").forEach((a) =>
+    a.addEventListener("click", () => window.dispatchEvent(new CustomEvent("pt:booking", { detail: { loc: a.dataset.newlocBook } })))
   );
   chips.forEach((c) =>
     c.addEventListener("click", () => {
@@ -282,11 +293,11 @@ export function initCatalog(root: HTMLElement) {
     if (reduced()) {
       open(slug);
       dialog.scrollTo({ top: 0 });
-      panel.querySelector<HTMLElement>(".rm__info")?.scrollTo({ top: 0 });
+      panel.querySelector<HTMLElement>(".rm__body")?.scrollTo({ top: 0 });
       focusTitle();
       return;
     }
-    const parts = panel.querySelectorAll(".rm__gallery, .rm__info > *:not(.rm__foot)");
+    const parts = panel.querySelectorAll(".rm__gallery, .rm__body, .rm__sim");
     gsap.to(parts, {
       opacity: 0,
       x: -24,
@@ -296,7 +307,7 @@ export function initCatalog(root: HTMLElement) {
       onComplete: () => {
         open(slug);
         dialog.scrollTo({ top: 0 });
-        panel.querySelector<HTMLElement>(".rm__info")?.scrollTo({ top: 0 });
+        panel.querySelector<HTMLElement>(".rm__body")?.scrollTo({ top: 0 });
         focusTitle();
         gsap.fromTo(parts, { opacity: 0, x: 24 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out", stagger: 0.02, clearProps: "opacity,transform" });
       },

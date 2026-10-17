@@ -57,6 +57,12 @@ const hasMax = !!MESSENGERS.max.href;
     document.addEventListener("click", (e) => {
       if (root.classList.contains("is-open") && !root.contains(e.target as Node)) toggle(false);
     });
+    // пока виден первый экран, кнопка компактная
+    const hero = document.querySelector("[data-hero-a], [data-hero-b]");
+    if (hero) {
+      root.classList.add("is-compact");
+      new IntersectionObserver((en) => root.classList.toggle("is-compact", en[0].intersectionRatio > 0.35), { threshold: [0, 0.35, 0.6, 1] }).observe(hero);
+    }
   }
 
   // метка бота = секция, которую человек сейчас смотрит

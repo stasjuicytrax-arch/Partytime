@@ -257,7 +257,7 @@ html.party .vb { animation: party 0.5s steps(1) 6; }
 .rc--b .loc { background: rgb(255 255 255 / 0.06); border: 1px solid rgb(255 255 255 / 0.18); color: var(--pt-white); }
 .rc--b .loc:not(.loc--soon):hover { border-color: var(--loc); background: rgb(255 255 255 / 0.1); }
 .rc--b .loc[aria-pressed="true"] { background: var(--loc); border-color: var(--loc); }
-.rc--b .loc[data-loc="dumskaya"][aria-pressed="true"] { color: var(--pt-deep); }
+.rc--b .loc[data-loc="dumskaya"][aria-pressed="true"], .rc--b .loc[data-loc="leninskiy"][aria-pressed="true"], .rc--b .loc[data-loc="komendantskiy"][aria-pressed="true"] { color: var(--pt-deep); }
 .rc--b .loc--soon { background: transparent; border: 1px dashed rgb(255 255 255 / 0.2); color: rgb(255 255 255 / 0.4); }
 .rc--b .loc__badge { background: rgb(255 255 255 / 0.1); color: rgb(255 255 255 / 0.6); }
 .rc--b .loc__tip { background: var(--pt-white); color: var(--pt-deep); }
@@ -313,9 +313,10 @@ html.party .vb { animation: party 0.5s steps(1) 6; }
 .rm--b .badge--cap { background: var(--g); border-color: transparent; color: var(--pt-deep); }
 .rm--b[data-group="15-20"] .badge--cap { color: var(--pt-white); }
 .rm--b .rm__promo { background: rgb(201 229 67 / 0.1); border: 1px solid rgb(201 229 67 / 0.35); color: var(--pt-lime); }
-.rm--b .rm__foot { background: linear-gradient(transparent, rgb(28 28 30) 22%); }
+.rm--b .rm__foot { background: rgb(28 28 30); }
+.rm--b .rm__similar { background: #111013; border-top: 1px solid rgb(255 255 255 / 0.08); }
 .rm--b .rm__sim-card { border-color: rgb(255 255 255 / 0.14); }
-@media (max-width: 899px) { .rm--b .rm__foot { background: rgb(28 28 30 / 0.97); } }
+@media (max-width: 899px) { .rm--b .rm__foot { background: rgb(28 28 30 / 0.97); } .rm--b .rm__similar { background: none; border: 0; } }
 
 /* ---------- Блок «Соберите праздник» ---------- */
 .next-up--b { position: relative; background: var(--pt-deep); border-top: 1px solid rgb(255 255 255 / 0.1); }

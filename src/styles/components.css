@@ -327,7 +327,9 @@
 .rm__panel {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(320px, 1fr);
+  grid-template-columns: minmax(0, 1.55fr) minmax(340px, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-areas: "gallery info" "similar info";
   width: min(1320px, 100%);
   /* окно всегда в экране: фото слева на всю высоту, правая колонка прокручивается внутри */
   height: min(820px, calc(100svh - 2 * clamp(0px, 3vw, 40px)));
@@ -346,7 +348,7 @@
   transition: rotate var(--dur-base) var(--ease-pop), background-color var(--dur-fast);
 }
 .rm__close:hover { rotate: 90deg; }
-.rm__gallery { position: relative; overflow: hidden; touch-action: pan-y; user-select: none; min-height: 0; }
+.rm__gallery { grid-area: gallery; position: relative; overflow: hidden; touch-action: pan-y; user-select: none; min-height: 0; }
 .rm__track { display: flex; height: 100%; transition: transform 0.6s var(--ease-out); }
 .rm__slide { flex: 0 0 100%; margin: 0; }
 .rm__slide img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
@@ -368,7 +370,10 @@
 .rm__nav--next { right: 16px; }
 .rm__count { position: absolute; left: 16px; bottom: 16px; z-index: 2; padding: 6px 12px; border-radius: var(--r-pill); font: 700 0.8125rem / 1 var(--font-text); }
 .rm__count:empty { display: none; }
-.rm__info { min-width: 0; display: flex; flex-direction: column; gap: 16px; padding: clamp(28px, 3vw, 48px); padding-top: clamp(72px, 6vw, 88px); overflow: auto; }
+/* правая колонка: описание прокручивается, кнопки — под ним */
+.rm__info { grid-area: info; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
+/* описание прокручивается само (колесо мыши работает: окно помечено data-lenis-prevent) */
+.rm__body { flex: 1 1 auto; min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 16px; padding: clamp(24px, 2.6vw, 40px); padding-top: clamp(72px, 6vw, 84px); overflow: auto; overscroll-behavior: contain; }
 .rm__loc { font: 600 var(--fs-label) / 1 var(--font-text); letter-spacing: 0.08em; text-transform: uppercase; }
 .rm__title { overflow-wrap: break-word; hyphens: auto; font-size: clamp(1.625rem, 3.6vw, 3.25rem); font-weight: 900; line-height: 0.95; letter-spacing: -0.03em; text-transform: uppercase; }
 .rm__tagline { font-size: var(--fs-lead); font-weight: 500; line-height: 1.35; }
@@ -391,17 +396,17 @@
 .rm__promo { padding: 12px 16px; border-radius: var(--r-xs); font-size: var(--fs-small); font-weight: 600; }
 /* цена — рядом с бейджами; нижняя панель: «Забронировать» + «Скидка в Telegram» */
 .rm__meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+/* кнопки — отдельной полосой под описанием, одинаковой ширины, текст не перекрывают */
 .rm__foot {
-  position: sticky;
-  bottom: calc(clamp(28px, 3vw, 48px) * -1);
-  z-index: 3;
-  display: flex;
-  flex-wrap: wrap;
+  flex: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
-  margin: auto calc(clamp(28px, 3vw, 48px) * -1) calc(clamp(28px, 3vw, 48px) * -1);
-  padding: 14px clamp(28px, 3vw, 48px) clamp(20px, 2vw, 28px);
+  padding: 16px clamp(24px, 2.6vw, 40px) 20px;
+  border-top: 1px solid rgb(127 127 127 / 0.22);
 }
-.rm__book { flex: 1 1 auto; justify-content: space-between; }
+.rm__book, .rm__tg { min-width: 0; white-space: normal; line-height: 1.15; }
+.rm__book { justify-content: space-between; padding-right: 8px; }
 .rm__tg {
   flex: 0 1 auto;
   justify-content: center;
@@ -415,8 +420,9 @@
 .rm__price { font: 600 1rem / 1 var(--font-text); }
 
 /* похожие залы */
-.rm__similar h4 { margin-bottom: 10px; font: 800 0.875rem / 1.2 var(--font-display); text-transform: uppercase; }
-.rm__sim { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.rm__similar { grid-area: similar; min-width: 0; padding: 14px 16px 16px; }
+.rm__similar h4 { margin-bottom: 10px; font: 800 0.8125rem / 1.2 var(--font-display); text-transform: uppercase; }
+.rm__sim { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
 .rm__sim-card {
   display: grid;
   gap: 4px;
@@ -431,9 +437,9 @@
   transition: border-color var(--dur-fast), translate var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
 }
 .rm__sim-card:hover, .rm__sim-card:focus-visible { border-color: var(--g); translate: -2px -3px; box-shadow: 5px 5px 0 var(--g); }
-.rm__sim-card img { width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; margin-bottom: 6px; }
-.rm__sim-title { padding: 0 12px; font: 800 0.9375rem / 1.1 var(--font-display); text-transform: uppercase; overflow-wrap: anywhere; }
-.rm__sim-meta { padding: 0 12px; font-size: 0.75rem; opacity: 0.85; }
+.rm__sim-card img { width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; margin-bottom: 4px; }
+.rm__sim-title { padding: 0 10px; font: 800 0.8125rem / 1.1 var(--font-display); text-transform: uppercase; overflow-wrap: anywhere; }
+.rm__sim-meta { padding: 0 10px; font-size: 0.6875rem; opacity: 0.85; }
 .rm__price b { font: 900 clamp(1.75rem, 2.4vw, 2.25rem) / 1 var(--font-display); letter-spacing: -0.02em; }
 .modal-open { overflow: hidden; }
 
@@ -441,14 +447,16 @@
   .rm { padding: 0; }
   .rm[open] { display: block; }
   /* без backdrop-filter/transform: иначе fixed-футер привязывается к панели, а не к экрану */
-  .rm__panel { grid-template-columns: 1fr; height: auto; min-height: 100%; border-radius: 0 !important; border: 0 !important; box-shadow: none !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  .rm__panel { grid-template-columns: 1fr; grid-template-rows: none; grid-template-areas: "gallery" "info" "similar"; height: auto; min-height: 100%; border-radius: 0 !important; border: 0 !important; box-shadow: none !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
   .rm__gallery { aspect-ratio: 4 / 3; min-height: 0; }
-  .rm__info { padding: 24px 20px 32px; overflow: visible; }
+  .rm__info { display: block; }
+  .rm__body { padding: 24px 20px 24px; overflow: visible; }
+  .rm__similar { padding: 0 20px 112px; }
+  .rm__sim { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .rm__close { position: fixed; top: 12px; right: 12px; }
   /* цена и «Забронировать» всегда на экране */
-  .rm__info { padding-bottom: 112px; }
-  .rm__foot { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; flex-wrap: nowrap; margin: 0; padding: 12px 12px calc(12px + env(safe-area-inset-bottom)); }
-  .rm__book, .rm__tg { flex: 1 1 0; min-width: 0; white-space: normal; padding: 0 8px 0 14px; font-size: 0.875rem; line-height: 1.15; box-shadow: none; }
+  .rm__foot { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; padding: 12px 12px calc(12px + env(safe-area-inset-bottom)); }
+  .rm__book, .rm__tg { padding: 0 8px 0 14px; font-size: 0.875rem; box-shadow: none; }
   .rm__tg { padding: 0 10px; text-align: center; }
   .rm__book .btn__ico { width: 34px; height: 34px; }
   .rm__price b { font-size: 1.5rem; }
@@ -586,8 +594,12 @@
   color: var(--pt-deep);
   font: 800 0.9375rem / 1 var(--font-text);
   box-shadow: var(--shadow-pop);
-  transition: translate var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast);
+  transition: translate var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast), padding 0.35s var(--ease-out), gap 0.35s var(--ease-out);
 }
+.msgr__label { max-width: 12em; overflow: hidden; white-space: nowrap; transition: max-width 0.35s var(--ease-out), opacity 0.2s; }
+/* на первом экране — только кружок, чтобы не наезжать на кнопки hero; подпись появляется после прокрутки */
+.msgr.is-compact:not(.is-open) .msgr__btn { gap: 0; padding: 0 7px; }
+.msgr.is-compact:not(.is-open) .msgr__label { max-width: 0; opacity: 0; }
 .msgr__btn:hover { translate: -2px -2px; box-shadow: var(--shadow-pop-hover); }
 .msgr__ico { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--pt-deep); color: var(--pt-lime); }
 .msgr__i-close, .msgr.is-open .msgr__i-chat { display: none; }
@@ -686,3 +698,15 @@
   .pop__icon { width: 88px; height: 88px; top: -40px; }
   .pop__cta { width: 100%; justify-content: space-between; }
 }
+
+/* каталог: локация, залы которой ещё не на сайте */
+:root { --c-loc-leninskiy: var(--pt-sky); --c-loc-komendantskiy: var(--pt-saffron); }
+.rc__newloc { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px 40px; align-items: end; padding: clamp(24px, 4vw, 48px); border-radius: var(--r-lg); border: 2px solid var(--loc); background: color-mix(in srgb, var(--loc) 10%, transparent); box-shadow: 8px 8px 0 var(--loc); }
+.rc__newloc-text { display: grid; gap: 10px; }
+.rc__newloc-name { font: 900 clamp(2.25rem, 5vw, 4rem) / 0.95 var(--font-display); letter-spacing: -0.03em; text-transform: uppercase; color: var(--loc); }
+.rc__newloc-addr { font-weight: 600; }
+.rc__newloc-text p:last-child { max-width: 44ch; opacity: 0.85; }
+.rc__newloc-cta { display: grid; gap: 12px; justify-items: start; }
+.rc__newloc-cta .btn--ghost { gap: 10px; }
+.rc__newloc-book { font-weight: 700; color: var(--loc); text-underline-offset: 3px; }
+@media (max-width: 767px) { .rc__newloc { grid-template-columns: 1fr; box-shadow: 5px 5px 0 var(--loc); } }
