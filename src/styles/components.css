@@ -594,12 +594,13 @@
   color: var(--pt-deep);
   font: 800 0.9375rem / 1 var(--font-text);
   box-shadow: var(--shadow-pop);
-  transition: translate var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast), padding 0.35s var(--ease-out), gap 0.35s var(--ease-out);
+  transition: translate var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast);
 }
-.msgr__label { max-width: 12em; overflow: hidden; white-space: nowrap; transition: max-width 0.35s var(--ease-out), opacity 0.2s; }
+.msgr__label { white-space: nowrap; transition: opacity 0.25s; }
+@starting-style { .msgr__label { opacity: 0; } }
 /* на первом экране — только кружок, чтобы не наезжать на кнопки hero; подпись появляется после прокрутки */
 .msgr.is-compact:not(.is-open) .msgr__btn { gap: 0; padding: 0 7px; }
-.msgr.is-compact:not(.is-open) .msgr__label { max-width: 0; opacity: 0; }
+.msgr.is-compact:not(.is-open) .msgr__label { display: none; }
 .msgr__btn:hover { translate: -2px -2px; box-shadow: var(--shadow-pop-hover); }
 .msgr__ico { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--pt-deep); color: var(--pt-lime); }
 .msgr__i-close, .msgr.is-open .msgr__i-chat { display: none; }
