@@ -399,14 +399,18 @@
 /* кнопки — отдельной полосой под описанием, одинаковой ширины, текст не перекрывают */
 .rm__foot {
   flex: none;
+  container-type: inline-size;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   padding: 16px clamp(24px, 2.6vw, 40px) 20px;
   border-top: 1px solid rgb(127 127 127 / 0.22);
 }
-.rm__book, .rm__tg { min-width: 0; white-space: normal; line-height: 1.15; }
-.rm__book { justify-content: space-between; padding-right: 8px; }
+.rm__book, .rm__tg { min-width: 0; white-space: nowrap; }
+.rm__book { justify-content: space-between; gap: 10px; padding-right: 8px; }
+.rm__book .btn__ico { flex: none; }
+/* узкая колонка — кнопки друг под другом, а не сплющенные */
+@media (min-width: 900px) { @container (max-width: 400px) { .rm__foot > * { grid-column: 1 / -1; } } }
 .rm__tg {
   flex: 0 1 auto;
   justify-content: center;
