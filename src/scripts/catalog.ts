@@ -409,8 +409,8 @@ export function initCatalog(root: HTMLElement) {
     nextCard.hidden = !nx;
     if (!nx) return;
     dialog.querySelectorAll<HTMLElement>("[data-next-name]").forEach((el) => (el.textContent = nx.title));
-    const im = nextCard.querySelector<HTMLImageElement>("[data-next-img]")!;
-    im.src = nx.images[0].src.replace("-960.", "-480.");
+    nextCard.querySelector<HTMLElement>("[data-next-img]")!.innerHTML =
+      `<img src="${nx.images[0].src.replace("-960.", "-480.")}" alt="" width="480" height="320" loading="lazy" decoding="async">`;
     nextCard.style.setProperty("--g", `var(--c-cap-${nx.group})`);
     nextCard.querySelector<HTMLElement>("[data-next-facts]")!.innerHTML =
       `<span>${icoGuests}${esc(nx.capacity)}</span>` + (nx.area ? `<span>${icoArea}${nx.area}&nbsp;м²</span>` : "") + `<span>от ${esc(nx.price)}</span>`;
