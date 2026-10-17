@@ -314,7 +314,8 @@ html.party .vb { animation: party 0.5s steps(1) 6; }
 .rm--b[data-group="15-20"] .badge--cap { color: var(--pt-white); }
 .rm--b .rm__promo { background: rgb(201 229 67 / 0.1); border: 1px solid rgb(201 229 67 / 0.35); color: var(--pt-lime); }
 .rm--b .rm__foot { background: rgb(28 28 30); }
-.rm--b .rm__similar { background: #111013; border-top: 1px solid rgb(255 255 255 / 0.08); }
+.rm--b .rm__similar, .rm--b .rm__thumbs { background: #111013; }
+.rm--b .rm__similar { border-top: 1px solid rgb(255 255 255 / 0.08); }
 .rm--b .rm__sim-card { border-color: rgb(255 255 255 / 0.14); }
 @media (max-width: 899px) { .rm--b .rm__foot { background: rgb(28 28 30 / 0.97); } .rm--b .rm__similar { background: none; border: 0; } }
 

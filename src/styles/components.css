@@ -328,8 +328,8 @@
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1.55fr) minmax(340px, 1fr);
-  grid-template-rows: minmax(0, 1fr) auto;
-  grid-template-areas: "gallery info" "similar info";
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  grid-template-areas: "gallery info" "thumbs info" "similar info";
   width: min(1320px, 100%);
   /* окно всегда в экране: фото слева на всю высоту, правая колонка прокручивается внутри */
   height: min(820px, calc(100svh - 2 * clamp(0px, 3vw, 40px)));
@@ -424,6 +424,13 @@
 .rm__price { font: 600 1rem / 1 var(--font-text); }
 
 /* похожие залы */
+/* лента превью под большим фото */
+.rm__thumbs { grid-area: thumbs; display: flex; gap: 8px; min-width: 0; padding: 10px 16px; overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain; }
+.rm__thumbs::-webkit-scrollbar { display: none; }
+.rm__thumb { flex: none; width: 76px; aspect-ratio: 3 / 2; padding: 0; overflow: hidden; border: 2px solid transparent; border-radius: 10px; background: none; opacity: 0.55; transition: opacity var(--dur-fast), border-color var(--dur-fast); }
+.rm__thumb img { width: 100%; height: 100%; object-fit: cover; }
+.rm__thumb:hover { opacity: 0.9; }
+.rm__thumb[aria-current="true"] { opacity: 1; border-color: var(--g, var(--pt-lime)); }
 .rm__similar { grid-area: similar; min-width: 0; padding: 14px 16px 16px; }
 .rm__similar h4 { margin-bottom: 10px; font: 800 0.8125rem / 1.2 var(--font-display); text-transform: uppercase; }
 .rm__sim { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
@@ -451,7 +458,7 @@
   .rm { padding: 0; }
   .rm[open] { display: block; }
   /* без backdrop-filter/transform: иначе fixed-футер привязывается к панели, а не к экрану */
-  .rm__panel { grid-template-columns: 1fr; grid-template-rows: none; grid-template-areas: "gallery" "info" "similar"; height: auto; min-height: 100%; border-radius: 0 !important; border: 0 !important; box-shadow: none !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  .rm__panel { grid-template-columns: 1fr; grid-template-rows: none; grid-template-areas: "gallery" "thumbs" "info" "similar"; height: auto; min-height: 100%; border-radius: 0 !important; border: 0 !important; box-shadow: none !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
   .rm__gallery { aspect-ratio: 4 / 3; min-height: 0; }
   .rm__info { display: block; }
   .rm__body { padding: 24px 20px 24px; overflow: visible; }

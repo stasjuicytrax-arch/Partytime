@@ -245,6 +245,11 @@ export function initCatalog(root: HTMLElement) {
   const dialog = root.querySelector<HTMLDialogElement>("[data-modal]")!;
   const track = dialog.querySelector<HTMLElement>("[data-track]")!;
   const counter = dialog.querySelector<HTMLElement>("[data-counter]")!;
+  const thumbs = dialog.querySelector<HTMLElement>("[data-thumbs]")!;
+  thumbs.addEventListener("click", (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLButtonElement>("[data-thumb]");
+    if (b) go(Number(b.dataset.thumb));
+  });
   const prev = dialog.querySelector<HTMLButtonElement>("[data-prev]")!;
   const next = dialog.querySelector<HTMLButtonElement>("[data-next]")!;
   const f = (k: string) => dialog.querySelector<HTMLElement>(`[data-f="${k}"]`)!;
@@ -297,7 +302,7 @@ export function initCatalog(root: HTMLElement) {
       focusTitle();
       return;
     }
-    const parts = panel.querySelectorAll(".rm__gallery, .rm__body, .rm__sim");
+    const parts = panel.querySelectorAll(".rm__gallery, .rm__thumbs, .rm__body, .rm__sim");
     gsap.to(parts, {
       opacity: 0,
       x: -24,
@@ -322,6 +327,15 @@ export function initCatalog(root: HTMLElement) {
     track.style.transition = instant || reduced() ? "none" : "";
     track.style.transform = `translate3d(${-slide * 100}%,0,0)`;
     counter.textContent = n > 1 ? `${slide + 1} / ${n}` : "";
+    // подсветка текущего превью; лента сама докручивается до него
+    thumbs.querySelectorAll<HTMLButtonElement>("[data-thumb]").forEach((b, k) => {
+      const on = k === slide;
+      b.setAttribute("aria-current", String(on));
+      if (on) {
+        const l = b.offsetLeft - (thumbs.clientWidth - b.offsetWidth) / 2;
+        thumbs.scrollTo({ left: l, behavior: instant || reduced() ? "auto" : "smooth" });
+      }
+    });
     track.querySelectorAll("img").forEach((im, k) => {
       if (Math.abs(k - slide) <= 1) im.loading = "eager";
     });
@@ -348,7 +362,14 @@ export function initCatalog(root: HTMLElement) {
           `<figure class="rm__slide"><img src="${im.src}" srcset="${im.srcset}" sizes="(max-width: 899px) 100vw, 62vw" alt="${im.alt.replace(/"/g, "&quot;")}" width="1600" height="1067" loading="${i < 2 ? "eager" : "lazy"}" decoding="async" draggable="false"></figure>`
       )
       .join("");
+    thumbs.innerHTML = r.images
+      .map(
+        (im, i) =>
+          `<button type="button" class="rm__thumb" data-thumb="${i}" aria-label="Фото ${i + 1} из ${r.images.length}"><img src="${im.src.replace(/-(960|1600)./, "-480.")}" alt="" width="480" height="320" loading="lazy" decoding="async" draggable="false"></button>`
+      )
+      .join("");
     const multi = r.images.length > 1;
+    thumbs.hidden = !multi;
     prev.hidden = next.hidden = !multi;
     go(0, true);
     renderSimilar(r);
