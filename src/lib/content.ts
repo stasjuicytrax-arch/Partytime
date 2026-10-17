@@ -5,6 +5,7 @@ export const PHONE_MAIN = "+7 (812) 214-30-03";
 export const EMAIL = "office@partytimespb.ru";
 
 export const MESSENGERS = {
+  /** бот бронирования; ссылки с меткой источника строятся через botUrl() из lib/bot.ts */
   telegram: { label: "Telegram", href: "https://t.me/PARTY_TIME_SPB_BOT" },
   vk: { label: "VK", href: "https://vk.me/party_time_spb" },
   /** ссылку на MAX заказчик пока не дал — кнопка скрыта [уточнить] */
@@ -33,11 +34,11 @@ export const FORMATS = [
   { id: "karaoke", title: "Караоке-вечер", text: "EvoBox или X-Star: огромный каталог и плейлист на планшете.", room: "rock-n-roll", form: "Караоке" },
   { id: "loft", title: "Аренда лофта", text: "Просто зал, свет, звук и ваша компания.", room: "brooklyn", form: "Вечеринка" },
   { id: "date", title: "Свидание", text: "Залы на двоих: «Под звёздами», «Шанти», «Джентльмены».", room: "pod-zvezdami", form: "Свидание" },
-  { id: "hen", title: "Девичник и мальчишник", text: "Диско, Майами, Малибу — громко и красиво.", room: "maiami-bich", form: "Девичник" },
+  { id: "hen", title: "Девичник и мальчишник", text: "Диско, Майами, Малибу — громко и красиво.", room: "maiami-bich", form: "Девичник/Мальчишник" },
   { id: "corp", title: "Корпоратив", text: "До 18 гостей в одном зале, презентация на большом экране.", room: "contrast", form: "Корпоратив" },
-  { id: "kids", title: "Детский праздник", text: "Аниматоры, сказочные залы, торт можно своё.", room: "skazochnii-les", form: "Детский праздник" },
+  { id: "kids", title: "Детский праздник", text: "Аниматоры, сказочные залы, торт можно своё.", room: "skazochnii-les", form: "Детский" },
   { id: "prom", title: "Выпускной", text: "Танцы до утра и фото, которые не стыдно выложить.", room: "cyberpunk", form: "Вечеринка" },
-  { id: "master", title: "Мастер-классы", text: "Соберём программу под вашу компанию.", room: "bezumnoe-chaepitie", form: "Свой вариант" },
+  { id: "master", title: "Мастер-классы", text: "Соберём программу под вашу компанию.", room: "bezumnoe-chaepitie", form: "Другое" },
 ];
 
 /* ---------- 6. Всё для праздника ---------- */
@@ -56,7 +57,7 @@ export const PROMOS = [
   { id: "3plus1", title: "Акция 3+1", text: "Условия уточняйте у менеджера.", big: "3+1", color: "lime", link: null, todo: true },
   { id: "mafia", title: "Мафия по четвергам", text: "Вступайте в закрытый чат и записывайтесь на игры.", big: "ЧТ", color: "violet", link: null },
   { id: "menu", title: "Новое меню", text: "Обновили вкус, бар и формат.", big: "NEW", color: "saffron", link: null },
-  { id: "tg", title: "Telegram", text: "Подпишитесь — скидки и спецпредложения первыми.", big: "TG", color: "sky", link: { label: "Подписаться", href: "https://t.me/PartyTimeBanket" } },
+  { id: "tg", title: "Telegram", text: "Подпишитесь — скидки и спецпредложения первыми.", big: "TG", color: "sky", link: { label: "Подписаться", href: "https://t.me/PARTY_TIME_SPB_BOT?start=site_promo_tg" } },
   { id: "loyalty", title: "Баллы лояльности", text: "Копите баллы за праздники и меняйте на скидки.", big: "%", color: "coral", link: null },
 ];
 
@@ -79,7 +80,17 @@ export const FORM = {
     { id: "mayakovskaya", label: "Маяковская" },
     { id: "any", label: "Не важно, подберите" },
   ],
-  occasions: ["ДР", "Караоке", "Вечеринка", "Свидание", "Девичник", "Мальчишник", "Корпоратив", "Детский праздник", "Свой вариант"],
+  /** шаг 1 формы — один тап; icon — 3D-иконка из public/img/3d */
+  occasions: [
+    { value: "ДР", label: "День рождения", icon: "gift" },
+    { value: "Караоке", label: "Караоке", icon: "mic" },
+    { value: "Вечеринка", label: "Вечеринка", icon: "fire" },
+    { value: "Свидание", label: "Свидание", icon: "heart" },
+    { value: "Девичник/Мальчишник", label: "Девичник / мальчишник", icon: "crown" },
+    { value: "Корпоратив", label: "Корпоратив", icon: "glass" },
+    { value: "Детский", label: "Детский праздник", icon: "star" },
+    { value: "Другое", label: "Другое", icon: "" },
+  ],
   extras: ["+2 микрофона", "EvoBox / X-Star", "Приставки", "Ведущий или аниматор", "Декор и фотозона", "Кухня и напитки"],
   contactWays: ["Звонок", "Telegram", "WhatsApp", "MAX"],
 };

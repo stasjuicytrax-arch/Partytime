@@ -2,6 +2,7 @@
 import Icon from "../Icon.astro";
 import { activeLocations, locations, tel } from "../../lib/rooms";
 import { HOURS, GEO, PHONE_MAIN, EMAIL, MESSENGERS } from "../../lib/content";
+import { botUrl } from "../../lib/bot";
 
 // маршрут: для активных — к точке, для новых локаций (координат пока нет) — поиск адреса на картах
 const route = (id: string, address: string) =>
@@ -46,9 +47,9 @@ const map = `https://yandex.ru/map-widget/v1/?ll=${c.lon},${c.lat}&z=14&pt=${pts
         ))}
         </div>
         <div class="contacts__msg">
-          <a href={MESSENGERS.telegram.href} target="_blank" rel="noopener">Telegram</a>
+          <a href={botUrl("site_contacts")} target="_blank" rel="noopener">Telegram</a>
           <a href={MESSENGERS.vk.href} target="_blank" rel="noopener">VK</a>
-          <a href={MESSENGERS.channel.href} target="_blank" rel="noopener">Канал с акциями</a>
+          {MESSENGERS.max.href && <a href={MESSENGERS.max.href} target="_blank" rel="noopener">MAX</a>}
         </div>
       </div>
       <div class="contacts__map">

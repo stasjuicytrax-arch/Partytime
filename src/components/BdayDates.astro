@@ -1,0 +1,50 @@
+---
+// Лид-магнит «Подарок на день рождения / Свободные даты»: дата + повод → бот.
+// ДР → «Получите подарок ко дню рождения в боте» (site_bday), иначе — «Узнайте свободные залы…» (site_dates).
+import Icon from "./Icon.astro";
+import { botUrl } from "../lib/bot";
+import { OFFER } from "../config/offer";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+<div class="bd" data-bday data-place="formats_bday">
+  <img class="bd__icon" src={`${base}/img/3d/gift-dynamic-premium.webp`} alt="" width="800" height="800" loading="lazy" decoding="async" />
+  <div class="bd__body">
+    <p class="bd__kicker">Выберите дату</p>
+    <div class="bd__controls">
+      <label class="bd__date">
+        <span class="visually-hidden">Дата праздника</span>
+        <input type="date" data-bday-date />
+      </label>
+      <div class="bd__kind" role="radiogroup" aria-label="Повод">
+        <label><input type="radio" name="bd-kind" value="bday" checked /><span>День рождения</span></label>
+        <label><input type="radio" name="bd-kind" value="dates" /><span>Другой праздник</span></label>
+      </div>
+    </div>
+    <p class="bd__text" data-bday-text aria-live="polite">{OFFER.bday}</p>
+  </div>
+  <a class="btn bd__btn" href={botUrl("site_bday")} target="_blank" rel="noopener" data-bday-link>
+    <span>Открыть Telegram</span><span class="btn__ico"><Icon name="arrow" size={20} /></span>
+  </a>
+</div>
+
+<script>
+  import { botUrl } from "../lib/bot";
+  import { reachGoal } from "../lib/analytics";
+  import { OFFER } from "../config/offer";
+  document.querySelectorAll<HTMLElement>("[data-bday]").forEach((root) => {
+    const date = root.querySelector<HTMLInputElement>("[data-bday-date]")!;
+    const text = root.querySelector<HTMLElement>("[data-bday-text]")!;
+    const link = root.querySelector<HTMLAnchorElement>("[data-bday-link]")!;
+    const today = new Date();
+    date.min = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+    const kind = () => root.querySelector<HTMLInputElement>('input[name="bd-kind"]:checked')!.value;
+    const upd = () => {
+      const bday = kind() === "bday";
+      text.textContent = bday ? OFFER.bday : OFFER.dates;
+      link.href = botUrl(bday ? "site_bday" : "site_dates");
+    };
+    root.addEventListener("change", upd);
+    link.addEventListener("click", () => reachGoal("bday_dates_click", { place: "formats", kind: kind(), date: date.value || null }));
+    upd();
+  });
+</script>

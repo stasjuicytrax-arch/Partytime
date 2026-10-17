@@ -5,6 +5,8 @@ import HeroA from "../components/a/HeroA.astro";
 import Marquee from "../components/Marquee.astro";
 import RoomCatalog from "../components/RoomCatalog.astro";
 import NextUp from "../components/NextUp.astro";
+import Messengers from "../components/Messengers.astro";
+import Popups from "../components/Popups.astro";
 import "@fontsource/caveat/700.css";
 import "../styles/components.css";
 import "../styles/a.css";
@@ -25,6 +27,8 @@ const strip = ["Караоке", "Своя кухня", "Авторский ба
     <RoomCatalog variant="a" />
     <NextUp class="next-up--a grain" />
   </main>
+  <Messengers />
+  <Popups />
 </Base>
 
 <script>

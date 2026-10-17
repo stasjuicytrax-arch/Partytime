@@ -1,5 +1,6 @@
 ---
 import Icon from "../Icon.astro";
+import BdayDates from "../BdayDates.astro";
 import { FORMATS } from "../../lib/content";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
@@ -42,4 +43,5 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     </div>
     <p class="container formats__note">Новый год, 14 и&nbsp;23 февраля — сезонные форматы, расскажет менеджер.</p>
   </div>
+  <div class="container"><BdayDates /></div>
 </section>

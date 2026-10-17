@@ -1,6 +1,8 @@
 import { gsap } from "gsap";
 import { Flip } from "gsap/Flip";
 import { reduced, lenis } from "./motion";
+import { reachGoal, hit } from "../lib/analytics";
+import { botUrl, roomTag } from "../lib/bot";
 
 gsap.registerPlugin(Flip);
 
@@ -235,8 +237,63 @@ export function initCatalog(root: HTMLElement) {
   const prev = dialog.querySelector<HTMLButtonElement>("[data-prev]")!;
   const next = dialog.querySelector<HTMLButtonElement>("[data-next]")!;
   const f = (k: string) => dialog.querySelector<HTMLElement>(`[data-f="${k}"]`)!;
+  const simList = dialog.querySelector<HTMLElement>("[data-sim-list]")!;
+  const simBox = dialog.querySelector<HTMLElement>("[data-similar]")!;
+  const roomTg = dialog.querySelector<HTMLAnchorElement>("[data-room-tg]")!;
+  const panel = dialog.querySelector<HTMLElement>(".rm__panel")!;
   let current: ClientRoom | null = null;
   let slide = 0;
+
+  /** 3–4 зала той же группы: сначала та же локация, затем другая; без текущего */
+  function similarTo(r: ClientRoom) {
+    const same = data.filter((x) => x.group === r.group && x.slug !== r.slug);
+    return [...same.filter((x) => x.loc === r.loc), ...same.filter((x) => x.loc !== r.loc)].slice(0, 4);
+  }
+  const esc = (t: string) => t.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
+  function renderSimilar(r: ClientRoom) {
+    const list = similarTo(r);
+    simBox.hidden = list.length === 0;
+    simList.innerHTML = list
+      .map(
+        (x) => `<li><button type="button" class="rm__sim-card" data-sim="${x.slug}" style="--g: var(--c-cap-${x.group})">
+          <img src="${x.images[0].src.replace("-960.", "-480.")}" alt="" width="480" height="320" loading="lazy" decoding="async">
+          <span class="rm__sim-title">${esc(x.title)}</span>
+          <span class="rm__sim-meta">${esc(x.locName)} · от ${esc(x.price)}</span>
+        </button></li>`
+      )
+      .join("");
+  }
+  simList.addEventListener("click", (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLButtonElement>("[data-sim]");
+    if (!b || !current) return;
+    const to = b.dataset.sim!;
+    reachGoal("similar_room_click", { from: current.slug, to });
+    swapTo(to);
+  });
+
+  /** переход к другому залу внутри открытой модалки — без закрытия */
+  function swapTo(slug: string) {
+    if (reduced()) {
+      open(slug);
+      dialog.scrollTo({ top: 0 });
+      panel.querySelector<HTMLElement>(".rm__info")?.scrollTo({ top: 0 });
+      return;
+    }
+    const parts = panel.querySelectorAll(".rm__gallery, .rm__info > *:not(.rm__foot)");
+    gsap.to(parts, {
+      opacity: 0,
+      x: -24,
+      duration: 0.22,
+      ease: "power2.in",
+      stagger: 0.015,
+      onComplete: () => {
+        open(slug);
+        dialog.scrollTo({ top: 0 });
+        panel.querySelector<HTMLElement>(".rm__info")?.scrollTo({ top: 0 });
+        gsap.fromTo(parts, { opacity: 0, x: 24 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out", stagger: 0.02, clearProps: "opacity,transform" });
+      },
+    });
+  }
   let lastFocus: HTMLElement | null = null;
 
   function go(i: number, instant = false) {
@@ -275,6 +332,16 @@ export function initCatalog(root: HTMLElement) {
     const multi = r.images.length > 1;
     prev.hidden = next.hidden = !multi;
     go(0, true);
+    renderSimilar(r);
+    roomTg.href = botUrl(roomTag(r.slug));
+    // аналитика: открытие зала = виртуальный просмотр страницы (цель «6+ страниц»)
+    reachGoal("room_open", { slug: r.slug });
+    hit(`${location.origin}${location.pathname}#room-${r.slug}`, `Зал «${r.title}»`);
+    try {
+      const n = Number(sessionStorage.getItem("pt:rooms-viewed") || 0) + 1;
+      sessionStorage.setItem("pt:rooms-viewed", String(n));
+      window.dispatchEvent(new CustomEvent("pt:room-view", { detail: { count: n } }));
+    } catch {}
     if (!dialog.open) {
       dialog.showModal();
       lenis()?.stop();

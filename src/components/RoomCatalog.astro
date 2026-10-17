@@ -1,5 +1,6 @@
 ---
 import Icon from "./Icon.astro";
+import { OFFER } from "../config/offer";
 import {
   rooms,
   locations,
@@ -184,7 +185,10 @@ const sizes = "(max-width: 559px) 112vw, (max-width: 767px) 56vw, (max-width: 10
         <p class="rm__loc" data-f="loc"></p>
         <h3 id="rm-title" class="rm__title" data-f="title"></h3>
         <p class="rm__tagline" data-f="tagline"></p>
-        <div class="rm__badges" data-f="badges"></div>
+        <div class="rm__meta">
+          <div class="rm__badges" data-f="badges"></div>
+          <p class="rm__price num">от&nbsp;<b data-f="price"></b><span>/час</span></p>
+        </div>
         <p class="rm__text" data-f="text"></p>
         <div class="rm__included">
           <h4>Входит в&nbsp;аренду</h4>
@@ -193,14 +197,17 @@ const sizes = "(max-width: 559px) 112vw, (max-width: 767px) 56vw, (max-width: 10
           </ul>
         </div>
         <p class="rm__promo">{PROMO}</p>
-        <div class="rm__foot">
-          <p class="rm__price num">
-            от&nbsp;<b data-f="price"></b>
-            <span>/час</span>
-          </p>
+        <div class="rm__similar" data-similar>
+          <h4>Похожие залы</h4>
+          <ul class="rm__sim" data-sim-list></ul>
+        </div>
+        <div class="rm__foot" data-place="room_modal">
           <a class="btn btn--primary rm__book" href="#booking" data-book>
             <span>Забронировать этот зал</span>
             <span class="btn__ico"><Icon name="arrow" size={20} /></span>
+          </a>
+          <a class="btn rm__tg" href="#" target="_blank" rel="noopener" data-room-tg>
+            <span>{OFFER.room}</span>
           </a>
         </div>
       </div>

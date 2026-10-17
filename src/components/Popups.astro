@@ -1,0 +1,128 @@
+---
+// Поп-апы, ведущие в бота (лучшая цель для обучения Яндекс Директа):
+//  • «прогрев»: открыл 2+ зала или провёл 40+ с на сайте → оффер бота (метка site_popup_tg);
+//  • exit: ПК — курсор ушёл за верх окна; телефон — резкий скролл вверх после 30+ с (метка site_exit).
+// 1 показ за визит; закрытие «прогрева» помнится 24 часа; exit не показываем, если «прогрев» уже был.
+// Нижняя панель мессенджеров на телефоне остаётся видна и доступна.
+import Icon from "./Icon.astro";
+import { botUrl } from "../lib/bot";
+import { OFFER } from "../config/offer";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const pops = [
+  { id: "warm", title: OFFER.warm.title, text: OFFER.warm.text, cta: OFFER.warm.cta, href: botUrl("site_popup_tg"), icon: "gift" },
+  { id: "exit", title: OFFER.exit.title, text: OFFER.exit.text, cta: OFFER.exit.cta, href: botUrl("site_exit"), icon: "star" },
+];
+---
+{pops.map((p) => (
+  <div class="pop" data-pop={p.id} role="dialog" aria-modal="true" aria-labelledby={`pop-${p.id}-title`} hidden>
+    <div class="pop__veil" data-pop-close></div>
+    <div class="pop__card" data-place={`popup_${p.id}`}>
+      <button type="button" class="pop__close" data-pop-close aria-label="Закрыть"><Icon name="close" size={22} /></button>
+      <img class="pop__icon" src={`${base}/img/3d/${p.icon}-dynamic-premium.webp`} alt="" width="800" height="800" loading="lazy" decoding="async" />
+      <h2 class="pop__title" id={`pop-${p.id}-title`}>{p.title}</h2>
+      <p class="pop__text">{p.text}</p>
+      <a class="btn pop__cta" href={p.href} target="_blank" rel="noopener" data-pop-cta>
+        <span>{p.cta}</span><span class="btn__ico"><Icon name="arrow" size={20} /></span>
+      </a>
+    </div>
+  </div>
+))}
+
+<script>
+  import { reachGoal } from "../lib/analytics";
+  import { reduced } from "../scripts/motion";
+
+  const DAY = 24 * 60 * 60 * 1000;
+  const ss = {
+    get: (k: string) => { try { return sessionStorage.getItem(k); } catch { return null; } },
+    set: (k: string, v: string) => { try { sessionStorage.setItem(k, v); } catch {} },
+  };
+  const ls = {
+    get: (k: string) => { try { return localStorage.getItem(k); } catch { return null; } },
+    set: (k: string, v: string) => { try { localStorage.setItem(k, v); } catch {} },
+  };
+  if (!ss.get("pt:visit-start")) ss.set("pt:visit-start", String(Date.now()));
+  const sinceStart = () => Date.now() - Number(ss.get("pt:visit-start") || Date.now());
+  const closedRecently = (id: string) => Date.now() - Number(ls.get(`pt:pop-${id}-closed`) || 0) < DAY;
+  const shownThisVisit = (id: string) => ss.get(`pt:pop-${id}-shown`) === "1";
+  // не мешаем, пока открыта модалка зала, меню или другой поп-ап
+  const busy = () => !!document.querySelector("dialog[open], .hdr__menu[data-open], .pop:not([hidden])");
+
+  const goals = { warm: ["popup_tg_show", "popup_tg_click"], exit: ["exit_popup_show", "exit_popup_click"] } as const;
+  let lastFocus: HTMLElement | null = null;
+
+  function show(id: "warm" | "exit") {
+    const el = document.querySelector<HTMLElement>(`[data-pop="${id}"]`);
+    if (!el || shownThisVisit("warm") || shownThisVisit("exit") || closedRecently(id) || busy()) return false;
+    ss.set(`pt:pop-${id}-shown`, "1");
+    lastFocus = document.activeElement as HTMLElement;
+    el.hidden = false;
+    document.documentElement.classList.add("pop-open");
+    if (!reduced()) {
+      el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 250, easing: "ease-out" });
+      el.querySelector(".pop__card")!.animate(
+        [{ transform: "translateY(40px) rotate(-4deg) scale(.9)", opacity: 0 }, { transform: "translateY(0) rotate(-1.5deg) scale(1)", opacity: 1 }],
+        { duration: 520, easing: "cubic-bezier(.34,1.56,.64,1)" }
+      );
+    }
+    el.querySelector<HTMLElement>(".pop__close")!.focus();
+    reachGoal(goals[id][0]);
+    return true;
+  }
+
+  function hide(el: HTMLElement) {
+    if (el.hidden) return;
+    el.hidden = true;
+    document.documentElement.classList.remove("pop-open");
+    ls.set(`pt:pop-${el.dataset.pop}-closed`, String(Date.now()));
+    lastFocus?.focus({ preventScroll: true });
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-pop]").forEach((el) => {
+    const id = el.dataset.pop as "warm" | "exit";
+    el.querySelectorAll("[data-pop-close]").forEach((b) => b.addEventListener("click", () => hide(el)));
+    el.querySelector("[data-pop-cta]")!.addEventListener("click", () => {
+      reachGoal(goals[id][1]);
+      hide(el);
+    });
+    el.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") return hide(el);
+      if (e.key !== "Tab") return;
+      const f = [...el.querySelectorAll<HTMLElement>("button, a")];
+      const first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+  });
+
+  /* ---------- «прогрев»: 2+ зала или 40+ секунд ---------- */
+  const tryWarm = () => {
+    if (shownThisVisit("warm") || shownThisVisit("exit") || closedRecently("warm")) return true;
+    const rooms = Number(ss.get("pt:rooms-viewed") || 0);
+    if (rooms >= 2 || sinceStart() >= 40000) return show("warm") || false;
+    return false;
+  };
+  addEventListener("pt:room-view", () => {
+    // показываем, когда человек закроет модалку зала
+    const wait = setInterval(() => { if (!busy()) { clearInterval(wait); tryWarm(); } }, 1500);
+  });
+  const timer = setInterval(() => { if (tryWarm()) clearInterval(timer); }, 2000);
+
+  /* ---------- exit-intent ---------- */
+  const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
+  if (fine) {
+    document.addEventListener("mouseout", (e) => {
+      if (!e.relatedTarget && e.clientY <= 0 && sinceStart() > 4000) show("exit");
+    });
+  } else {
+    let lastY = scrollY, lastT = performance.now();
+    addEventListener("scroll", () => {
+      const now = performance.now();
+      const v = (scrollY - lastY) / Math.max(1, now - lastT); // px/мс
+      lastY = scrollY;
+      lastT = now;
+      // резкий скролл вверх (≈ «уходит наверх, к адресной строке») после 30+ секунд
+      if (v < -2.5 && scrollY > 600 && sinceStart() >= 30000) show("exit");
+    }, { passive: true });
+  }
+</script>

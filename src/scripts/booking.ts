@@ -1,6 +1,9 @@
 import { gsap } from "gsap";
 import { reduced } from "./motion";
 import { sendLead, type Lead } from "../lib/lead";
+import { reachGoal, type Goal } from "../lib/analytics";
+import { botUrl } from "../lib/bot";
+import { OFFER } from "../config/offer";
 import type { Mic3D } from "./fx/mic3d";
 
 const KEY = "pt:booking";
@@ -33,7 +36,11 @@ export function initBooking(root: HTMLElement) {
   const success = form.querySelector<HTMLElement>("[data-success]")!;
   const roomBox = form.querySelector<HTMLElement>("[data-room]")!;
   const roomTitle = form.querySelector<HTMLElement>("[data-room-title]")!;
-  const other = form.querySelector<HTMLElement>("[data-other]")!;
+  const branch = form.querySelector<HTMLElement>("[data-branch]")!;
+  const branchText = form.querySelector<HTMLElement>("[data-branch-text]")!;
+  const branchLink = form.querySelector<HTMLAnchorElement>("[data-branch-link]")!;
+  const stepTg = [...form.querySelectorAll<HTMLAnchorElement>("[data-step-tg]")];
+  const seenSteps = new Set<number>();
   const phone = form.querySelector<HTMLInputElement>("[data-phone]")!;
   const date = form.querySelector<HTMLInputElement>("[data-date]")!;
   const canvas = root.querySelector<HTMLCanvasElement>("[data-mic-canvas]")!;
@@ -112,10 +119,34 @@ export function initBooking(root: HTMLElement) {
     save();
   });
 
+  const occasion = () => (form.elements.namedItem("occasion") as RadioNodeList).value;
+  /** ответвление шага «Когда?»: подарок ко ДР или свободные залы на дату — в боте */
   const toggleOther = () => {
-    const v = (form.elements.namedItem("occasion") as RadioNodeList).value;
-    other.hidden = v !== "Свой вариант";
+    const bday = occasion() === "ДР";
+    branch.hidden = !date.value;
+    branchText.textContent = bday ? OFFER.bday : OFFER.dates;
+    branchLink.href = botUrl(bday ? "site_bday" : "site_dates");
+    branchLink.dataset.kind = bday ? "bday" : "dates";
   };
+  branchLink.addEventListener("click", () => reachGoal("bday_dates_click", { place: "form", kind: branchLink.dataset.kind }));
+  stepTg.forEach((a) => a.addEventListener("click", () => reachGoal("form_to_telegram", { step: Number(a.dataset.stepTg) })));
+
+  /* ---------- шаг 1: один тап по карточке повода сразу ведёт дальше ---------- */
+  const advanceFromOccasion = () => {
+    if (i !== 0 || !occasion()) return;
+    save();
+    setTimeout(() => {
+      if (i !== 0) return;
+      i = 1;
+      save();
+      render(1);
+    }, reduced() ? 0 : 260);
+  };
+  form.querySelectorAll<HTMLInputElement>('input[name="occasion"]').forEach((r) => {
+    r.addEventListener("change", advanceFromOccasion);
+    // повторный тап по уже выбранной карточке — тоже вперёд
+    r.closest("label")!.addEventListener("click", () => r.checked && advanceFromOccasion());
+  });
   form.addEventListener("change", () => {
     toggleOther();
     save();
@@ -143,8 +174,9 @@ export function initBooking(root: HTMLElement) {
 
   /* ---------- шаги ---------- */
   function validate(): string {
-    if (i === 0 && !date.value) return "Выберите дату праздника.";
-    if (i === 0 && date.value < date.min) return "Эта дата уже прошла — выберите другую.";
+    if (i === 0 && !occasion()) return "Выберите повод — один тап.";
+    if (i === 3 && !date.value) return "Выберите дату праздника.";
+    if (i === 3 && date.value < date.min) return "Эта дата уже прошла — выберите другую.";
     if (i === 5) {
       const fd = new FormData(form);
       if (!String(fd.get("name") || "").trim()) return "Как к вам обращаться?";
@@ -164,7 +196,14 @@ export function initBooking(root: HTMLElement) {
     count.textContent = `Шаг ${i + 1} из ${steps.length}`;
     nextLabel.textContent = i === steps.length - 1 ? "Отправить заявку" : "Дальше";
     back.disabled = i === 0;
+    // на первом шаге кнопок нет: выбор повода сам ведёт дальше
+    nav.hidden = i === 0;
+    stepTg.forEach((a, k) => (a.hidden = k !== i));
     error.textContent = "";
+    if (seenSteps.size && !seenSteps.has(i)) {
+      seenSteps.add(i);
+      reachGoal(`form_step_${i + 1}` as Goal);
+    }
     mic?.setStep(i, steps.length);
     if (!reduced()) gsap.fromTo(steps[i], { opacity: 0, x: 40 * dir }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" });
   }
@@ -220,6 +259,8 @@ export function initBooking(root: HTMLElement) {
     success.hidden = false;
     success.focus({ preventScroll: true });
     mic?.celebrate();
+    reachGoal("form_submit", { occasion: lead.occasion, place: lead.place });
+    stepTg.forEach((a) => (a.hidden = true));
   });
   back.addEventListener("click", () => {
     if (i === 0) return;
@@ -248,7 +289,19 @@ export function initBooking(root: HTMLElement) {
   restore();
   const qs = new URLSearchParams(location.search);
   if (qs.get("room")) prefill({ room: qs.get("room"), loc: qs.get("loc") });
+  // продолжаем с того шага, где человек остановился (прогресс в localStorage)
+  try {
+    const st = Number(JSON.parse(localStorage.getItem(KEY) || "{}").step || 0);
+    if (st > 0 && st < steps.length && occasion()) i = st;
+  } catch {}
   render(0);
+  // цель «шаг N» — с момента, когда форму увидели
+  new IntersectionObserver((en, obs) => {
+    if (!en[0].isIntersecting) return;
+    obs.disconnect();
+    seenSteps.add(i);
+    reachGoal(`form_step_${i + 1}` as Goal);
+  }, { threshold: 0.3 }).observe(form);
 
   /* ---------- 3D-микрофон: лениво, когда форма рядом ---------- */
   const io = new IntersectionObserver(

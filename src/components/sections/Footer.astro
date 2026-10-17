@@ -1,6 +1,7 @@
 ---
 import { FOOTER, PHONE_MAIN, MESSENGERS } from "../../lib/content";
 import { tel } from "../../lib/rooms";
+import { botUrl } from "../../lib/bot";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const href = (h: string) => (h === "soon" ? `${base}/soon` : h);
 const word = ["P", "A", "R", "T", "Y", "T", "I", "M", "E"];
@@ -12,8 +13,9 @@ const fills = ["lime", "pink", "white", "sky", "violet", "pink", "lime", "white"
       <img src={`${base}/brand/logo-primary.svg`} alt="Party Time — пространство для праздника" width="170" height="86" loading="lazy" />
       <a class="ft__tel num" href={tel(PHONE_MAIN)}>{PHONE_MAIN}</a>
       <div class="ft__msg">
-        <a href={MESSENGERS.telegram.href} target="_blank" rel="noopener">Telegram</a>
+        <a href={botUrl("site_footer")} target="_blank" rel="noopener">Telegram</a>
         <a href={MESSENGERS.vk.href} target="_blank" rel="noopener">VK</a>
+        <a href={MESSENGERS.channel.href} target="_blank" rel="noopener">Канал с&nbsp;акциями</a>
       </div>
     </div>
     <nav aria-label="Гостям">

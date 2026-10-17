@@ -313,8 +313,9 @@ html.party .vb { animation: party 0.5s steps(1) 6; }
 .rm--b .badge--cap { background: var(--g); border-color: transparent; color: var(--pt-deep); }
 .rm--b[data-group="15-20"] .badge--cap { color: var(--pt-white); }
 .rm--b .rm__promo { background: rgb(201 229 67 / 0.1); border: 1px solid rgb(201 229 67 / 0.35); color: var(--pt-lime); }
-.rm--b .rm__foot { background: transparent; }
-@media (max-width: 899px) { .rm--b .rm__foot { background: rgb(28 28 30 / 0.96); } }
+.rm--b .rm__foot { background: linear-gradient(transparent, rgb(28 28 30) 22%); }
+.rm--b .rm__sim-card { border-color: rgb(255 255 255 / 0.14); }
+@media (max-width: 899px) { .rm--b .rm__foot { background: rgb(28 28 30 / 0.97); } }
 
 /* ---------- Блок «Соберите праздник» ---------- */
 .next-up--b { position: relative; background: var(--pt-deep); border-top: 1px solid rgb(255 255 255 / 0.1); }
@@ -328,7 +329,7 @@ html.party .vb { animation: party 0.5s steps(1) 6; }
   .hb__fact--4 { left: auto; right: var(--gutter); top: 14%; }
 }
 @media (max-width: 767px) {
-  .hb { --fs-hero: 13.4vw; min-height: 100svh; }
+  .hb { --fs-hero: 13.4vw; min-height: calc(100svh - var(--mbar-h)); }
   .hb__inner { padding-top: 96px; }
   .hb__stage { min-height: 96vw; }
   .hb__anchor { width: 54vw; translate: -50% -50%; }

@@ -315,7 +315,9 @@
 .rm--a .badge { background: var(--pt-white); color: var(--pt-deep); border: 1.5px solid var(--pt-deep); }
 .rm--a .badge--cap { background: var(--g); }
 .rm--a .rm__promo { background: var(--pt-white); border: 2px dashed var(--pt-deep); }
-.rm--a .rm__foot { background: var(--pt-paper); }
+.rm--a .rm__foot { background: linear-gradient(rgb(246 243 236 / 0), var(--pt-paper) 22%); }
+@media (max-width: 899px) { .rm--a .rm__foot { background: var(--pt-paper); border-top: var(--border); } }
+.rm--a .rm__sim-card { border: var(--border); background: var(--pt-white); }
 .rm--a .rm__included li::before { border: 1.5px solid var(--pt-deep); }
 
 /* ---------- Блок «Соберите праздник» (превью) ---------- */

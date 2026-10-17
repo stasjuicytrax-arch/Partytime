@@ -153,6 +153,41 @@
   transition: background-color var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
 }
 .fcard__btn:hover, .fcard__btn.is-picked { background: var(--pt-lime); border-color: var(--pt-lime); color: var(--pt-deep); }
+/* лид-магнит «Подарок ко ДР / свободные даты» — стикер с жёсткой тенью */
+.bd {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px 26px;
+  margin-top: clamp(28px, 3vw, 44px);
+  padding: 22px 26px;
+  border: var(--border);
+  border-radius: var(--r-lg);
+  background: var(--pt-lime);
+  color: var(--pt-deep);
+  box-shadow: 8px 8px 0 var(--pt-pink);
+  rotate: -0.6deg;
+}
+.bd__icon { width: 96px; height: 96px; object-fit: contain; rotate: -10deg; filter: drop-shadow(0 12px 16px rgb(0 0 0 / 0.35)); }
+.bd__kicker { font: 700 var(--fs-label) / 1 var(--font-text); letter-spacing: 0.08em; text-transform: uppercase; }
+.bd__controls { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0 12px; }
+.bd__date input { min-height: 48px; padding: 0 14px; border: var(--border); border-radius: var(--r-xs); background: var(--pt-white); color: var(--pt-deep); font: 600 1rem / 1 var(--font-text); }
+.bd__kind { display: flex; flex-wrap: wrap; gap: 8px; }
+.bd__kind label { position: relative; cursor: pointer; }
+.bd__kind input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.bd__kind span { display: inline-flex; align-items: center; min-height: 48px; padding: 0 16px; border: var(--border); border-radius: var(--r-pill); font: 700 0.875rem / 1 var(--font-text); }
+.bd__kind input:checked + span { background: var(--pt-deep); color: var(--pt-lime); }
+.bd__kind input:focus-visible + span { outline: 3px solid var(--pt-deep); outline-offset: 3px; }
+.bd__text { font: 900 clamp(1.125rem, 1.8vw, 1.5rem) / 1.1 var(--font-display); text-transform: uppercase; letter-spacing: -0.01em; }
+.bd__btn { background: var(--pt-deep); color: var(--pt-white); border-color: var(--pt-deep); box-shadow: 5px 5px 0 var(--pt-sky); }
+.bd__btn .btn__ico { background: var(--pt-sky); color: var(--pt-deep); }
+.bd__btn:hover { translate: -2px -2px; box-shadow: 8px 8px 0 var(--pt-sky); }
+@media (max-width: 899px) {
+  .bd { grid-template-columns: auto minmax(0, 1fr); rotate: 0deg; }
+  .bd__btn { grid-column: 1 / -1; justify-content: space-between; }
+  .bd__icon { width: 64px; height: 64px; align-self: start; }
+}
 .formats__note { margin-top: 28px; font-size: var(--fs-small); color: rgb(255 255 255 / 0.55); }
 
 /* без пина (телефон, reduced-motion) — обычная лента со снапом */
@@ -339,6 +374,47 @@
 .bk__check { display: grid; grid-template-columns: 24px 1fr; gap: 12px; align-items: start; font-size: var(--fs-small); color: rgb(255 255 255 / 0.8); cursor: pointer; }
 .bk__check input { width: 22px; height: 22px; margin: 0; accent-color: var(--pt-lime); }
 .bk__check a { color: var(--pt-lime); }
+/* шаг 1: крупные карточки поводов — один тап */
+.bk__occ { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.bk__occ-card { position: relative; cursor: pointer; }
+.bk__occ-card input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.bk__occ-face {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 6px;
+  min-height: 132px;
+  padding: 12px 8px 14px;
+  border: 1px solid rgb(255 255 255 / 0.18);
+  border-radius: 18px;
+  background: rgb(255 255 255 / 0.05);
+  text-align: center;
+  transition: border-color var(--dur-fast), background-color var(--dur-fast), translate var(--dur-base) var(--ease-out);
+}
+.bk__occ-face img { width: 64px; height: 64px; object-fit: contain; filter: drop-shadow(0 10px 14px rgb(0 0 0 / 0.45)); transition: scale var(--dur-base) var(--ease-pop); }
+.bk__occ-plus { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; border: 2px dashed rgb(255 255 255 / 0.35); font: 900 1.75rem / 1 var(--font-display); color: rgb(255 255 255 / 0.7); }
+.bk__occ-label { font: 800 0.875rem / 1.15 var(--font-display); text-transform: uppercase; letter-spacing: -0.01em; }
+.bk__occ-card:hover .bk__occ-face { border-color: rgb(255 255 255 / 0.5); translate: 0 -3px; }
+.bk__occ-card:hover img { scale: 1.08; }
+.bk__occ-card input:checked + .bk__occ-face { background: var(--pt-lime); border-color: var(--pt-lime); color: var(--pt-deep); }
+.bk__occ-card input:focus-visible + .bk__occ-face { outline: 3px solid var(--pt-lime); outline-offset: 3px; }
+@media (max-width: 599px) {
+  .bk__occ { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bk__occ-face { min-height: 108px; }
+  .bk__occ-face img, .bk__occ-plus { width: 52px; height: 52px; }
+}
+
+/* «Удобнее в Telegram →» на каждом шаге */
+.bk__tg { margin: -4px 0 0; }
+.bk__tg a { display: inline-flex; align-items: center; min-height: 44px; color: var(--pt-sky); font-weight: 700; text-decoration: none; border-bottom: 1px solid currentColor; }
+.bk__tg a:hover { color: var(--pt-white); }
+
+/* ответвление «Подарок ко ДР / свободные даты» */
+.bk__branch { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 18px; padding: 16px 18px; border: var(--border); border-color: var(--pt-deep); border-radius: 18px; background: var(--pt-sky); color: var(--pt-deep); box-shadow: 5px 5px 0 var(--pt-pink); }
+.bk__branch p { max-width: 30ch; font: 800 1rem / 1.25 var(--font-display); text-transform: uppercase; }
+.bk__branch-btn { background: var(--pt-deep); color: var(--pt-white); border-color: var(--pt-deep); }
+.bk__branch-btn .btn__ico { background: var(--pt-lime); color: var(--pt-deep); }
+
 .bk__error { min-height: 1.4em; color: var(--pt-coral-l); font-weight: 600; }
 .bk__error:empty { min-height: 0; }
 .bk__nav { display: flex; flex-wrap: wrap; gap: 12px; }
@@ -466,21 +542,6 @@
 .ft__copy { padding-block: 16px 28px; font-size: var(--fs-small); color: rgb(255 255 255 / 0.5); }
 @media (max-width: 899px) { .ft__cols { grid-template-columns: 1fr 1fr; } .ft__brand { grid-column: 1 / -1; } }
 @media (max-width: 767px) { .ft-letter { font-size: 15vw; } .ft__stage { height: 300px; } }
-
-/* ---------- Плавающая кнопка мессенджеров ---------- */
-.msgr { position: fixed; right: clamp(14px, 2vw, 28px); bottom: calc(clamp(14px, 2vw, 28px) + env(safe-area-inset-bottom)); z-index: 45; display: grid; justify-items: end; gap: 10px; opacity: 0; translate: 0 20px; pointer-events: none; transition: opacity 0.4s, translate 0.5s var(--ease-out); }
-.msgr.is-on { opacity: 1; translate: 0 0; pointer-events: auto; }
-.msgr__list { display: grid; gap: 8px; justify-items: end; }
-.msgr__list li { opacity: 0; translate: 0 10px; pointer-events: none; transition: opacity 0.25s, translate 0.35s var(--ease-out); }
-.msgr.is-open .msgr__list li { opacity: 1; translate: 0 0; pointer-events: auto; }
-.msgr.is-open .msgr__list li:nth-child(2) { transition-delay: 0.05s; }
-.msgr__item { display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px; border-radius: var(--r-pill); background: var(--pt-white); color: var(--pt-deep); font-weight: 700; text-decoration: none; box-shadow: 0 12px 30px -10px rgb(0 0 0 / 0.6); }
-.msgr__item:hover { background: var(--pt-lime); }
-.msgr__btn { display: inline-flex; align-items: center; gap: 10px; min-height: 56px; padding: 0 8px 0 20px; border: 0; border-radius: var(--r-pill); background: var(--pt-lime); color: var(--pt-deep); font: 700 0.9375rem / 1 var(--font-text); box-shadow: 0 14px 40px -12px rgb(201 229 67 / 0.7); }
-.msgr__ico { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--pt-deep); color: var(--pt-lime); }
-.msgr__i-close, .msgr.is-open .msgr__i-chat { display: none; }
-.msgr.is-open .msgr__i-close { display: block; }
-@media (max-width: 599px) { .msgr__label { display: none; } .msgr__btn { padding: 0 8px; } }
 
 /* ---------- 06 Отзывы: встречные ленты ---------- */
 .reviews { background: var(--pt-deep); overflow: clip; }

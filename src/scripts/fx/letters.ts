@@ -56,7 +56,7 @@ export async function initLetters(stage: HTMLElement) {
   stage.removeEventListener("wheel", mw);
   stage.removeEventListener("mousewheel", mw);
   stage.removeEventListener("DOMMouseScroll", mw);
-  const mc = MouseConstraint.create(engine, { mouse, constraint: { stiffness: 0.2, render: { visible: false } } as Matter.Constraint });
+  const mc = MouseConstraint.create(engine, { mouse, constraint: { stiffness: 0.2, render: { visible: false } } as Matter.IConstraintDefinition });
   Composite.add(engine.world, mc);
 
   // курсор расталкивает буквы

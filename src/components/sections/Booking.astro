@@ -1,10 +1,17 @@
 ---
+// Пошаговая форма. Порядок по данным Метрики (на первом шаге старого квиза уходило 80%):
+// 1 повод (один тап, без полей) → 2 гости → 3 локация → 4 дата/время → 5 доп. услуги → 6 контакты.
+// На каждом шаге — «Удобнее в Telegram →» в бота с меткой site_form_step<N>.
 import Icon from "../Icon.astro";
 import { FORM, PHONE_MAIN, MESSENGERS } from "../../lib/content";
 import { tel } from "../../lib/rooms";
+import { botUrl } from "../../lib/bot";
+import { OFFER } from "../../config/offer";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const hours = Array.from({ length: 13 }, (_, i) => `${String(12 + i === 24 ? 0 : 12 + i).padStart(2, "0")}:00`);
-const steps = ["Когда?", "Сколько гостей?", "Где?", "Какой повод?", "Что добавить?", "Контакты"];
+const steps = ["Какой повод?", "Сколько гостей?", "Где?", "Когда?", "Что добавить?", "Контакты"];
+const tgStep = (n: number) => botUrl(`site_form_step${n}`);
+const icon3d = (n: string) => `${base}/img/3d/${n}-dynamic-premium.webp`;
 ---
 <section class="sec booking" id="booking" aria-labelledby="booking-title" data-booking>
   <div class="container">
@@ -25,27 +32,24 @@ const steps = ["Когда?", "Сколько гостей?", "Где?", "Как
         </div>
         <p class="bk__count num" data-count aria-live="polite">Шаг 1 из {steps.length}</p>
 
-        <!-- 1. Когда -->
+        <!-- 1. Повод — один тап -->
         <fieldset class="bk__step" data-step="0">
           <legend>{steps[0]}</legend>
-          <div class="bk__row">
-            <label class="bk__field">
-              <span>Дата</span>
-              <input type="date" name="date" required data-date />
-            </label>
-            <label class="bk__field">
-              <span>Начало</span>
-              <select name="time">
-                {hours.map((h) => <option value={h} selected={h === "19:00"}>{h}</option>)}
-              </select>
-            </label>
-          </div>
-          <div class="bk__group" role="radiogroup" aria-label="Длительность">
-            {FORM.durations.map((d, i) => (
-              <label class="bk__chip"><input type="radio" name="duration" value={d} checked={i === 2} /><span>{d}</span></label>
+          <div class="bk__occ" role="radiogroup" aria-label="Повод">
+            {FORM.occasions.map((o) => (
+              <label class="bk__occ-card">
+                <input type="radio" name="occasion" value={o.value} />
+                <span class="bk__occ-face">
+                  {o.icon ? (
+                    <img src={icon3d(o.icon)} alt="" width="800" height="800" loading="lazy" decoding="async" />
+                  ) : (
+                    <span class="bk__occ-plus" aria-hidden="true">+</span>
+                  )}
+                  <span class="bk__occ-label">{o.label}</span>
+                </span>
+              </label>
             ))}
           </div>
-          <p class="bk__hint">Бронь на&nbsp;сегодня — быстрее по&nbsp;телефону <a href={tel(PHONE_MAIN)} class="num">{PHONE_MAIN}</a></p>
         </fieldset>
 
         <!-- 2. Гости -->
@@ -78,18 +82,33 @@ const steps = ["Когда?", "Сколько гостей?", "Где?", "Как
           <p class="bk__hint">Зал можно выбрать в&nbsp;<a href="#rooms">каталоге</a> — кнопка «Забронировать этот зал» подставит его сюда.</p>
         </fieldset>
 
-        <!-- 4. Повод -->
+        <!-- 4. Когда + ответвление в бота (подарок ко ДР / свободные даты) -->
         <fieldset class="bk__step" data-step="3" hidden>
           <legend>{steps[3]}</legend>
-          <div class="bk__group" role="radiogroup" aria-label="Повод">
-            {FORM.occasions.map((o, i) => (
-              <label class="bk__chip"><input type="radio" name="occasion" value={o} checked={i === 0} /><span>{o}</span></label>
+          <div class="bk__row">
+            <label class="bk__field">
+              <span>Дата</span>
+              <input type="date" name="date" required data-date />
+            </label>
+            <label class="bk__field">
+              <span>Начало</span>
+              <select name="time">
+                {hours.map((h) => <option value={h} selected={h === "19:00"}>{h}</option>)}
+              </select>
+            </label>
+          </div>
+          <div class="bk__group" role="radiogroup" aria-label="Длительность">
+            {FORM.durations.map((d, i) => (
+              <label class="bk__chip"><input type="radio" name="duration" value={d} checked={i === 2} /><span>{d}</span></label>
             ))}
           </div>
-          <label class="bk__field bk__field--wide" data-other hidden>
-            <span>Ваш повод</span>
-            <input type="text" name="occasionOther" maxlength="80" />
-          </label>
+          <div class="bk__branch" data-branch hidden data-place="form_branch">
+            <p data-branch-text>{OFFER.dates}</p>
+            <a class="btn btn--sm bk__branch-btn" href={botUrl("site_dates")} target="_blank" rel="noopener" data-branch-link>
+              <span>Открыть Telegram</span><span class="btn__ico"><Icon name="arrow" size={18} /></span>
+            </a>
+          </div>
+          <p class="bk__hint">Бронь на&nbsp;сегодня — быстрее по&nbsp;телефону <a href={tel(PHONE_MAIN)} class="num">{PHONE_MAIN}</a></p>
         </fieldset>
 
         <!-- 5. Что добавить -->
@@ -103,7 +122,7 @@ const steps = ["Когда?", "Сколько гостей?", "Где?", "Как
           <p class="bk__hint">Можно ничего не&nbsp;выбирать — обсудим по&nbsp;телефону.</p>
         </fieldset>
 
-        <!-- 6. Контакты -->
+        <!-- 6. Контакты — строго последними -->
         <fieldset class="bk__step" data-step="5" hidden>
           <legend>{steps[5]}</legend>
           <div class="bk__row">
@@ -134,11 +153,17 @@ const steps = ["Когда?", "Сколько гостей?", "Где?", "Как
           </button>
         </div>
 
-        <div class="bk__success" data-success hidden tabindex="-1">
+        <p class="bk__tg" data-place="form">
+          {steps.map((_, i) => (
+            <a href={tgStep(i + 1)} target="_blank" rel="noopener" data-step-tg={i + 1} hidden={i > 0}>Удобнее в&nbsp;Telegram&nbsp;→</a>
+          ))}
+        </p>
+
+        <div class="bk__success" data-success hidden tabindex="-1" data-place="form_success">
           <h3>Заявка у&nbsp;нас!</h3>
           <p>Перезвоним в&nbsp;течение 2&nbsp;минут. А&nbsp;пока можно написать нам:</p>
           <div class="bk__msg">
-            <a class="btn btn--primary btn--sm" href={MESSENGERS.telegram.href} target="_blank" rel="noopener"><span>Telegram</span><span class="btn__ico"><Icon name="arrow" size={18} /></span></a>
+            <a class="btn btn--primary btn--sm" href={botUrl("site_form_success")} target="_blank" rel="noopener"><span>Telegram</span><span class="btn__ico"><Icon name="arrow" size={18} /></span></a>
             <a class="btn btn--ghost btn--sm" href={MESSENGERS.vk.href} target="_blank" rel="noopener">VK</a>
           </div>
         </div>

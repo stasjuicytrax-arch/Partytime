@@ -1,15 +1,32 @@
 ---
-// Плавающая кнопка «Написать нам» (правый нижний угол), появляется после первого экрана.
-// MAX — ссылку заказчик пока не дал [уточнить], кнопка не выводится.
+// Мессенджеры — главный канал заявок (4,45% конверсии на старом сайте).
+// Телефон: закреплённая нижняя панель на всех экранах. ПК: плавающая «Написать нам», видна всегда.
+// Ссылка в бота несёт метку текущей секции: site_hero, site_rooms, … (см. docs/TZ.md).
+// MAX — ссылку заказчик пока не дал [уточнить]: кнопка появится, как только она будет в content.ts.
 import Icon from "./Icon.astro";
-import { MESSENGERS } from "../lib/content";
-const items = [MESSENGERS.telegram, MESSENGERS.vk, MESSENGERS.max].filter((m) => m.href);
+import { MESSENGERS, PHONE_MAIN } from "../lib/content";
+import { tel } from "../lib/rooms";
+import { botUrl } from "../lib/bot";
+const tg = botUrl("site_hero");
+const hasMax = !!MESSENGERS.max.href;
 ---
-<div class="msgr" data-msgr>
-  <ul class="msgr__list" id="msgr-list" data-msgr-list>
-    {items.map((m) => (
-      <li><a class="msgr__item" href={m.href} target="_blank" rel="noopener">{m.label}</a></li>
-    ))}
+<!-- телефон: нижняя панель -->
+<nav class="mbar" aria-label="Написать или позвонить" data-place="bar">
+  <a class="mbar__item mbar__item--tg" href={tg} target="_blank" rel="noopener" data-bot-dynamic>
+    <span class="mbar__dot" aria-hidden="true"></span>Telegram
+  </a>
+  <a class="mbar__item" href={MESSENGERS.vk.href} target="_blank" rel="noopener">VK</a>
+  {hasMax && <a class="mbar__item" href={MESSENGERS.max.href} target="_blank" rel="noopener">MAX</a>}
+  <a class="mbar__item mbar__item--call" href={tel(PHONE_MAIN)}><Icon name="phone" size={18} />Позвонить</a>
+</nav>
+
+<!-- ПК: плавающая кнопка -->
+<div class="msgr" data-msgr data-place="fab">
+  <ul class="msgr__list" id="msgr-list">
+    <li><a class="msgr__item msgr__item--tg" href={tg} target="_blank" rel="noopener" data-bot-dynamic>Telegram</a></li>
+    <li><a class="msgr__item" href={MESSENGERS.vk.href} target="_blank" rel="noopener">VK</a></li>
+    {hasMax && <li><a class="msgr__item" href={MESSENGERS.max.href} target="_blank" rel="noopener">MAX</a></li>}
+    <li><a class="msgr__item num" href={tel(PHONE_MAIN)}><Icon name="phone" size={16} />{PHONE_MAIN}</a></li>
   </ul>
   <button type="button" class="msgr__btn" aria-label="Написать нам" aria-expanded="false" aria-controls="msgr-list" data-msgr-btn>
     <span class="msgr__label">Написать нам</span>
@@ -18,27 +35,50 @@ const items = [MESSENGERS.telegram, MESSENGERS.vk, MESSENGERS.max].filter((m) =>
 </div>
 
 <script>
+  import { botUrl } from "../lib/bot";
+  import { initClickGoals } from "../lib/analytics";
+  initClickGoals();
   const root = document.querySelector<HTMLElement>("[data-msgr]");
   if (root) {
     const btn = root.querySelector<HTMLButtonElement>("[data-msgr-btn]")!;
-    btn.addEventListener("click", () => {
-      const open = btn.getAttribute("aria-expanded") !== "true";
+    const toggle = (open: boolean) => {
       btn.setAttribute("aria-expanded", String(open));
       root.classList.toggle("is-open", open);
-    });
+    };
+    btn.addEventListener("click", () => toggle(btn.getAttribute("aria-expanded") !== "true"));
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && root.classList.contains("is-open")) {
-        btn.click();
+        toggle(false);
         btn.focus();
       }
     });
-    // появляется после первого экрана и прячется у подвала, где свои контакты
-    const onScroll = () => {
-      const footer = document.querySelector(".ft");
-      const nearFooter = footer ? footer.getBoundingClientRect().top < innerHeight * 0.8 : false;
-      root.classList.toggle("is-on", scrollY > innerHeight * 0.8 && !nearFooter);
-    };
-    addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
+    document.addEventListener("click", (e) => {
+      if (root.classList.contains("is-open") && !root.contains(e.target as Node)) toggle(false);
+    });
   }
+
+  // метка бота = секция, которую человек сейчас смотрит
+  const links = [...document.querySelectorAll<HTMLAnchorElement>("[data-bot-dynamic]")];
+  const sections = [...document.querySelectorAll<HTMLElement>("section[id], [data-hero-a], [data-hero-b], footer")];
+  const nameOf = (el: HTMLElement) => (el.matches("[data-hero-a], [data-hero-b]") ? "hero" : el.tagName === "FOOTER" ? "footer" : el.id);
+  const visible = new Map<HTMLElement, number>();
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((en) => visible.set(en.target as HTMLElement, en.intersectionRatio));
+      let best: HTMLElement | null = null;
+      let max = 0;
+      visible.forEach((r, el) => {
+        if (r > max) {
+          max = r;
+          best = el;
+        }
+      });
+      if (best) {
+        const url = botUrl(`site_${nameOf(best)}`);
+        links.forEach((a) => (a.href = url));
+      }
+    },
+    { threshold: [0, 0.25, 0.5, 0.75, 1] }
+  );
+  sections.forEach((s) => io.observe(s));
 </script>

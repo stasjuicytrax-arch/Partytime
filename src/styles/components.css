@@ -388,8 +388,51 @@
   rotate: 45deg;
 }
 .rm__promo { padding: 12px 16px; border-radius: var(--r-xs); font-size: var(--fs-small); font-weight: 600; }
-.rm__foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-top: auto; padding-top: 8px; }
+/* цена — рядом с бейджами; нижняя панель: «Забронировать» + «Скидка в Telegram» */
+.rm__meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+.rm__foot {
+  position: sticky;
+  bottom: calc(clamp(28px, 3vw, 48px) * -1);
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: auto calc(clamp(28px, 3vw, 48px) * -1) calc(clamp(28px, 3vw, 48px) * -1);
+  padding: 14px clamp(28px, 3vw, 48px) clamp(20px, 2vw, 28px);
+}
+.rm__book { flex: 1 1 auto; justify-content: space-between; }
+.rm__tg {
+  flex: 0 1 auto;
+  justify-content: center;
+  padding: 0 22px;
+  background: var(--pt-sky);
+  color: var(--pt-deep);
+  border: var(--border);
+  box-shadow: var(--shadow-pop);
+}
+.rm__tg:hover { translate: -2px -2px; box-shadow: var(--shadow-pop-hover); }
 .rm__price { font: 600 1rem / 1 var(--font-text); }
+
+/* похожие залы */
+.rm__similar h4 { margin-bottom: 10px; font: 800 0.875rem / 1.2 var(--font-display); text-transform: uppercase; }
+.rm__sim { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.rm__sim-card {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  padding: 0 0 10px;
+  overflow: hidden;
+  border: 1px solid rgb(127 127 127 / 0.3);
+  border-radius: 14px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  transition: border-color var(--dur-fast), translate var(--dur-base) var(--ease-out);
+}
+.rm__sim-card:hover, .rm__sim-card:focus-visible { border-color: var(--g); translate: 0 -3px; }
+.rm__sim-card img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; margin-bottom: 6px; }
+.rm__sim-title { padding: 0 12px; font: 800 0.9375rem / 1.1 var(--font-display); text-transform: uppercase; overflow-wrap: anywhere; }
+.rm__sim-meta { padding: 0 12px; font-size: 0.75rem; opacity: 0.75; }
 .rm__price b { font: 900 clamp(1.75rem, 2.4vw, 2.25rem) / 1 var(--font-display); letter-spacing: -0.02em; }
 .modal-open { overflow: hidden; }
 
@@ -403,9 +446,10 @@
   .rm__close { position: fixed; top: 12px; right: 12px; }
   /* цена и «Забронировать» всегда на экране */
   .rm__info { padding-bottom: 112px; }
-  .rm__foot { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; flex-wrap: nowrap; padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); }
-  .rm__price { flex: none; }
-  .rm__book { flex: 1 1 0; min-width: 0; justify-content: space-between; white-space: normal; padding-left: 18px; font-size: 0.9375rem; line-height: 1.15; box-shadow: none; }
+  .rm__foot { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; flex-wrap: nowrap; margin: 0; padding: 12px 12px calc(12px + env(safe-area-inset-bottom)); }
+  .rm__book, .rm__tg { flex: 1 1 0; min-width: 0; white-space: normal; padding: 0 8px 0 14px; font-size: 0.875rem; line-height: 1.15; box-shadow: none; }
+  .rm__tg { padding: 0 10px; text-align: center; }
+  .rm__book .btn__ico { width: 34px; height: 34px; }
   .rm__price b { font-size: 1.5rem; }
   .rm__foot { border-top: 1px solid rgb(127 127 127 / 0.25); }
 }
@@ -500,3 +544,144 @@
 .next-up__pick { font-weight: 700; }
 .next-up__pick:empty { display: none; }
 .next-up__row { display: flex; flex-wrap: wrap; gap: 14px; }
+
+/* ===== Мессенджеры — главный CTA (общий для /a, /b и главной) ===== */
+:root { --mbar-h: 0px; }
+
+/* ПК: плавающая «Написать нам», видна всегда */
+.msgr { position: fixed; right: clamp(14px, 2vw, 28px); bottom: clamp(14px, 2vw, 28px); z-index: 70; display: grid; justify-items: end; gap: 10px; }
+.msgr__list { display: grid; gap: 8px; justify-items: end; }
+.msgr__list li { opacity: 0; translate: 0 10px; pointer-events: none; transition: opacity 0.25s, translate 0.35s var(--ease-out); }
+.msgr.is-open .msgr__list li { opacity: 1; translate: 0 0; pointer-events: auto; }
+.msgr.is-open .msgr__list li:nth-child(2) { transition-delay: 0.04s; }
+.msgr.is-open .msgr__list li:nth-child(3) { transition-delay: 0.08s; }
+.msgr.is-open .msgr__list li:nth-child(4) { transition-delay: 0.12s; }
+.msgr__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 20px;
+  border: var(--border);
+  border-radius: var(--r-pill);
+  background: var(--pt-white);
+  color: var(--pt-deep);
+  font: 700 0.9375rem / 1 var(--font-text);
+  text-decoration: none;
+  box-shadow: 4px 4px 0 var(--pt-deep);
+  transition: translate var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast);
+}
+.msgr__item:hover { translate: -2px -2px; box-shadow: 6px 6px 0 var(--pt-deep); }
+.msgr__item--tg { background: var(--pt-sky); }
+.msgr__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 56px;
+  padding: 0 8px 0 20px;
+  border: var(--border);
+  border-radius: var(--r-pill);
+  background: var(--pt-lime);
+  color: var(--pt-deep);
+  font: 800 0.9375rem / 1 var(--font-text);
+  box-shadow: var(--shadow-pop);
+  transition: translate var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast);
+}
+.msgr__btn:hover { translate: -2px -2px; box-shadow: var(--shadow-pop-hover); }
+.msgr__ico { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--pt-deep); color: var(--pt-lime); }
+.msgr__i-close, .msgr.is-open .msgr__i-chat { display: none; }
+.msgr.is-open .msgr__i-close { display: block; }
+
+/* Телефон: закреплённая нижняя панель Telegram · VK · MAX · Позвонить */
+.mbar { display: none; }
+@media (max-width: 767px) {
+  :root { --mbar-h: calc(64px + env(safe-area-inset-bottom)); }
+  .msgr { display: none; }
+  body { padding-bottom: var(--mbar-h); }
+  .mbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 70;
+    display: flex;
+    gap: 6px;
+    padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+    background: var(--pt-deep);
+    border-top: 2px solid var(--pt-lime);
+  }
+  .mbar__item {
+    flex: 1 1 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 0;
+    min-height: 48px;
+    border-radius: 14px;
+    background: rgb(255 255 255 / 0.08);
+    color: var(--pt-white);
+    font: 700 0.875rem / 1 var(--font-text);
+    text-decoration: none;
+  }
+  .mbar__item--tg { flex-grow: 1.4; background: var(--pt-sky); color: var(--pt-deep); }
+  .mbar__item--call { flex-grow: 1.4; background: var(--pt-lime); color: var(--pt-deep); }
+  .mbar__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--pt-deep); animation: mbar-pulse 2s ease-in-out infinite; }
+  @keyframes mbar-pulse { 50% { opacity: 0.3; } }
+  /* модалка зала на телефоне: её нижняя панель не прячется под мессенджерами */
+  .rm__foot { bottom: 0; }
+}
+
+/* ===== Поп-апы бота: стикер, жёсткая тень, Unbounded (общие для /a, /b и главной) ===== */
+.pop {
+  position: fixed;
+  inset: 0 0 var(--mbar-h) 0; /* нижняя панель мессенджеров на телефоне остаётся видна */
+  z-index: 65;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+.pop[hidden] { display: none !important; }
+.pop__veil { position: absolute; inset: 0; background: rgb(21 21 21 / 0.62); backdrop-filter: blur(4px); }
+.pop__card {
+  position: relative;
+  display: grid;
+  justify-items: start;
+  gap: 14px;
+  width: min(460px, 100%);
+  padding: 30px 28px 28px;
+  border: var(--border);
+  border-radius: var(--r-lg);
+  background: var(--pt-lime);
+  color: var(--pt-deep);
+  box-shadow: 10px 10px 0 var(--pt-pink), 10px 10px 0 2px var(--pt-deep);
+  rotate: -1.5deg;
+}
+.pop__icon { position: absolute; top: -54px; right: 18px; width: 112px; height: 112px; object-fit: contain; rotate: 12deg; filter: drop-shadow(0 14px 18px rgb(0 0 0 / 0.4)); pointer-events: none; }
+.pop__title { max-width: 14ch; font: 900 clamp(1.75rem, 5vw, 2.5rem) / 0.95 var(--font-display); letter-spacing: -0.03em; text-transform: uppercase; }
+.pop__text { font: 600 1.0625rem / 1.35 var(--font-text); max-width: 30ch; }
+.pop__cta { margin-top: 6px; background: var(--pt-deep); color: var(--pt-white); border: var(--border); box-shadow: 5px 5px 0 var(--pt-sky); }
+.pop__cta .btn__ico { background: var(--pt-sky); color: var(--pt-deep); }
+.pop__cta:hover { translate: -2px -2px; box-shadow: 8px 8px 0 var(--pt-sky); }
+.pop__close {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: var(--border);
+  border-radius: 50%;
+  background: var(--pt-white);
+  color: var(--pt-deep);
+  transition: rotate var(--dur-base) var(--ease-pop);
+}
+.pop__close:hover { rotate: 90deg; }
+.pop__card > .pop__title { margin-top: 34px; }
+@media (max-width: 767px) {
+  .pop { place-items: end center; padding: 16px 12px 12px; }
+  .pop__card { rotate: 0deg; box-shadow: 6px 6px 0 var(--pt-pink), 6px 6px 0 2px var(--pt-deep); }
+  .pop__icon { width: 88px; height: 88px; top: -40px; }
+  .pop__cta { width: 100%; justify-content: space-between; }
+}

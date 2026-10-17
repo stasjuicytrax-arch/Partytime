@@ -62,8 +62,9 @@ export function initLiquid(root: ParentNode = document) {
   canvas.className = "liquid";
   canvas.setAttribute("aria-hidden", "true");
   Object.assign(canvas.style, { position: "absolute", inset: "0", width: "100%", height: "100%", zIndex: "1", pointerEvents: "none", opacity: "0", transition: "opacity .25s" } as CSSStyleDeclaration);
-  const gl = canvas.getContext("webgl", { premultipliedAlpha: false, antialias: false });
-  if (!gl) return;
+  const ctx = canvas.getContext("webgl", { premultipliedAlpha: false, antialias: false });
+  if (!ctx) return;
+  const gl: WebGLRenderingContext = ctx;
 
   const sh = (type: number, src: string) => {
     const s = gl.createShader(type)!;
