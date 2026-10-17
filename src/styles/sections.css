@@ -201,52 +201,71 @@
 
 /* ---------- 04 Всё для праздника: раскрывающиеся панели ---------- */
 .services { background: var(--pt-deep); }
-.svc { display: flex; gap: 12px; height: clamp(420px, 38vw, 520px); }
+.svc { display: flex; flex-direction: column; gap: 10px; }
 .svc__item {
   position: relative;
-  flex: 1 1 0;
   min-width: 0;
   overflow: hidden;
   border-radius: var(--r-lg);
   background: #1e1d22;
   border: 1px solid rgb(255 255 255 / 0.08);
-  transition: flex-grow 0.7s var(--ease-out), background-color 0.4s, border-color 0.4s;
+  transition: background-color 0.4s, border-color 0.4s;
 }
-.svc__item[data-open] { flex-grow: 3.4; background: linear-gradient(160deg, #2b2140, #1e1d22 65%); border-color: rgb(201 229 67 / 0.4); }
+.svc__item[data-open] { background: linear-gradient(160deg, #2b2140, #1e1d22 65%); border-color: rgb(201 229 67 / 0.4); }
 .svc__head {
-  position: absolute;
-  inset: 0;
+  position: relative;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 24px 22px;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  min-height: 72px;
+  padding: 16px 56px 16px 22px;
   border: 0;
   background: none;
   color: inherit;
   text-align: left;
 }
-.svc__num { font: 800 0.875rem / 1 var(--font-display); color: var(--pt-lime); }
-.svc__title {
-  font: 900 clamp(1.25rem, 1.8vw, 1.75rem) / 1 var(--font-display);
-  letter-spacing: -0.02em;
-  text-transform: uppercase;
-  writing-mode: vertical-rl;
-  rotate: 180deg;
-  white-space: nowrap;
-}
-.svc__item[data-open] .svc__title { writing-mode: horizontal-tb; rotate: 0deg; white-space: normal; font-size: clamp(1.75rem, 2.8vw, 2.75rem); }
-.svc__plus { position: absolute; top: 22px; right: 22px; width: 18px; height: 18px; }
+.svc__num { flex: none; font: 800 0.875rem / 1 var(--font-display); color: var(--pt-lime); }
+.svc__title { font: 900 clamp(1.125rem, 1.5vw, 1.5rem) / 1.1 var(--font-display); letter-spacing: -0.02em; text-transform: uppercase; overflow-wrap: anywhere; }
+.svc__plus { position: absolute; top: 50%; right: 22px; width: 18px; height: 18px; translate: 0 -50%; }
 .svc__plus::before, .svc__plus::after { content: ""; position: absolute; left: 0; top: 8px; width: 18px; height: 2px; background: currentColor; transition: rotate 0.4s var(--ease-out); }
 .svc__plus::after { rotate: 90deg; }
 .svc__item[data-open] .svc__plus::after { rotate: 0deg; }
-.svc__item[data-open] .svc__head { justify-content: flex-start; gap: 16px; }
-.svc__panel { position: absolute; inset: auto 0 0; padding: 24px 22px; opacity: 0; translate: 0 20px; pointer-events: none; transition: opacity 0.35s, translate 0.5s var(--ease-out); }
-.svc__item[data-open] .svc__panel { opacity: 1; translate: 0 0; pointer-events: auto; transition-delay: 0.25s; }
 .svc__inner { display: grid; gap: 14px; max-width: 46ch; }
 .svc__inner p { color: rgb(255 255 255 / 0.82); }
-.svc__icon { position: absolute; right: 12px; bottom: calc(100% - 20px); width: clamp(120px, 12vw, 180px); height: auto; filter: drop-shadow(0 24px 30px rgb(0 0 0 / 0.55)); }
+.svc__ptitle { display: none; }
+.svc__icon { position: absolute; height: auto; filter: drop-shadow(0 24px 30px rgb(0 0 0 / 0.55)); }
 .svc__link { justify-self: start; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-weight: 700; color: var(--pt-lime); text-decoration: none; border-bottom: 1px solid currentColor; }
+
+/* ПК: слева список строками, справа — большая карточка выбранной услуги */
+@media (min-width: 1024px) {
+  .svc { --svc-gap: 24px; position: relative; display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); column-gap: var(--svc-gap); align-content: start; min-height: clamp(460px, 36vw, 540px); }
+  .svc__item { grid-column: 1; position: static; overflow: visible; border-radius: 18px; }
+  .svc__item:not([data-open]):hover { border-color: rgb(255 255 255 / 0.22); }
+  .svc__item[data-open] { background: #1e1d22; }
+  .svc__item[data-open] .svc__title { color: var(--pt-lime); }
+  .svc__panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: calc((100% - var(--svc-gap)) * 1.15 / 2);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: clamp(28px, 3vw, 44px);
+    border-radius: var(--r-lg);
+    background: linear-gradient(160deg, #2b2140, #1e1d22 65%);
+    border: 1px solid rgb(201 229 67 / 0.4);
+    opacity: 0;
+    translate: 0 16px;
+    pointer-events: none;
+    transition: opacity 0.35s, translate 0.5s var(--ease-out);
+  }
+  .svc__item[data-open] .svc__panel { opacity: 1; translate: 0 0; pointer-events: auto; transition-delay: 0.1s; }
+  .svc__ptitle { display: block; font: 900 clamp(2rem, 3vw, 3rem) / 1 var(--font-display); letter-spacing: -0.03em; text-transform: uppercase; }
+  .svc__icon { top: clamp(20px, 2.4vw, 36px); right: clamp(20px, 2.4vw, 36px); width: clamp(150px, 15vw, 230px); }
+}
 
 @media (max-width: 1023px) {
   .svc { flex-direction: column; height: auto; gap: 10px; }

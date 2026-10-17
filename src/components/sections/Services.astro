@@ -22,6 +22,7 @@ const icon = (n: string) => `${base}/img/3d/${n}-dynamic-premium.webp`;
           <div class="svc__panel" id={`svc-${s.id}`} role="region" aria-labelledby={`svc-btn-${s.id}`}>
             <div class="svc__inner">
               <img class="svc__icon" src={icon(s.icon)} alt="" width="800" height="800" loading="lazy" decoding="async" />
+              <p class="svc__ptitle" aria-hidden="true">{s.title}</p>
               <p>{s.text}</p>
               {s.link && (
                 <a class="svc__link" href={`${base}/${s.link.href}`}>{s.link.label} <Icon name="arrow" size={18} /></a>
