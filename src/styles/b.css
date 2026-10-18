@@ -255,7 +255,8 @@ html.party .vb { animation: party 0.5s steps(1) 6; }
 .rc--b .rc__lead { color: rgb(255 255 255 / 0.78); }
 
 .rc--b .loc { background: rgb(255 255 255 / 0.06); border: 1px solid rgb(255 255 255 / 0.18); color: var(--pt-white); }
-.rc--b .loc:not(.loc--soon):hover { border-color: var(--loc); background: rgb(255 255 255 / 0.1); }
+/* наведение не трогает выбранную вкладку: иначе её фон темнеет под тёмным текстом */
+.rc--b .loc:not(.loc--soon):not([aria-pressed="true"]):hover { border-color: var(--loc); background: rgb(255 255 255 / 0.1); }
 .rc--b .loc[aria-pressed="true"] { background: var(--loc); border-color: var(--loc); }
 .rc--b .loc[data-loc="all"][aria-pressed="true"], .rc--b .loc[data-loc="dumskaya"][aria-pressed="true"], .rc--b .loc[data-loc="leninskiy"][aria-pressed="true"], .rc--b .loc[data-loc="komendantskiy"][aria-pressed="true"] { color: var(--pt-deep); }
 .rc--b .loc--soon { background: transparent; border: 1px dashed rgb(255 255 255 / 0.2); color: rgb(255 255 255 / 0.4); }

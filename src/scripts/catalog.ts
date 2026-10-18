@@ -1,10 +1,8 @@
 import { gsap } from "gsap";
-import { Flip } from "gsap/Flip";
 import { reduced, lenis } from "./motion";
 import { reachGoal, hit } from "../lib/analytics";
 import { botUrl, roomTag } from "../lib/bot";
 
-gsap.registerPlugin(Flip);
 
 interface ClientRoom {
   slug: string;
@@ -101,6 +99,7 @@ export function initCatalog(root: HTMLElement) {
   const matches = (el: HTMLElement) => inLoc(el.dataset.loc) && (state.group === "all" || el.dataset.group === state.group);
 
   /* ---------- фильтры ---------- */
+  let applyRun = 0;
   function apply(animate = true) {
     locBtns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.loc === state.loc)));
     chips.forEach((c) => c.setAttribute("aria-pressed", String(c.dataset.group === state.group)));
@@ -115,7 +114,32 @@ export function initCatalog(root: HTMLElement) {
       c.toggleAttribute("data-zero", n === 0);
     });
 
-    const flipState = animate && !reduced() ? Flip.getState(cards, { props: "opacity" }) : null;
+    // смена выдачи без «полёта» карточек: старые быстро гаснут, раскладка меняется, пока их не видно,
+    // новые проявляются снизу вверх. Сетка не схлопывается на глазах, кнопка «Показать ещё» не прыгает.
+    const token = ++applyRun;
+    const old = cards.filter((c) => !c.hidden);
+    gsap.killTweensOf(cards);
+    if (!animate || reduced() || !old.length) {
+      layout();
+      gsap.set(cards, { clearProps: "opacity,transform" });
+      return;
+    }
+    gsap.to(old, {
+      opacity: 0,
+      y: -10,
+      duration: 0.16,
+      ease: "power1.in",
+      onComplete: () => {
+        if (token !== applyRun) return; // пока гасли, нажали другую вкладку — её раскладка победит
+        gsap.set(old, { clearProps: "opacity,transform" });
+        layout();
+        const fresh = cards.filter((c) => !c.hidden);
+        gsap.fromTo(fresh, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.42, ease: "power3.out", stagger: 0.035, clearProps: "opacity,transform", onComplete: () => window.dispatchEvent(new Event("resize")) });
+      },
+    });
+  }
+
+  function layout() {
     let shown = 0;
     let visible = 0;
     // сколько показать: базовый лимит + порции «Показать ещё»; хвост в 4 зала и меньше не прячем
@@ -147,19 +171,6 @@ export function initCatalog(root: HTMLElement) {
     const locName = locBtns.find((b) => b.dataset.loc === state.loc)?.querySelector(".loc__name")?.textContent;
     status.textContent = isNew ? `${locName}: подберём зал по телефону или в Telegram` : `${locName}: ${shown} ${plural(shown, ["зал", "зала", "залов"])}`;
 
-    if (flipState) {
-      Flip.from(flipState, {
-        duration: 0.6,
-        ease: "power3.inOut",
-        stagger: 0.015,
-        absolute: true,
-        nested: true,
-        onEnter: (els) =>
-          gsap.fromTo(els, { opacity: 0, y: 40, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: "back.out(1.5)", stagger: 0.03, clearProps: "transform,opacity" }),
-        onLeave: (els) => gsap.to(els, { opacity: 0, scale: 0.9, duration: 0.3, ease: "power2.in" }),
-        onComplete: () => window.dispatchEvent(new Event("resize")),
-      });
-    }
   }
 
   locBtns.forEach((b) =>

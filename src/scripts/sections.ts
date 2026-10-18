@@ -116,7 +116,23 @@ export function initFormats() {
     gsap.utils.toArray<HTMLElement>(".fcard").forEach((c) => {
       gsap.from(c, { rotate: 4, y: 40, opacity: 0.4, ease: "none", scrollTrigger: { trigger: c, containerAnimation: tw, start: "left 100%", end: "left 60%", scrub: true } });
     });
-    return () => sec.classList.remove("is-pinned");
+    // закрепление считает свою позицию по высоте всего, что выше. Каталог меняет высоту
+    // (смена локации, «Показать ещё»), форма — шагами: пересчитываем при любом изменении высоты страницы,
+    // иначе блок выскакивает поверх соседних и оставляет пустоту
+    let lastH = document.body.scrollHeight;
+    let t = 0;
+    const ro = new ResizeObserver(() => {
+      const h = document.body.scrollHeight;
+      if (Math.abs(h - lastH) < 2) return;
+      lastH = h;
+      clearTimeout(t);
+      t = window.setTimeout(() => ScrollTrigger.refresh(), 150);
+    });
+    ro.observe(document.querySelector("main") ?? document.body);
+    return () => {
+      ro.disconnect();
+      sec.classList.remove("is-pinned");
+    };
   });
 
   // «Хочу так» → поле «Повод» в форме

@@ -266,7 +266,7 @@
 .rc--a .loc__badge { background: var(--pt-white); color: var(--pt-fog); border: 1px solid var(--pt-ivory); }
 
 .rc--a .chip { background: transparent; border: var(--border); color: var(--pt-deep); }
-.rc--a .chip:hover { background: var(--pt-white); }
+.rc--a .chip:not([aria-pressed="true"]):hover { background: var(--pt-white); }
 .rc--a .chip[aria-pressed="true"] { background: var(--g, var(--pt-deep)); color: var(--pt-deep); }
 .rc--a .chip[data-group="15-20"][aria-pressed="true"] { color: var(--pt-white); }
 .rc--a .chip[data-group="all"][aria-pressed="true"] { background: var(--pt-deep); color: var(--pt-white); }
