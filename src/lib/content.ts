@@ -9,7 +9,8 @@ export const MESSENGERS = {
   telegram: { label: "Telegram", href: "https://t.me/PARTY_TIME_SPB_BOT" },
   vk: { label: "VK", href: "https://vk.me/party_time_spb" },
   /** ссылку на MAX заказчик пока не дал — кнопка скрыта [уточнить] */
-  max: { label: "MAX", href: "" },
+  // заглушка: пока ссылки нет, кнопки MAX на сайте не показываются (isPlaceholder)
+  max: { label: "MAX", href: "[ССЫЛКА НА MAX]" },
   channel: { label: "Канал в Telegram", href: "https://t.me/PartyTimeBanket" },
 };
 
@@ -35,7 +36,7 @@ export const FORMATS = [
   { id: "loft", title: "Аренда лофта", text: "Просто зал, свет, звук и ваша компания.", room: "brooklyn", form: "Вечеринка" },
   { id: "date", title: "Свидание", text: "Залы на двоих: «Под звёздами», «Шанти», «Джентльмены».", room: "pod-zvezdami", form: "Свидание" },
   { id: "hen", title: "Девичник и мальчишник", text: "Диско, Майами, Малибу — громко и красиво.", room: "maiami-bich", form: "Девичник/Мальчишник" },
-  { id: "corp", title: "Корпоратив", text: "До 18 гостей в одном зале, презентация на большом экране.", room: "contrast", form: "Корпоратив" },
+  { id: "corp", title: "Корпоратив", text: "До 20 гостей в одном зале, презентация на большом экране.", room: "contrast", form: "Корпоратив" },
   { id: "kids", title: "Детский праздник", text: "Аниматоры, сказочные залы, торт можно своё.", room: "skazochnii-les", form: "Детский" },
   { id: "prom", title: "Выпускной", text: "Танцы до утра и фото, которые не стыдно выложить.", room: "cyberpunk", form: "Вечеринка" },
   { id: "master", title: "Мастер-классы", text: "Соберём программу под вашу компанию.", room: "bezumnoe-chaepitie", form: "Другое" },
@@ -54,7 +55,7 @@ export const SERVICES = [
 /* ---------- 7. Акции ---------- */
 export const PROMOS = [
   { id: "bday", title: "ДР длится две недели", text: "Неделя до и неделя после вашей даты: весь бар −20%.", big: "−20%", color: "pink", link: null },
-  { id: "3plus1", title: "Акция 3+1", text: "Условия уточняйте у менеджера.", big: "3+1", color: "lime", link: null, todo: true },
+  { id: "3plus1", title: "Акция 3+1", text: "Бронируете 3 часа — четвёртый в подарок.", big: "3+1", color: "lime", link: null },
   { id: "mafia", title: "Мафия по четвергам", text: "Вступайте в закрытый чат и записывайтесь на игры.", big: "ЧТ", color: "violet", link: null },
   { id: "menu", title: "Новое меню", text: "Обновили вкус, бар и формат.", big: "NEW", color: "saffron", link: { label: "Смотреть меню", href: "menu" } },
   { id: "tg", title: "Telegram", text: "Подпишитесь — скидки и спецпредложения первыми.", big: "TG", color: "sky", link: { label: "Подписаться", href: "https://t.me/PARTY_TIME_SPB_BOT?start=site_promo_tg" } },
@@ -116,6 +117,9 @@ export const FAQ = [
 export const GEO: Record<string, { lat: number; lon: number }> = {
   dumskaya: { lat: 59.9336, lon: 30.3271 },
   mayakovskaya: { lat: 59.9318, lon: 30.3551 },
+  // по адресу из OpenStreetMap (Nominatim), 18.10.2026
+  leninskiy: { lat: 59.8524, lon: 30.2729 },
+  komendantskiy: { lat: 60.0135, lon: 30.251 },
 };
 
 /* ---------- 12. Подвал ---------- */

@@ -7,8 +7,9 @@ import Icon from "./Icon.astro";
 import { MESSENGERS, PHONE_MAIN } from "../lib/content";
 import { tel } from "../lib/rooms";
 import { botUrl } from "../lib/bot";
+import { isPlaceholder } from "../config/offer";
 const tg = botUrl("site_hero");
-const hasMax = !!MESSENGERS.max.href;
+const hasMax = !isPlaceholder(MESSENGERS.max.href);
 ---
 <!-- телефон: нижняя панель -->
 <nav class="mbar" aria-label="Написать или позвонить" data-place="bar">

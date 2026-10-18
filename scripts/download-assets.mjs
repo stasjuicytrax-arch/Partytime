@@ -12,14 +12,19 @@ async function exists(p) { try { await access(p); return true; } catch { return 
 async function download(url, dest) {
   if (await exists(dest)) return "skip";
   await mkdir(path.dirname(dest), { recursive: true });
-  for (let i = 0; i < 3; i++) {
+  // основной адрес Tilda CDN бывает недоступен из сети — пробуем зеркала того же хранилища
+  const urls = url.includes("static.tildacdn.com/")
+    ? ["com", "one", "info", "net"].map((tld) => url.replace("static.tildacdn.com/", `static.tildacdn.${tld}/`))
+    : [url];
+  for (let i = 0; i < 3 * urls.length; i++) {
+    const u = urls[Math.floor(i / 3)];
     try {
-      const r = await fetch(url);
-      if (!r.ok) throw new Error(r.status + " " + url);
+      const r = await fetch(u, { signal: AbortSignal.timeout(20000) });
+      if (!r.ok) throw new Error(r.status + " " + u);
       await writeFile(dest, Buffer.from(await r.arrayBuffer()));
       return "ok";
     } catch (e) {
-      if (i === 2) { console.error("FAIL", url, e.message); return "fail"; }
+      if (i === 3 * urls.length - 1) { console.error("FAIL", url, e.message); return "fail"; }
       await new Promise((res) => setTimeout(res, 800));
     }
   }

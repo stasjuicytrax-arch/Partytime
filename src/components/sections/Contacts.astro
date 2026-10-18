@@ -3,15 +3,21 @@ import Icon from "../Icon.astro";
 import { activeLocations, locations, tel } from "../../lib/rooms";
 import { HOURS, GEO, PHONE_MAIN, EMAIL, MESSENGERS } from "../../lib/content";
 import { botUrl } from "../../lib/bot";
+import { isPlaceholder } from "../../config/offer";
 
 // маршрут: для активных — к точке, для новых локаций (координат пока нет) — поиск адреса на картах
 const route = (id: string, address: string) =>
   GEO[id]
     ? `https://yandex.ru/maps/?rtext=~${GEO[id].lat},${GEO[id].lon}&rtt=auto`
     : `https://yandex.ru/maps/2/saint-petersburg/?text=${encodeURIComponent("Санкт-Петербург, " + address)}`;
-const c = { lat: (GEO.dumskaya.lat + GEO.mayakovskaya.lat) / 2, lon: (GEO.dumskaya.lon + GEO.mayakovskaya.lon) / 2 };
-const pts = activeLocations.map((l, i) => `${GEO[l.id].lon},${GEO[l.id].lat},pm2${i ? "vv" : "pn"}l${i + 1}`).join("~");
-const map = `https://yandex.ru/map-widget/v1/?ll=${c.lon},${c.lat}&z=14&pt=${pts}`;
+// 4 метки с номерами, цвет — как у локации на сайте (Думская розовая, Маяковская фиолетовая, Ленинский голубой, Комендантский жёлтый)
+const pinColor: Record<string, string> = { dumskaya: "pn", mayakovskaya: "vv", leninskiy: "lb", komendantskiy: "yw" };
+const onMap = activeLocations.filter((l) => GEO[l.id]);
+const lats = onMap.map((l) => GEO[l.id].lat), lons = onMap.map((l) => GEO[l.id].lon);
+const c = { lat: (Math.min(...lats) + Math.max(...lats)) / 2, lon: (Math.min(...lons) + Math.max(...lons)) / 2 };
+const pts = onMap.map((l) => `${GEO[l.id].lon},${GEO[l.id].lat},pm2${pinColor[l.id] ?? "pn"}l${locations.indexOf(l) + 1}`).join("~");
+// весь город в кадре: от Комендантского на севере до Ленинского на юге
+const map = `https://yandex.ru/map-widget/v1/?ll=${c.lon},${c.lat}&z=11&pt=${pts}`;
 ---
 <section class="sec contacts" id="contacts" aria-labelledby="contacts-title">
   <div class="container">
@@ -48,11 +54,11 @@ const map = `https://yandex.ru/map-widget/v1/?ll=${c.lon},${c.lat}&z=14&pt=${pts
         <div class="contacts__msg">
           <a href={botUrl("site_contacts")} target="_blank" rel="noopener">Telegram</a>
           <a href={MESSENGERS.vk.href} target="_blank" rel="noopener">VK</a>
-          {MESSENGERS.max.href && <a href={MESSENGERS.max.href} target="_blank" rel="noopener">MAX</a>}
+          {!isPlaceholder(MESSENGERS.max.href) && <a href={MESSENGERS.max.href} target="_blank" rel="noopener">MAX</a>}
         </div>
       </div>
       <div class="contacts__map">
-        <iframe src={map} title="Party Time на карте: Думская и Маяковская" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <iframe src={map} title={`Party Time на карте: ${onMap.map((l) => l.name).join(", ")}`} loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
     </div>
   </div>

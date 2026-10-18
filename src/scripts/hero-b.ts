@@ -192,7 +192,7 @@ export function initHeroB(hero: HTMLElement) {
     .from(canvas, { scale: 0.3, rotate: -40, duration: 1.4, ease: "back.out(1.4)" }, 0.55)
     .from(facts, { y: 40, opacity: 0, scale: 0.9, duration: 0.9, ease: "expo.out", stagger: 0.1 }, 0.9);
 
-  // счётчик «36»
+  // счётчик «56»
   hero.querySelectorAll<HTMLElement>("[data-count-to]").forEach((el) => {
     const to = Number(el.dataset.countTo);
     const o = { v: 0 };

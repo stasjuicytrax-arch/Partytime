@@ -72,16 +72,33 @@ export function initCatalog(root: HTMLElement) {
 
   const params = new URLSearchParams(location.search);
   const state = {
-    loc: locBtns.some((b) => b.dataset.loc === params.get("loc")) ? params.get("loc")! : "dumskaya",
+    loc: locBtns.some((b) => b.dataset.loc === params.get("loc")) ? params.get("loc")! : "all",
     group: "all",
     expanded: false,
+    extra: 0, // сколько залов открыто кнопкой «Показать ещё»
   };
   const more = root.querySelector<HTMLElement>("[data-more]")!;
   const moreLabel = root.querySelector<HTMLElement>("[data-more-label]")!;
   const grid0 = root.querySelector<HTMLElement>("[data-grid]")!;
+  // фото карточек грузим, только когда сетка близко к экрану (~300px); до этого первый экран не делит сеть с ними
+  let near = false;
+  const nearIo = new IntersectionObserver(
+    (en) => {
+      if (!en.some((e) => e.isIntersecting)) return;
+      near = true;
+      nearIo.disconnect();
+      cards.filter((c) => !c.hidden).forEach(showFirst);
+    },
+    { rootMargin: "300px 0px" }
+  );
+  nearIo.observe(grid0);
   // сколько залов видно до «Показать ещё»: 2 ряда на десктопе, 4 карточки на телефоне
+  // «Показать ещё» открывает по 12 залов, а не все 50 разом
+  const MORE_STEP = 12;
   const limit = () => (matchMedia("(max-width: 767px)").matches ? 4 : matchMedia("(max-width: 1023px)").matches ? 4 : 6);
-  const matches = (el: HTMLElement) => el.dataset.loc === state.loc && (state.group === "all" || el.dataset.group === state.group);
+  // «all» — все локации сразу
+  const inLoc = (loc?: string) => state.loc === "all" || loc === state.loc;
+  const matches = (el: HTMLElement) => inLoc(el.dataset.loc) && (state.group === "all" || el.dataset.group === state.group);
 
   /* ---------- фильтры ---------- */
   function apply(animate = true) {
@@ -92,7 +109,7 @@ export function initCatalog(root: HTMLElement) {
     // счётчики в чипах — для текущей локации
     chips.forEach((c) => {
       const g = c.dataset.group!;
-      const n = cards.filter((el) => el.dataset.loc === state.loc && (g === "all" || el.dataset.group === g)).length;
+      const n = cards.filter((el) => inLoc(el.dataset.loc) && (g === "all" || el.dataset.group === g)).length;
       const out = c.querySelector<HTMLElement>("[data-count]");
       if (out) out.textContent = String(n);
       c.toggleAttribute("data-zero", n === 0);
@@ -101,15 +118,18 @@ export function initCatalog(root: HTMLElement) {
     const flipState = animate && !reduced() ? Flip.getState(cards, { props: "opacity" }) : null;
     let shown = 0;
     let visible = 0;
-    const lim = limit();
+    // сколько показать: базовый лимит + порции «Показать ещё»; хвост в 4 зала и меньше не прячем
+    const total = cards.filter(matches).length;
+    let cap = limit() + state.extra;
+    if (total - cap <= 4) cap = total;
     cards.forEach((el) => {
       const on = matches(el);
       if (on) shown++;
-      const show = on && (state.expanded || shown <= lim);
+      const show = on && (state.expanded || shown <= cap);
       el.hidden = !show;
       if (show) {
         visible++;
-        showFirst(el);
+        if (near) showFirst(el);
       }
     });
     const isNew = newLocs.some((n) => n.dataset.newloc === state.loc);
@@ -120,7 +140,10 @@ export function initCatalog(root: HTMLElement) {
     const rest = shown - visible;
     more.hidden = rest <= 0;
     grid0.classList.toggle("is-clipped", rest > 0);
-    moreLabel.textContent = `Показать ещё ${rest} ${plural(rest, ["зал", "зала", "залов"])}`;
+    // следующая порция: все оставшиеся, если после неё останется 4 и меньше
+    const step = rest - MORE_STEP <= 4 ? rest : MORE_STEP;
+    moreLabel.textContent =
+      step === rest ? `Показать ещё ${rest} ${plural(rest, ["зал", "зала", "залов"])}` : `Показать ещё ${step} из ${rest}`;
     const locName = locBtns.find((b) => b.dataset.loc === state.loc)?.querySelector(".loc__name")?.textContent;
     status.textContent = isNew ? `${locName}: подберём зал по телефону или в Telegram` : `${locName}: ${shown} ${plural(shown, ["зал", "зала", "залов"])}`;
 
@@ -143,8 +166,9 @@ export function initCatalog(root: HTMLElement) {
     b.addEventListener("click", () => {
       if (state.loc === b.dataset.loc) return;
       state.loc = b.dataset.loc!;
-      state.group = "all";
+      // фильтр по гостям сохраняем: человек уже сказал, сколько их
       state.expanded = false;
+      state.extra = 0;
       apply();
     })
   );
@@ -157,6 +181,7 @@ export function initCatalog(root: HTMLElement) {
       if (state.group === c.dataset.group) return;
       state.group = c.dataset.group!;
       state.expanded = false;
+      state.extra = 0;
       apply();
     })
   );
@@ -173,7 +198,8 @@ export function initCatalog(root: HTMLElement) {
 
   root.querySelector("[data-more-btn]")!.addEventListener("click", () => {
     const before = new Set(cards.filter((c) => !c.hidden));
-    state.expanded = true;
+    const rest = cards.filter(matches).length - cards.filter((c) => !c.hidden).length;
+    state.extra += rest - MORE_STEP <= 4 ? rest : MORE_STEP;
     apply(false);
     const fresh = cards.filter((c) => !c.hidden && !before.has(c));
     fresh[0]?.querySelector<HTMLElement>("a")?.focus({ preventScroll: true });
@@ -392,7 +418,7 @@ export function initCatalog(root: HTMLElement) {
   // порядок — как в каталоге с текущими фильтрами; если зал открыт по ссылке вне фильтра — все залы его локации
   function roomSeq(): ClientRoom[] {
     if (!current) return [];
-    const inFilter = data.filter((x) => x.loc === state.loc && (state.group === "all" || x.group === state.group));
+    const inFilter = data.filter((x) => inLoc(x.loc) && (state.group === "all" || x.group === state.group));
     return inFilter.some((x) => x.slug === current!.slug) ? inFilter : data.filter((x) => x.loc === current!.loc);
   }
   function neighbor(dir: 1 | -1) {
@@ -413,7 +439,7 @@ export function initCatalog(root: HTMLElement) {
       `<img src="${nx.images[0].src.replace("-960.", "-480.")}" alt="" width="480" height="320" loading="lazy" decoding="async">`;
     nextCard.style.setProperty("--g", `var(--c-cap-${nx.group})`);
     nextCard.querySelector<HTMLElement>("[data-next-facts]")!.innerHTML =
-      `<span>${icoGuests}${esc(nx.capacity)}</span>` + (nx.area ? `<span>${icoArea}${nx.area}&nbsp;м²</span>` : "") + `<span>от ${esc(nx.price)}</span>`;
+      `<span>${icoGuests}${esc(nx.capacity)}</span>` + (nx.area ? `<span>${icoArea}${nx.area}&nbsp;м²</span>` : "") + `<span>${esc(nx.locName)} · от ${esc(nx.price)}</span>`;
   }
   function stepRoom(dir: 1 | -1, place: string) {
     const to = neighbor(dir);
@@ -433,6 +459,7 @@ export function initCatalog(root: HTMLElement) {
     const r = bySlug.get(slug);
     if (!r) return;
     current = r;
+    dialog.style.setProperty("--locc", `var(--c-loc-${r.loc})`);
     if (!dialog.open) lastFocus = document.activeElement as HTMLElement;
     dialog.dataset.group = r.group;
     dialog.style.setProperty("--g", `var(--c-cap-${r.group})`);
@@ -584,7 +611,7 @@ export function initCatalog(root: HTMLElement) {
     const m = location.hash.match(/^#room-(.+)$/);
     if (m && bySlug.has(m[1])) {
       const r = bySlug.get(m[1])!;
-      if (r.loc !== state.loc || cards.find((c) => c.dataset.slug === r.slug)?.hidden) {
+      if (!inLoc(r.loc) || cards.find((c) => c.dataset.slug === r.slug)?.hidden) {
         state.loc = r.loc;
         state.group = "all";
         state.expanded = true;

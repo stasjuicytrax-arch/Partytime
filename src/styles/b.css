@@ -257,7 +257,7 @@ html.party .vb { animation: party 0.5s steps(1) 6; }
 .rc--b .loc { background: rgb(255 255 255 / 0.06); border: 1px solid rgb(255 255 255 / 0.18); color: var(--pt-white); }
 .rc--b .loc:not(.loc--soon):hover { border-color: var(--loc); background: rgb(255 255 255 / 0.1); }
 .rc--b .loc[aria-pressed="true"] { background: var(--loc); border-color: var(--loc); }
-.rc--b .loc[data-loc="dumskaya"][aria-pressed="true"], .rc--b .loc[data-loc="leninskiy"][aria-pressed="true"], .rc--b .loc[data-loc="komendantskiy"][aria-pressed="true"] { color: var(--pt-deep); }
+.rc--b .loc[data-loc="all"][aria-pressed="true"], .rc--b .loc[data-loc="dumskaya"][aria-pressed="true"], .rc--b .loc[data-loc="leninskiy"][aria-pressed="true"], .rc--b .loc[data-loc="komendantskiy"][aria-pressed="true"] { color: var(--pt-deep); }
 .rc--b .loc--soon { background: transparent; border: 1px dashed rgb(255 255 255 / 0.2); color: rgb(255 255 255 / 0.4); }
 .rc--b .loc__badge { background: rgb(255 255 255 / 0.1); color: rgb(255 255 255 / 0.6); }
 .rc--b .loc__tip { background: var(--pt-white); color: var(--pt-deep); }
@@ -307,7 +307,8 @@ html.party .vb { animation: party 0.5s steps(1) 6; }
 .rm--b .rm__close, .rm--b .rm__nav { background: rgb(255 255 255 / 0.12); border: 1px solid rgb(255 255 255 / 0.25); color: var(--pt-white); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
 .rm--b .rm__close:hover { background: var(--pt-white); color: var(--pt-deep); }
 .rm--b .rm__count { background: rgb(21 21 21 / 0.6); color: var(--pt-white); }
-.rm--b .rm__loc { color: var(--g); }
+/* локация — в цвете локации (как точка на карточке), а не размера зала */
+.rm--b .rm__loc { color: var(--locc, var(--g)); }
 .rm--b .rm__tagline, .rm--b .rm__text { color: rgb(255 255 255 / 0.82); }
 .rm--b .badge { background: rgb(255 255 255 / 0.08); border: 1px solid rgb(255 255 255 / 0.2); color: var(--pt-white); }
 .rm--b .badge--cap { background: var(--g); border-color: transparent; color: var(--pt-deep); }

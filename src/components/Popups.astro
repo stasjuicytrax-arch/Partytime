@@ -6,9 +6,10 @@
 // Нижняя панель мессенджеров на телефоне остаётся видна и доступна.
 import Icon from "./Icon.astro";
 import { botUrl } from "../lib/bot";
-import { OFFER } from "../config/offer";
+import { OFFER, BOT_DISCOUNT, isPlaceholder } from "../config/offer";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-const pops = [
+// пока текст скидки не утверждён (заглушка «[…]»), поп-апы со скидкой не выводим вовсе
+const pops = isPlaceholder(BOT_DISCOUNT) ? [] : [
   { id: "warm", title: OFFER.warm.title, text: OFFER.warm.text, cta: OFFER.warm.cta, href: botUrl("site_popup_tg"), icon: "gift" },
   { id: "exit", title: OFFER.exit.title, text: OFFER.exit.text, cta: OFFER.exit.cta, href: botUrl("site_exit"), icon: "star" },
 ];

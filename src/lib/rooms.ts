@@ -83,8 +83,10 @@ export const rooms: Room[] = (data.rooms as RawRoom[])
 
 export const activeLocations = locations.filter((l) => l.active);
 export const totalRooms = rooms.length;
-/** Залов во всей сети (4 локации) — подтверждено заказчиком 16.10.2026 */
-export const networkRooms = 56;
+/** Залов во всей сети — теперь все 4 локации в каталоге */
+export const networkRooms = rooms.length;
+/** «на Думской», «на Ленинском» — для текстов */
+export const locIn: Record<string, string> = { dumskaya: "на Думской", mayakovskaya: "на Маяковской", leninskiy: "на Ленинском", komendantskiy: "на Комендантском" };
 export const minPrice = Math.min(...rooms.map((r) => r.price));
 
 /** «1 550 ₽» с неразрывными пробелами (Intl ru не группирует 4-значные числа) */
@@ -97,7 +99,7 @@ export function capacityLabel(r: Room) {
 
 export function roomAlt(r: Room, i = 0) {
   return i === 0
-    ? `Зал «${r.title}» на ${r.loc === "dumskaya" ? "Думской" : "Маяковской"}: ${r.tagline.toLowerCase()}`
+    ? `Зал «${r.title}», ${r.locName}: ${r.tagline.toLowerCase()}`
     : `Зал «${r.title}», фото ${i + 1}`;
 }
 

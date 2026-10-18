@@ -22,12 +22,15 @@ interface Props {
   variant: "a" | "b";
 }
 const { variant } = Astro.props;
-const DEFAULT_LOC = "dumskaya";
-const countIn = (loc: string, g?: string) => rooms.filter((r) => r.loc === loc && (!g || r.group === g)).length;
+// по умолчанию — все локации сразу
+const DEFAULT_LOC = "all";
+const countIn = (loc: string, g?: string) => rooms.filter((r) => (loc === "all" || r.loc === loc) && (!g || r.group === g)).length;
+const activeLocs = locations.filter((l) => l.active);
 // карточка 4:5, а фото 3:2 — при object-fit: cover картинка шире карточки в ~1.9 раза
 // (на телефоне карточка 5:4 — в ~1.2 раза); sizes считаем по реальной ширине фото, иначе браузер берёт мелкую версию
-// сразу грузим только первое фото первых 6 залов локации по умолчанию, остальные — когда карточка покажется
-const eager = new Set(rooms.filter((r) => r.loc === DEFAULT_LOC).slice(0, 6).map((r) => r.slug));
+// каталог ниже первого экрана: при загрузке не тянем ни одного фото залов — адреса подставляет скрипт,
+// когда до сетки остаётся ~300px прокрутки (catalog.ts, near). Так первый экран открывается быстрее.
+const eager = new Set<string>();
 const sizes = "(max-width: 559px) 112vw, (max-width: 767px) 56vw, (max-width: 1023px) 86vw, (max-width: 1439px) 58vw, 825px";
 ---
 <section id="rooms" class={`rc rc--${variant}`} aria-labelledby="rooms-title" data-catalog>
@@ -40,15 +43,19 @@ const sizes = "(max-width: 559px) 112vw, (max-width: 767px) 56vw, (max-width: 10
         <span class="w-mark"><span>зал</span></span>
       </h2>
       <p class="rc__lead">
-        {totalRooms} тематических миров на&nbsp;Думской и&nbsp;Маяковской. Выберите локацию и&nbsp;размер компании.
+        {totalRooms} тематических миров на&nbsp;{locations.filter((l) => l.active).length}&nbsp;локациях. Выберите локацию и&nbsp;размер компании.
       </p>
     </header>
 
     <div class="rc__controls">
       <div class="rc__scroll" data-scroll-hint>
       <div class="rc__locs" role="group" aria-label="Локация">
+        <button type="button" class="loc loc--all" data-loc="all" aria-pressed={DEFAULT_LOC === "all" ? "true" : "false"} style="--loc: var(--pt-lime)">
+          <span class="loc__name">Все локации</span>
+          <span class="loc__meta">{rooms.length} залов · {activeLocs.length}&nbsp;адреса</span>
+        </button>
         {
-          locations.map((l) => (
+          activeLocs.map((l) => (
             <button
               type="button"
               class="loc"
@@ -57,7 +64,7 @@ const sizes = "(max-width: 559px) 112vw, (max-width: 767px) 56vw, (max-width: 10
               style={`--loc: var(--c-loc-${l.id})`}
             >
               <span class="loc__name">{l.name}</span>
-              <span class="loc__meta">{l.active ? `${l.rooms} залов · ${l.address}` : l.address}</span>
+              <span class="loc__meta">{countIn(l.id)} залов · {l.address}</span>
             </button>
           ))
         }
@@ -92,7 +99,7 @@ const sizes = "(max-width: 559px) 112vw, (max-width: 767px) 56vw, (max-width: 10
             data-loc={r.loc}
             data-group={r.group}
             data-slug={r.slug}
-            hidden={r.loc !== DEFAULT_LOC}
+            hidden={DEFAULT_LOC === "all" ? i >= 6 : r.loc !== DEFAULT_LOC}
             style={`--g: ${groupById[r.group].color}; --tilt: ${[-1, 0.6, -0.4, 1, -0.8, 0.3][i % 6]}deg`}
           >
             <a class="card__link" href={`#room-${r.slug}`}>
@@ -132,6 +139,7 @@ const sizes = "(max-width: 559px) 112vw, (max-width: 767px) 56vw, (max-width: 10
                 </span>
               </div>
               <div class="card__body">
+                <p class="card__loc" style={`--loc: var(--c-loc-${r.loc})`}>{r.locName}</p>
                 <h3 class="card__title">{r.title}</h3>
                 <p class="card__tag">{r.tagline}</p>
               </div>
@@ -148,24 +156,8 @@ const sizes = "(max-width: 559px) 112vw, (max-width: 767px) 56vw, (max-width: 10
       </button>
     </div>
 
-    <!-- локации, залы которых ещё не в каталоге: адрес и быстрый контакт [уточнить: список залов] -->
-    {locations.filter((l) => !l.active).map((l) => (
-      <div class="rc__newloc" data-newloc={l.id} data-place={`rooms_${l.id}`} hidden style={`--loc: var(--c-loc-${l.id})`}>
-        <div class="rc__newloc-text">
-          <p class="rc__newloc-name">{l.name}</p>
-          <p class="rc__newloc-addr">{l.address} · м.&nbsp;{l.metro}</p>
-          <p>Подберём зал на&nbsp;{l.name === "Ленинский" ? "Ленинском" : "Комендантском"} под вашу компанию&nbsp;— напишите в&nbsp;Telegram или позвоните.</p>
-        </div>
-        <div class="rc__newloc-cta">
-          <a class="btn btn--primary" href={botUrl(`site_rooms_${l.id}`)} target="_blank" rel="noopener"><span>Подобрать зал в&nbsp;Telegram</span><span class="btn__ico"><Icon name="arrow" size={18} /></span></a>
-          <a class="btn btn--ghost num" href={tel(PHONE_MAIN)}><Icon name="phone" size={18} />{PHONE_MAIN}</a>
-          <a class="rc__newloc-book" href="#booking" data-newloc-book={l.id}>Оставить заявку на&nbsp;этой локации →</a>
-        </div>
-      </div>
-    ))}
-
     <div class="rc__empty" data-empty hidden>
-      <p>На&nbsp;этой локации нет залов для такой компании.</p>
+      <p>Под такую компанию здесь залов нет&nbsp;— посмотрите все размеры.</p>
       <button type="button" class="chip" data-reset>Показать все залы</button>
     </div>
   </div>

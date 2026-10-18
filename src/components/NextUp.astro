@@ -27,8 +27,9 @@ const { class: cls } = Astro.props;
 
 <script>
   const out = document.querySelector<HTMLElement>("[data-pick]");
+  const inLoc: Record<string, string> = { Думская: "на Думской", Маяковская: "на Маяковской", Ленинский: "на Ленинском", Комендантский: "на Комендантском" };
   const show = (title?: string, locName?: string) => {
-    if (out && title) out.textContent = `Вы выбрали зал «${title}»${locName ? ` на ${locName === "Думская" ? "Думской" : "Маяковской"}` : ""} — передадим его в форму.`;
+    if (out && title) out.textContent = `Вы выбрали зал «${title}»${locName ? ` ${inLoc[locName as string] ?? `(${locName})`}` : ""} — передадим его в форму.`;
   };
   window.addEventListener("pt:booking", (e) => {
     const d = (e as CustomEvent).detail;
