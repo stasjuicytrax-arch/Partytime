@@ -208,7 +208,10 @@ body:has(.hdr:not(.is-hidden)) .mnav { top: 80px; }
 .mcard__parts b { flex: none; color: var(--c); }
 
 @media (max-width: 767px) {
-  .mtabs { margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter); }
-  .mtabs__btn { min-height: 40px; padding: 0 14px; }
+  /* телефон: все пять вкладок в одну строку без прокрутки — делят ширину, длинная подпись переносится */
+  .mtabs { display: grid; grid-template-columns: repeat(5, auto); justify-content: space-between; gap: 2px; overflow: visible; }
+  .mtabs__btn[aria-selected="true"] { padding-inline: 9px; }
+  /* переносится только по пробелу («Б/а / напитки»), слова не рвутся; кегль растёт с шириной экрана */
+  .mtabs__btn { min-width: 0; min-height: 44px; padding: 4px 5px; font-size: clamp(0.5625rem, 2.85vw, 0.8125rem); line-height: 1.05; white-space: normal; text-align: center; overflow-wrap: normal; word-break: keep-all; hyphens: none; }
   .menu-page [id] { scroll-margin-top: 190px; }
 }
