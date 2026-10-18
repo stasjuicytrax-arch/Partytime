@@ -1,13 +1,16 @@
 ---
-// Меню «Кухня & Бар»: позиции и цены — из content/menu.json (барная карта v2, разобрана из вёрстки).
+// Меню «Кухня & Бар»: вкладки Кухня · Бар · Пиво · Б/а напитки · Кальяны.
+// Бар — content/menu.json (барная карта v2), остальное — content/menu-extra.json (со старого сайта).
 // Оформление — в мире варианта B «Ночной лофт». Ничего не добавляем сверх данных меню.
 import Base from "../layouts/Base.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import Footer from "../components/sections/Footer.astro";
 import Messengers from "../components/Messengers.astro";
 import Icon from "../components/Icon.astro";
+import MenuPanel, { type XSection } from "../components/MenuPanel.astro";
 import menu from "../../content/menu.json";
-import { PHONE_MAIN, tel, rub } from "../lib/rooms";
+import extra from "../../content/menu-extra.json";
+import { rub } from "../lib/rooms";
 import { botUrl } from "../lib/bot";
 import "../styles/components.css";
 import "../styles/b.css";
@@ -21,6 +24,35 @@ type Item = Record<string, any>;
 type Group = { title: string | null; note: string | null; kind: string; items: Item[]; cols?: string[]; promo?: { badge: string; label: string } };
 type Section = { id: string; title: string; lead: string | null; groups: Group[] };
 const sections = menu.sections as Section[];
+
+// вкладки со старого сайта: разделам — свои id и цвета по кругу из палитры бренда
+const palette = ["saffron", "sky", "pink", "lime", "violet", "green"];
+const xTabs = (extra.tabs as any[]).map((t) => ({
+  id: t.id as string,
+  title: t.title as string,
+  sections: t.sections.map((s: any, i: number) => ({
+    ...s,
+    id: `${t.id}-${i + 1}`,
+    color: palette[i % palette.length],
+    cards: s.groups.some((g: any) => g.items.some((it: any) => it.badge || it.parts)),
+  })) as XSection[],
+}));
+const xTab = (id: string) => xTabs.find((t) => t.id === id)!;
+const xMin = (s: XSection) => Math.min(...s.groups.flatMap((g) => g.items.flatMap((i) => i.prices.map((p) => p.price))));
+// порядок вкладок как на старом сайте; по умолчанию — кухня
+const TABS = [
+  { id: "kitchen", title: "Кухня" },
+  { id: "bar", title: "Бар" },
+  { id: "beer", title: "Пиво" },
+  { id: "drinks", title: "Б/а напитки" },
+  { id: "hookahs", title: "Кальяны" },
+];
+const DEFAULT_TAB = "kitchen";
+// разделы вкладки для полосы навигации: id, название, цвет, «от N ₽»
+const chipsOf = (id: string) =>
+  id === "bar"
+    ? sections.map((s) => ({ id: s.id, title: s.title, color: color[s.id], min: minOf(s) }))
+    : xTab(id).sections.map((s) => ({ id: s.id, title: s.title, color: s.color, min: xMin(s) }));
 
 // цвет раздела — из палитры бренда
 const color: Record<string, string> = { group: "lime", longs: "sky", shots: "pink", spirits: "saffron", wine: "violet", cider: "green" };
@@ -39,8 +71,8 @@ const lead = (s: Section) =>
 const priceHtml = (n: number) => rub(n).replace(" ₽", "&nbsp;₽");
 ---
 <Base
-  title="Барная карта — Party Time"
-  description="Коктейли, сеты и пунши на компанию, шоты, крепкое бутылкой или порцией, вино и сидр. Цены бара Party Time."
+  title="Меню: кухня, бар, кальяны — Party Time"
+  description="Меню Party Time: горячие закуски, римская пицца, сеты, коктейли и крепкое, пиво, безалкогольные напитки и кальяны. Цены."
   bodyClass="vb menu-page"
 >
   <SiteHeader variant="b" home={false} />
@@ -48,25 +80,35 @@ const priceHtml = (n: number) => rub(n).replace(" ₽", "&nbsp;₽");
     <section class="mh" aria-labelledby="mh-title">
       <div class="container mh__in">
         <p class="sec__label">Кухня &amp; Бар</p>
-        <h1 id="mh-title" class="mh__title">Барная <span>карта</span></h1>
-        <p class="mh__lead">От сета шотов на&nbsp;весь стол до&nbsp;бокала на&nbsp;одного.</p>
-        <p class="mh__kitchen">
-          Меню кухни расскажет менеджер:
-          <a class="num" href={tel(PHONE_MAIN)}>{PHONE_MAIN}</a> или <a href={botUrl("site_menu_kitchen")} target="_blank" rel="noopener">в&nbsp;Telegram</a>.
-        </p>
+        <h1 id="mh-title" class="mh__title">Кухня <span>и&nbsp;бар</span></h1>
+        <p class="mh__lead">Закуски, пицца, коктейли, лимонады и&nbsp;кальяны&nbsp;— всё на&nbsp;одной странице.</p>
         {menu.hero.map((f, i) => <img class={`mh__cut mh__cut--${i + 1}`} src={img(f)} alt="" width="240" height="340" decoding="async" />)}
       </div>
     </section>
 
-    <nav class="mnav" aria-label="Разделы меню" data-mnav>
-      <div class="container mnav__in">
-        {sections.map((s) => (
-          <a href={`#${s.id}`} style={`--c: var(--pt-${color[s.id]})`} data-mnav-link={s.id}>
-            {s.title}<b class="num">от&nbsp;<Fragment set:html={priceHtml(minOf(s))} /></b>
-          </a>
-        ))}
+    <div id="menu-top"></div>
+    <nav class="mnav" aria-label="Меню" data-mnav>
+      <div class="container">
+        <div class="mtabs" role="tablist" aria-label="Разделы меню">
+          {TABS.map((t) => (
+            <button type="button" class="mtabs__btn" role="tab" id={`tab-${t.id}`} aria-controls={`panel-${t.id}`} aria-selected={t.id === DEFAULT_TAB ? "true" : "false"} tabindex={t.id === DEFAULT_TAB ? 0 : -1} data-tab={t.id}>{t.title}</button>
+          ))}
+        </div>
       </div>
+      {TABS.map((t) => (
+        <div class="container mnav__in" data-chips={t.id} hidden={t.id !== DEFAULT_TAB}>
+          {chipsOf(t.id).map((c) => (
+            <a href={`#${c.id}`} style={`--c: var(--pt-${c.color})`} data-mnav-link={c.id}>
+              {c.title}<b class="num">от&nbsp;<Fragment set:html={priceHtml(c.min)} /></b>
+            </a>
+          ))}
+        </div>
+      ))}
     </nav>
+
+    <MenuPanel tab={xTab("kitchen")} hidden={DEFAULT_TAB !== "kitchen"} />
+
+    <div class="mpanel" id="panel-bar" role="tabpanel" aria-labelledby="tab-bar" data-panel="bar" hidden={DEFAULT_TAB !== "bar"}>
 
     {sections.map((s) => (
       <section class={`ms ms--${s.groups[0]?.kind}`} id={s.id} aria-labelledby={`${s.id}-t`} style={`--c: var(--pt-${color[s.id]})`} data-place={`menu_${s.id}`}>
@@ -176,10 +218,15 @@ const priceHtml = (n: number) => rub(n).replace(" ₽", "&nbsp;₽");
         </div>
       </section>
     ))}
+    </div>
+
+    <MenuPanel tab={xTab("beer")} hidden={DEFAULT_TAB !== "beer"} />
+    <MenuPanel tab={xTab("drinks")} hidden={DEFAULT_TAB !== "drinks"} />
+    <MenuPanel tab={xTab("hookahs")} hidden={DEFAULT_TAB !== "hookahs"} />
 
     <section class="mcta" aria-labelledby="mcta-t" data-place="menu_cta">
       <div class="container mcta__in">
-        <h2 id="mcta-t" class="mcta__title">Бар ждёт <span>вашу компанию</span></h2>
+        <h2 id="mcta-t" class="mcta__title">Ждём <span>вашу компанию</span></h2>
         <div class="mcta__row">
           <a class="btn btn--primary" href={`${base}/#booking`}><span>Забронировать зал</span><span class="btn__ico"><Icon name="arrow" size={20} /></span></a>
           <a class="btn mcta__tg" href={botUrl("site_menu")} target="_blank" rel="noopener"><span>Спросить в&nbsp;Telegram</span></a>
@@ -198,19 +245,75 @@ const priceHtml = (n: number) => rub(n).replace(" ₽", "&nbsp;₽");
 
   // активный раздел подсвечивается в полосе разделов, полоса докручивается до него
   const links = [...document.querySelectorAll<HTMLAnchorElement>("[data-mnav-link]")];
-  const bar = document.querySelector<HTMLElement>(".mnav__in");
   const setActive = (id: string) => {
     links.forEach((a) => {
       const on = a.dataset.mnavLink === id;
       a.toggleAttribute("aria-current", on);
-      if (on && bar) bar.scrollTo({ left: a.offsetLeft - 16, behavior: "smooth" });
+      const row = a.parentElement as HTMLElement;
+      if (on && !row.hidden) scrollIntoRow(row, a);
     });
+  };
+  // докрутить полосу так, чтобы элемент встал у её левого отступа (у первого — ровно в начало)
+  const scrollIntoRow = (row: HTMLElement, el: HTMLElement) => {
+    const pad = parseFloat(getComputedStyle(row).paddingLeft) || 0;
+    row.scrollTo({ left: Math.max(0, el.offsetLeft - row.offsetLeft - pad), behavior: "smooth" });
+  };
+
+  /* ---------- вкладки: Кухня · Бар · Пиво · Б/а напитки · Кальяны ---------- */
+  const tabs = [...document.querySelectorAll<HTMLButtonElement>("[data-tab]")];
+  const panels = [...document.querySelectorAll<HTMLElement>("[data-panel]")];
+  const chipRows = [...document.querySelectorAll<HTMLElement>("[data-chips]")];
+  const top = document.getElementById("menu-top")!;
+  let current = tabs.find((t) => t.getAttribute("aria-selected") === "true")?.dataset.tab ?? "kitchen";
+  function activate(id: string, opts: { scroll?: boolean; hash?: boolean } = {}) {
+    current = id;
+    tabs.forEach((t) => {
+      const on = t.dataset.tab === id;
+      t.setAttribute("aria-selected", String(on));
+      t.tabIndex = on ? 0 : -1;
+      // на телефоне вкладки не влезают в строку — выбранная всегда в кадре
+      if (on) {
+        const bar = t.parentElement as HTMLElement;
+        const r = t.getBoundingClientRect(), b = bar.getBoundingClientRect();
+        if (r.left < b.left || r.right > b.right) scrollIntoRow(bar, t);
+      }
+    });
+    panels.forEach((p) => (p.hidden = p.dataset.panel !== id));
+    chipRows.forEach((r) => (r.hidden = r.dataset.chips !== id));
+    links.forEach((a) => a.removeAttribute("aria-current"));
+    if (opts.hash !== false) history.replaceState(null, "", `#${id}`);
+    // к началу меню, если ушли ниже полосы вкладок
+    if (opts.scroll && top.getBoundingClientRect().top < 0) top.scrollIntoView({ behavior: "auto" });
+  }
+  tabs.forEach((t) => t.addEventListener("click", () => t.dataset.tab !== current && activate(t.dataset.tab!, { scroll: true })));
+  // стрелки влево/вправо — по вкладкам
+  document.querySelector(".mtabs")?.addEventListener("keydown", (e) => {
+    const k = (e as KeyboardEvent).key;
+    if (k !== "ArrowLeft" && k !== "ArrowRight") return;
+    const i = tabs.findIndex((t) => t.dataset.tab === current);
+    const nx = tabs[(i + (k === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length];
+    nx.focus();
+    activate(nx.dataset.tab!, { scroll: true });
+  });
+  // ссылка вида /menu#bar или /menu#hookahs-2 открывает нужную вкладку
+  const fromHash = () => {
+    const h = decodeURIComponent(location.hash.slice(1));
+    if (!h) return;
+    if (tabs.some((t) => t.dataset.tab === h)) return activate(h, { hash: false });
+    const el = document.getElementById(h);
+    const panel = el?.closest<HTMLElement>("[data-panel]");
+    if (panel) {
+      activate(panel.dataset.panel!, { hash: false });
+      requestAnimationFrame(() => el!.scrollIntoView());
+    }
   };
   const io = new IntersectionObserver(
     (en) => en.forEach((e) => e.isIntersecting && setActive((e.target as HTMLElement).id)),
     { rootMargin: "-45% 0px -50% 0px" }
   );
   document.querySelectorAll<HTMLElement>("section.ms").forEach((s) => io.observe(s));
+  fromHash();
+  addEventListener("hashchange", fromHash);
 
   // падающие буквы в подвале — как на главной, лениво
   const stage = document.querySelector<HTMLElement>("[data-letters]");

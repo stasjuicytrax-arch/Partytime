@@ -185,8 +185,7 @@
 | `site_contacts` | кнопка Telegram в секции «Контакты» |
 | `site_footer` | ссылка Telegram в подвале |
 | `site_promo_tg` | купон «Telegram» в секции «Акции» |
-| `site_menu` | страница меню `/menu`: кнопка «Спросить в Telegram» внизу; плавающая кнопка и нижняя панель там же — по разделу (`site_group`, `site_longs`, `site_shots`, `site_spirits`, `site_wine`, `site_cider`) |
-| `site_menu_kitchen` | страница меню: ссылка «в Telegram» в строке про меню кухни |
+| `site_menu` | страница меню `/menu` (вкладки Кухня · Бар · Пиво · Б/а напитки · Кальяны): кнопка «Спросить в Telegram» внизу; плавающая кнопка и нижняя панель там же — по разделу (бар: `site_group`, `site_longs`, `site_shots`, `site_spirits`, `site_wine`, `site_cider`; остальные вкладки: `site_kitchen_1`…, `site_beer_1`, `site_drinks_1`…, `site_hookahs_1`…) |
 
 Полный список slug залов — `content/rooms.json` (поле `slug`).
 

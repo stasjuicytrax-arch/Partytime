@@ -2,7 +2,7 @@
    Цена всегда в одном взгляде от названия; декор — в заголовках разделов, не в строках с ценами. */
 
 .menu-page { background: var(--pt-deep); }
-.menu-page [id] { scroll-margin-top: 150px; }
+.menu-page [id] { scroll-margin-top: 210px; }
 
 /* ---------- обложка ---------- */
 .mh { position: relative; overflow: hidden; padding: clamp(128px, 14vw, 180px) 0 clamp(36px, 5vw, 64px); color: var(--pt-white); }
@@ -148,7 +148,7 @@ body:has(.hdr:not(.is-hidden)) .mnav { top: 80px; }
   body:has(.hdr:not(.is-hidden)) .mnav { top: 72px; }
 }
 @media (max-width: 767px) {
-  .menu-page [id] { scroll-margin-top: 130px; }
+  .menu-page [id] { scroll-margin-top: 190px; }
   .mh__cut--1 { display: none; }
   .mh__cut--2 { top: auto; bottom: 8px; width: 92px; opacity: 0.9; }
   .mh__lead { max-width: 22ch; }
@@ -160,4 +160,55 @@ body:has(.hdr:not(.is-hidden)) .mnav { top: 80px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .mnav { transition: none; }
+}
+
+/* ---------- вкладки меню: Кухня · Бар · Пиво · Б/а напитки · Кальяны ---------- */
+.mnav { padding: 10px 0 8px; }
+.mnav .mnav__in { margin-top: 8px; }
+.mnav .mnav__in[hidden] { display: none; }
+.mtabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+.mtabs::-webkit-scrollbar { display: none; }
+.mtabs__btn {
+  flex: none;
+  min-height: 46px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: none;
+  color: rgb(255 255 255 / 0.62);
+  font: 900 clamp(0.875rem, 1.2vw, 1rem) / 1 var(--font-display);
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: color var(--dur-fast), background-color var(--dur-fast);
+}
+.mtabs__btn:hover { color: var(--pt-white); }
+.mtabs__btn[aria-selected="true"] { background: var(--pt-white); color: var(--pt-deep); }
+.mpanel[hidden] { display: none; }
+body:has(.hdr:not(.is-hidden)) .mnav { top: 80px; }
+
+/* подписи раздела: «Рекомендуем» над заголовком, «предзаказ за 2 дня» под ним */
+.ms__kicker { font: 700 0.75rem / 1 var(--font-text); letter-spacing: 0.1em; text-transform: uppercase; color: var(--c); }
+.ms__note { justify-self: start; padding: 7px 12px; border-radius: var(--r-pill); background: rgb(255 255 255 / 0.08); font: 600 0.8125rem / 1 var(--font-text); }
+
+/* один список без подгрупп — в две колонки на широком экране */
+.ms__groups--one { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 1024px) {
+  .ms__groups--one .mrows { display: block; columns: 2; column-gap: 48px; }
+  .ms__groups--one .mrow { break-inside: avoid; }
+  .ms__groups--one .mrow:first-child { padding-top: 12px; border-top: 1px solid rgb(255 255 255 / 0.08); }
+}
+.mrow__name .mtab__abv { margin-left: 8px; }
+
+/* комбо и сеты: старая цена, значок, состав */
+.mcard__price s { font: 700 0.875rem / 1 var(--font-display); opacity: 0.55; }
+.mcard__chips .is-badge { border-color: transparent; background: var(--c); color: var(--pt-deep); font-weight: 800; }
+.mcard__parts { display: grid; gap: 6px; margin-top: 2px; }
+.mcard__parts li { display: flex; justify-content: space-between; gap: 12px; padding-bottom: 6px; border-bottom: 1px dashed rgb(255 255 255 / 0.12); font-size: var(--fs-small); color: rgb(255 255 255 / 0.82); }
+.mcard__parts b { flex: none; color: var(--c); }
+
+@media (max-width: 767px) {
+  .mtabs { margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter); }
+  .mtabs__btn { min-height: 40px; padding: 0 14px; }
+  .menu-page [id] { scroll-margin-top: 190px; }
 }

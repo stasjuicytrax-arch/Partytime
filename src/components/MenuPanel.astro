@@ -1,0 +1,100 @@
+---
+// Вкладка меню из content/menu-extra.json (кухня, пиво, б/а напитки, кальяны — со старого сайта).
+// Сеты и комбо — карточками с ценой-наклейкой, остальное — панелями «название … цена».
+import { rub } from "../lib/rooms";
+
+export type XItem = {
+  name: string;
+  desc: string | null;
+  prices: { price: number; vol: string | null }[];
+  old?: number | null;
+  badge?: string | null;
+  abv?: string | null;
+  meta?: string[];
+  parts?: { name: string; qty: string | null }[];
+};
+export type XSection = {
+  id: string;
+  title: string;
+  kicker: string | null;
+  note: string | null;
+  color: string;
+  cards: boolean;
+  groups: { title: string | null; items: XItem[] }[];
+};
+interface Props {
+  tab: { id: string; title: string; sections: XSection[] };
+  hidden: boolean;
+}
+const { tab, hidden } = Astro.props;
+const priceHtml = (n: number) => rub(n).replace(" ₽", "&nbsp;₽");
+---
+<div class="mpanel" id={`panel-${tab.id}`} role="tabpanel" aria-labelledby={`tab-${tab.id}`} data-panel={tab.id} hidden={hidden}>
+  {tab.sections.map((s) => (
+    <section class="ms" id={s.id} aria-labelledby={`${s.id}-t`} style={`--c: var(--pt-${s.color})`} data-place={`menu_${s.id.replace(/-/g, "_")}`}>
+      <div class="container">
+        <header class="ms__head">
+          {s.kicker && <p class="ms__kicker">{s.kicker}</p>}
+          <h2 id={`${s.id}-t`} class="ms__title">{s.title}</h2>
+          {s.note && <p class="ms__note">{s.note}</p>}
+        </header>
+
+        {s.cards ? (
+          <div class="mcards">
+            {s.groups.flatMap((g) => g.items).map((i) => (
+              <article class="mcard">
+                <p class="mcard__price">
+                  {i.old && <s class="num" set:html={priceHtml(i.old)} />}
+                  <b class="num" set:html={priceHtml(i.prices[0].price)} />
+                  {i.prices[0].vol && <span>{i.prices[0].vol}</span>}
+                </p>
+                <h3 class="mcard__name">{i.name}</h3>
+                {(i.badge || i.meta?.length) && (
+                  <p class="mcard__chips">
+                    {i.badge && <span class="is-badge">{i.badge}</span>}
+                    {i.meta?.map((m) => <span>{m}</span>)}
+                  </p>
+                )}
+                {i.desc && <p class="mcard__desc">{i.desc}</p>}
+                {i.parts && (
+                  <ul class="mcard__parts" role="list">
+                    {i.parts.map((p) => <li><span>{p.name}</span><b class="num">{p.qty}</b></li>)}
+                  </ul>
+                )}
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div class={`ms__groups ms__groups--rows${s.groups.length === 1 ? " ms__groups--one" : ""}`}>
+            {s.groups.map((g) => (
+              <div class="mg mg--rows">
+                {g.title && <h3 class="mg__title">{g.title}</h3>}
+                <ul class="mrows" role="list">
+                  {g.items.map((i) => {
+                    const one = i.prices.length === 1;
+                    const vol = one ? i.prices[0].vol : null;
+                    return (
+                      <li class="mrow">
+                        <div class="mrow__l">
+                          <p class="mrow__name">{i.name}{i.abv && <span class="mtab__abv">{i.abv}</span>}</p>
+                          {(i.desc || vol) && <p class="mrow__meta">{i.desc} {vol && <span class="num">{vol}</span>}</p>}
+                        </div>
+                        {one ? (
+                          <p class="mrow__price num" set:html={priceHtml(i.prices[0].price)} />
+                        ) : (
+                          <p class="mwine__pills">
+                            {i.prices.map((p) => <span class="num"><i>{p.vol}</i><Fragment set:html={priceHtml(p.price)} /></span>)}
+                          </p>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  ))}
+</div>
