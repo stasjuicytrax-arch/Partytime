@@ -1,0 +1,72 @@
+---
+// Спокойный светлый вариант для гостя 35+ (для фокус-группы и A/B-теста с главной).
+// Те же блоки, данные, форма и мессенджеры, что на главной; отличаются только оформление и эффекты:
+// без 3D-шара, падающих букв, «жидких» фото и магнитного курсора. Остались бегущая строка и мягкие появления.
+import Base from "../layouts/Base.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import HeroClassic from "../components/classic/HeroClassic.astro";
+import Marquee from "../components/Marquee.astro";
+import RoomCatalog from "../components/RoomCatalog.astro";
+import Why from "../components/sections/Why.astro";
+import Formats from "../components/sections/Formats.astro";
+import Services from "../components/sections/Services.astro";
+import Promos from "../components/sections/Promos.astro";
+import Reviews from "../components/sections/Reviews.astro";
+import Booking from "../components/sections/Booking.astro";
+import Faq from "../components/sections/Faq.astro";
+import Contacts from "../components/sections/Contacts.astro";
+import Footer from "../components/sections/Footer.astro";
+import Messengers from "../components/Messengers.astro";
+import Popups from "../components/Popups.astro";
+import "../styles/components.css";
+import "../styles/sections.css";
+import "../styles/classic.css";
+
+// тестовая копия главной (фокус-группа, A/B): noindex — поисковики не сочтут её дублем
+const strip = ["Караоке", "Своя кухня", "Авторский бар", "PS5 и Nintendo Switch", "Без пробкового сбора", "До 06:00", "Только свои"];
+---
+<Base theme="#FAF8F4" favicon="blue" bodyClass="vc" noindex>
+  <SiteHeader variant="c" />
+  <main id="main" tabindex="-1">
+    <HeroClassic />
+    <div class="mc marquee">
+      <p class="visually-hidden">{strip.join(", ")}</p>
+      <div aria-hidden="true">
+        <Marquee items={strip} speed={70} />
+      </div>
+    </div>
+    <RoomCatalog variant="c" />
+    <Why />
+    <Formats />
+    <Services />
+    <Promos />
+    <Reviews />
+    <Booking />
+    <Faq />
+    <Contacts />
+  </main>
+  <Footer />
+  <Messengers />
+  <Popups />
+</Base>
+
+<script>
+  import { initSmoothScroll, initMarquee } from "../scripts/motion";
+  import { initReveals, initClock, initFormats, initServices, initCoupons, initFaq } from "../scripts/sections";
+  import { initBooking } from "../scripts/booking";
+  initSmoothScroll();
+  initMarquee();
+  const idle = (fn: () => void) => ("requestIdleCallback" in window ? requestIdleCallback(fn, { timeout: 2000 }) : setTimeout(fn, 800));
+  const initSections = () => {
+    initReveals();
+    initClock();
+    initFormats();
+    initServices();
+    initCoupons();
+    initFaq();
+    initBooking(document.querySelector<HTMLElement>("[data-booking]")!);
+  };
+  if (matchMedia("(pointer: coarse)").matches) {
+    document.readyState === "complete" ? idle(initSections) : addEventListener("load", () => idle(initSections), { once: true });
+  } else initSections();
+</script>

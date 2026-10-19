@@ -1,0 +1,243 @@
+/* ===== Вариант «Классика» (/classic): светлый и спокойный, для гостя 35+ =====
+   Та же структура и те же блоки, что на главной. Тёплый светлый фон, белые карточки с тонкой рамкой
+   и мягкой тенью, заголовки обычным регистром. Лайм бренда — только на главных кнопках,
+   фиолетовый — ссылки и акценты. Без неона, свечений и жёстких теней. */
+.vc {
+  --c-bg: #FAF8F4;
+  --c-soft: #F3EFE7;
+  --c-card: #FFFFFF;
+  --c-ink: #1F1E1C;
+  --c-muted: #5D5A54;
+  --c-line: #E5E0D5;
+  --c-accent: #5B3FE0; /* фиолетовый бренда, чуть темнее — для читаемого текста на светлом */
+  --c-shadow: 0 1px 2px rgb(31 30 28 / 0.05), 0 12px 32px -18px rgb(31 30 28 / 0.22);
+  --hint-bg: var(--c-bg);
+  background: var(--c-bg);
+  color: var(--c-ink);
+  scrollbar-color: #C9C3B6 var(--c-bg);
+}
+.vc ::selection { background: var(--pt-lime); color: var(--c-ink); }
+
+/* ---------- кнопки ---------- */
+.vc .btn--primary { box-shadow: 0 6px 20px -10px rgb(31 30 28 / 0.35); border-color: var(--pt-lime); }
+.vc .btn--primary:hover { box-shadow: 0 12px 28px -12px rgb(31 30 28 / 0.4); translate: 0 -1px; }
+.vc .btn--primary:active { box-shadow: none; translate: 0 1px; }
+.vc .btn--ghost { color: var(--c-ink); border: 1.5px solid rgb(31 30 28 / 0.35); }
+.vc .btn--ghost:hover { background: var(--c-ink); color: #fff; border-color: var(--c-ink); }
+
+/* ---------- шапка ---------- */
+.hdr--c { color: var(--c-ink); transition: background-color var(--dur-base), box-shadow var(--dur-base), translate var(--dur-base) var(--ease-out); }
+.hdr--c.is-hidden { translate: 0 -110%; }
+.hdr--c.is-scrolled { background: rgb(250 248 244 / 0.92); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 1px 0 var(--c-line); }
+.hdr--c .hdr__bar { min-height: 80px; }
+.hdr--c .hdr__nav a:hover { color: var(--c-accent); }
+.hdr--c .hdr__burger { background: #fff; border: 1px solid var(--c-line); color: var(--c-ink); }
+.hdr--c .hdr__menu[data-open] { background: var(--c-bg); color: var(--c-ink); }
+.hdr--c .hdr__menu nav a { text-transform: none; font-weight: 700; letter-spacing: -0.02em; }
+.hdr--c .hdr__menu-close { background: #fff; border: 1px solid var(--c-line); }
+
+/* ---------- первый экран ---------- */
+.hc { padding: 128px 0 clamp(48px, 6vw, 88px); }
+.hc__inner { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(32px, 5vw, 80px); align-items: center; }
+.hc__copy { display: grid; gap: 24px; justify-items: start; }
+.hc__title { font: 700 clamp(2.75rem, 5.6vw, 5rem) / 1.02 var(--font-display); letter-spacing: -0.035em; text-wrap: balance; }
+.hc__lead { max-width: 36ch; font-size: var(--fs-lead); line-height: 1.5; color: var(--c-muted); }
+.hc__ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 4px; }
+.hc__facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 32px; width: 100%; max-width: 520px; margin: 16px 0 0; padding: 22px 0 0; list-style: none; border-top: 1px solid var(--c-line); }
+.hc__facts li { display: grid; gap: 4px; }
+.hc__facts b { font: 700 clamp(1.25rem, 1.8vw, 1.625rem) / 1.1 var(--font-display); letter-spacing: -0.02em; white-space: nowrap; }
+.hc__facts span { font-size: var(--fs-small); color: var(--c-muted); }
+.hc__photos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.hc__photo { position: relative; display: block; overflow: hidden; border-radius: 20px; aspect-ratio: 4 / 5; background: var(--c-soft); box-shadow: var(--c-shadow); color: #fff; text-decoration: none; }
+.hc__photo--2, .hc__photo--3 { aspect-ratio: 4 / 4.2; }
+.hc__photo--2 { align-self: end; }
+.hc__photo img { width: 100%; height: 100%; object-fit: cover; transition: scale 0.8s var(--ease-out); }
+.hc__photo:hover img { scale: 1.04; }
+.hc__photo::after { content: ""; position: absolute; inset: 55% 0 0; background: linear-gradient(transparent, rgb(20 19 18 / 0.7)); }
+.hc__cap { position: absolute; left: 16px; right: 16px; bottom: 14px; z-index: 1; display: grid; gap: 2px; font: 700 1rem / 1.2 var(--font-text); }
+.hc__cap small { font-weight: 500; font-size: 0.8125rem; opacity: 0.85; }
+
+/* ---------- бегущая строка (один из двух оставленных акцентов) ---------- */
+.mc { padding-block: 16px; border-block: 1px solid var(--c-line); background: #fff; font: 600 clamp(1rem, 1.6vw, 1.375rem) / 1 var(--font-display); color: var(--c-ink); }
+.mc .marquee__star { color: var(--c-accent); }
+
+/* ---------- общие заголовки разделов: обычный регистр, спокойнее и мельче ---------- */
+.vc .sec { color: var(--c-ink); }
+.vc .sec__label { color: var(--c-muted); }
+.vc .sec__title { font-size: clamp(2rem, 4.4vw, 3.75rem); font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; text-transform: none; }
+.vc .sec__accent { color: var(--c-accent); }
+.vc .sec__lead { color: var(--c-muted); }
+.vc .outline-word, .vc .w-outline { color: inherit; -webkit-text-stroke: 0; }
+.vc .num { font-variant-numeric: tabular-nums; }
+
+/* ---------- каталог ---------- */
+.rc--c { background: var(--c-bg); }
+.rc--c .rc__title { text-transform: none; font-weight: 700; letter-spacing: -0.03em; }
+.rc--c .w-mark span { color: var(--c-accent); }
+.rc--c .rc__lead { color: var(--c-muted); }
+.rc--c .loc { background: #fff; border: 1px solid var(--c-line); color: var(--c-ink); box-shadow: 0 1px 2px rgb(31 30 28 / 0.04); }
+.rc--c .loc:not([aria-pressed="true"]):hover { border-color: rgb(31 30 28 / 0.4); }
+.rc--c .loc[aria-pressed="true"] { background: var(--c-ink); border-color: var(--c-ink); color: #fff; }
+.rc--c .loc__name { text-transform: none; }
+.rc--c .chip { background: #fff; border: 1px solid var(--c-line); color: var(--c-ink); }
+.rc--c .chip:hover { border-color: rgb(31 30 28 / 0.4); }
+.rc--c .chip[aria-pressed="true"] { background: var(--c-ink); border-color: var(--c-ink); color: #fff; }
+.rc--c .card__link { border-radius: 20px; overflow: hidden; background: var(--c-card); border: 1px solid var(--c-line); box-shadow: var(--c-shadow); transition: box-shadow var(--dur-base) var(--ease-out), translate var(--dur-base) var(--ease-out); }
+.rc--c .card__link:hover, .rc--c .card__link:focus-visible { translate: 0 -4px; box-shadow: 0 2px 4px rgb(31 30 28 / 0.06), 0 24px 48px -24px rgb(31 30 28 / 0.35); }
+.rc--c .card__media { aspect-ratio: 4 / 3.4; }
+.rc--c .card__link:hover .card__media img.is-active { scale: 1.03; }
+.rc--c .badge { background: rgb(255 255 255 / 0.92); color: var(--c-ink); border: 0; }
+.rc--c .badge--cap { background: var(--g); color: var(--c-ink); }
+.rc--c .card[data-group="15-20"] .badge--cap { color: #fff; }
+.rc--c .card__price { top: 22px; right: 12px; border-radius: var(--r-pill); background: rgb(255 255 255 / 0.94); color: var(--c-ink); }
+.rc--c .card__body { padding: 16px 18px 20px; }
+.rc--c .card__title { text-transform: none; font-weight: 700; letter-spacing: -0.02em; }
+.rc--c .card__tag { color: var(--c-muted); }
+.rc--c .card__loc { color: var(--c-muted); opacity: 1; }
+.rc--c .card__cta { bottom: 18px; background: var(--c-ink); color: #fff; }
+.rc--c .rc__more-btn { box-shadow: 0 8px 24px -12px rgb(31 30 28 / 0.4); }
+.rc--c .rc__empty { color: var(--c-muted); }
+
+/* ---------- окно зала ---------- */
+.rm--c::backdrop { background: rgb(31 30 28 / 0.55); }
+.rm--c .rm__panel { background: #fff; border: 1px solid var(--c-line); border-radius: 24px; color: var(--c-ink); box-shadow: 0 40px 100px -40px rgb(31 30 28 / 0.5); }
+.rm--c .rm__gallery { background: #1a1918; }
+.rm--c .rm__close, .rm--c .rm__nav { background: #fff; border: 1px solid var(--c-line); color: var(--c-ink); }
+.rm--c .rm__close:hover { background: var(--c-ink); color: #fff; }
+.rm--c .rm__count { background: rgb(255 255 255 / 0.92); color: var(--c-ink); }
+.rm--c .rm__loc { color: var(--c-accent); }
+.rm--c .rm__title { text-transform: none; font-weight: 700; letter-spacing: -0.03em; }
+.rm--c .rm__tagline, .rm--c .rm__text { color: var(--c-muted); }
+.rm--c .badge { background: var(--c-soft); border: 0; color: var(--c-ink); }
+.rm--c .badge--cap { background: var(--g); }
+.rm--c .rm__included h4, .rm--c .rm__simtabs button { text-transform: none; }
+.rm--c .rm__promo { background: #F6F9E6; border: 1px solid #DCE8A6; color: #3D4A0B; }
+.rm--c .rm__foot { background: #fff; border-top-color: var(--c-line); }
+.rm--c .rm__similar, .rm--c .rm__thumbs { background: var(--c-soft); }
+.rm--c .rm__sim-card { background: #fff; border-color: var(--c-line); }
+.rm--c .rm__sim-title, .rm--c .rm__nextcard b { text-transform: none; }
+.rm--c .rm__simtabs button[aria-selected="true"] { background: var(--c-ink); border-color: var(--c-ink); color: #fff; }
+.rm--c .rm__nextroom { box-shadow: 0 8px 24px -10px rgb(31 30 28 / 0.45); }
+.rm--c .rm__pager button { border-color: var(--c-line); background: #fff; }
+@media (max-width: 899px) { .rm--c .rm__similar { background: none; } .rm--c .rm__foot { background: rgb(255 255 255 / 0.97); } }
+
+/* ---------- «Весь зал — ваш» ---------- */
+.vc .why { background: var(--c-bg); }
+.vc .bento__cell { background: #fff; border: 1px solid var(--c-line); box-shadow: var(--c-shadow); color: var(--c-ink); }
+.vc .bento__cell h3 { text-transform: none; font-weight: 700; }
+.vc .bento__cell p { color: var(--c-muted); }
+.vc .bento__cell--food { background: #F4F0FF; }
+.vc .bento__cell--price { background: #FFF2F7; }
+.vc .bento__cell--own { color: #fff; border: 0; }
+.vc .bento__cell--own h3, .vc .bento__plate p { color: #fff; }
+.vc .bento__big { color: var(--c-ink); }
+.vc .bento__big span { color: var(--c-muted); }
+.vc .bento__cap { color: var(--c-accent) !important; }
+.vc .bento__chips li { border-color: var(--c-line); background: #fff; }
+/* часы «до 06:00»: в тёмной теме белые с !important — здесь тёмные */
+.vc .bento__clock { color: var(--c-ink) !important; }
+
+/* ---------- «Повод найдётся» ---------- */
+.vc .formats { background: var(--c-soft); }
+.vc .fcard { border-radius: 22px; color: #fff; } /* текст на фото — белый, поверх затемнения */
+.vc .fcard__body h3 { text-transform: none; font-weight: 700; }
+.vc .formats__note { color: var(--c-muted); }
+.vc .bd { box-shadow: var(--c-shadow); border-color: var(--c-line); background: #fff; }
+.vc .bd__text { text-transform: none; }
+.vc .bd__btn { box-shadow: none; }
+
+/* ---------- «Всё для праздника» ---------- */
+.vc .services { background: var(--c-bg); }
+.vc .svc__item { background: #fff; border-color: var(--c-line); }
+.vc .svc__item[data-open] { background: #fff; border-color: var(--c-ink); }
+.vc .svc__num { color: var(--c-accent); }
+.vc .svc__title, .vc .svc__ptitle { text-transform: none; font-weight: 700; }
+.vc .svc__item[data-open] .svc__title { color: var(--c-ink); }
+.vc .svc__inner p { color: var(--c-muted); }
+.vc .svc__link { color: var(--c-accent); }
+@media (min-width: 1024px) {
+  .vc .svc__item:not([data-open]):hover { border-color: rgb(31 30 28 / 0.35); }
+  .vc .svc__item[data-open] { background: #fff; }
+  .vc .svc__panel { background: #fff; border-color: var(--c-line); box-shadow: var(--c-shadow); }
+}
+
+/* ---------- акции ---------- */
+.vc .promos { background: var(--c-soft); }
+.vc .coupon__title { text-transform: none; font-weight: 700; }
+.vc .coupon__face { box-shadow: var(--c-shadow); }
+
+/* ---------- отзывы ---------- */
+.vc .reviews { background: var(--c-bg); }
+.vc .reviews__link { color: var(--c-accent); }
+.vc .rcard { background: #fff; border-color: var(--c-line); box-shadow: var(--c-shadow); }
+.vc .rcard blockquote { color: var(--c-ink); }
+
+/* ---------- бронирование: без 3D-микрофона, форма по центру ---------- */
+.vc .booking { background: var(--c-soft); }
+.vc .bk { grid-template-columns: minmax(0, 1fr); max-width: 860px; margin-inline: auto; }
+.vc .bk__stage { display: none; }
+.vc .bk__form { background: #fff; border: 1px solid var(--c-line); box-shadow: var(--c-shadow); }
+.vc .bk__eq span { background: var(--c-line); }
+.vc .bk__eq span.is-done { background: var(--c-ink); }
+.vc .bk__eq span.is-now { background: var(--pt-lime); }
+.vc .bk__count, .vc .bk__hint, .vc .bk__check { color: var(--c-muted); }
+.vc .bk__step legend, .vc .bk__stepper-label, .vc .bk__occ-label, .vc .bk__chip--big span, .vc .bk__success h3 { text-transform: none; }
+.vc .bk__step legend { font-weight: 700; font-size: clamp(1.75rem, 3vw, 2.5rem); }
+.vc .bk__success h3 { color: var(--c-ink); }
+.vc .bk__success p { color: var(--c-muted); }
+.vc .bk__field { color: var(--c-ink); }
+.vc .bk__field input, .vc .bk__field select, .vc .bk__stepper input { background: #fff; border: 1px solid #D8D2C5; color: var(--c-ink); }
+.vc .bk__field select option { background: #fff; }
+.vc .bk__field input::placeholder { color: #8C887F; }
+.vc .bk__field input:focus, .vc .bk__field select:focus, .vc .bk__stepper input:focus { border-color: var(--c-accent); box-shadow: 0 0 0 4px rgb(91 63 224 / 0.15); }
+.vc .bk__chip span { border-color: #D8D2C5; color: var(--c-ink); }
+.vc .bk__chip:hover span { border-color: var(--c-ink); }
+.vc .bk__chip input:checked + span { background: var(--c-ink); border-color: var(--c-ink); color: #fff; }
+.vc .bk__stepper-btn { border-color: #D8D2C5; color: var(--c-ink); }
+.vc .bk__stepper-btn:hover { background: var(--c-ink); color: #fff; border-color: var(--c-ink); }
+.vc .bk__picked { background: #F4F0FF; border-color: #D6CCFF; }
+.vc .bk__unpick { background: #fff; color: var(--c-ink); }
+.vc .bk__check a, .vc .bk__hint a, .vc .bk__tg a, .vc .bk__branch a { color: var(--c-accent); }
+.vc .bk__tg a:hover, .vc .bk__branch a:hover { color: var(--c-ink); }
+.vc .bk__occ-face { background: #fff; border-color: var(--c-line); }
+.vc .bk__occ-card:hover .bk__occ-face { border-color: rgb(31 30 28 / 0.4); }
+.vc .bk__occ-card input:checked + .bk__occ-face { background: var(--c-ink); border-color: var(--c-ink); color: #fff; }
+.vc .bk__occ-plus { border-color: rgb(31 30 28 / 0.3); color: var(--c-muted); }
+.vc .bk__error { color: #C2261E; }
+
+/* ---------- вопросы ---------- */
+.vc .faq { background: var(--c-bg); }
+.vc .qa__q, .vc .qa summary { text-transform: none; }
+
+/* ---------- контакты: обычная светлая карта, без затемнения ---------- */
+.vc .contacts { background: var(--c-soft); }
+.vc .loc-card { background: #fff; border-color: var(--c-line); box-shadow: var(--c-shadow); color: var(--c-ink); }
+.vc .loc-card h3 { text-transform: none; font-weight: 700; }
+.vc .loc-card__metro, .vc .loc-card__hours dt { color: var(--c-muted); }
+.vc .loc-card__tel, .vc .contacts__main { color: var(--c-ink); }
+.vc .contacts__mail { color: var(--c-accent); }
+.vc .contacts__msg a { border-color: #D8D2C5; color: var(--c-ink); }
+.vc .contacts__msg a:hover { background: var(--c-ink); color: #fff; }
+.vc .contacts__map { border-color: var(--c-line); background: #eee; }
+.vc .contacts__map iframe { filter: none; }
+
+/* ---------- подвал: тёмный остаётся, без падающих букв ---------- */
+.vc .ft__stage { display: none; }
+.vc .ft__cols { padding-bottom: 32px; }
+.vc .ft__cols b { text-transform: none; }
+
+/* ---------- телефон ---------- */
+@media (max-width: 1023px) {
+  .hc__inner { grid-template-columns: minmax(0, 1fr); }
+  .hc { padding-top: 112px; }
+}
+@media (max-width: 767px) {
+  .hc { padding: 100px 0 40px; }
+  .hc__title { font-size: clamp(2.5rem, 11vw, 3.25rem); }
+  .hc__ctas { width: 100%; }
+  .hc__ctas .btn { flex: 1 1 100%; justify-content: space-between; }
+  .hc__ctas .btn--ghost { justify-content: center; }
+  .hc__photos { gap: 10px; }
+  .hc__photo { border-radius: 16px; }
+  .hc__cap { left: 12px; bottom: 10px; font-size: 0.875rem; }
+}

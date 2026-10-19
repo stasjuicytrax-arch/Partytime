@@ -1,0 +1,52 @@
+---
+// Первый экран спокойного варианта (/classic): без 3D и игровых эффектов.
+// Слева — заголовок, текст, кнопки и короткие факты; справа — сетка из 4 настоящих фото залов.
+import Icon from "../Icon.astro";
+import { rooms, networkRooms, minPrice, rub, locations } from "../../lib/rooms";
+
+// четыре разных по настроению зала из каталога
+const picks = ["brooklyn", "gavaji", "odnazhdy-v-gollivude", "maiami-bich"]
+  .map((slug) => rooms.find((r) => r.slug === slug))
+  .filter((r): r is (typeof rooms)[number] => !!r);
+---
+<section class="hc" aria-labelledby="hero-title">
+  <div class="container hc__inner">
+    <div class="hc__copy">
+      <h1 id="hero-title" class="hc__title">Время веселиться</h1>
+      <p class="hc__lead">
+        Тематические залы с&nbsp;караоке, кухней и&nbsp;баром в&nbsp;Петербурге. Весь зал&nbsp;— только для вашей компании.
+      </p>
+      <div class="hc__ctas">
+        <a class="btn btn--primary" href="#rooms">
+          <span>Выбрать зал</span><span class="btn__ico"><Icon name="arrow" size={20} /></span>
+        </a>
+        <a class="btn btn--ghost" href="#booking">Подобрать праздник</a>
+      </div>
+      <ul class="hc__facts" aria-label="Коротко о Party Time">
+        <li><b class="num">{networkRooms}</b><span>залов в&nbsp;сети</span></li>
+        <li><b class="num">{locations.length}</b><span>локации в&nbsp;Петербурге</span></li>
+        <li><b class="num">до 06:00</b><span>по&nbsp;пятницам и&nbsp;субботам</span></li>
+        <li><b class="num">от {rub(minPrice)}</b><span>за&nbsp;час аренды</span></li>
+      </ul>
+    </div>
+
+    <div class="hc__photos">
+      {picks.map((r, i) => (
+        <a class={`hc__photo hc__photo--${i + 1}`} href={`#room-${r.slug}`}>
+          <img
+            src={r.images[0].src}
+            srcset={r.images[0].srcset}
+            sizes="(max-width: 767px) 50vw, 25vw"
+            alt={`Зал «${r.title}», ${r.locName}`}
+            width="960"
+            height="640"
+            loading={i < 2 ? "eager" : "lazy"}
+            fetchpriority={i === 0 ? "high" : undefined}
+            decoding="async"
+          />
+          <span class="hc__cap">{r.title}<small>{r.locName}</small></span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
