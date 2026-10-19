@@ -2,7 +2,7 @@
    Цена всегда в одном взгляде от названия; декор — в заголовках разделов, не в строках с ценами. */
 
 .menu-page { background: var(--pt-deep); }
-.menu-page [id] { scroll-margin-top: 210px; }
+.menu-page [id] { scroll-margin-top: 280px; }
 
 /* ---------- обложка ---------- */
 .mh { position: relative; overflow: hidden; padding: clamp(128px, 14vw, 180px) 0 clamp(36px, 5vw, 64px); color: var(--pt-white); }
@@ -31,9 +31,10 @@
 .mnav { position: sticky; top: 0; z-index: 40; padding: 10px 0; background: rgb(21 21 21 / 0.86); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-block: 1px solid rgb(255 255 255 / 0.08); transition: top var(--dur-base) var(--ease-out); }
 /* шапка видна — полоса едет под ней */
 body:has(.hdr:not(.is-hidden)) .mnav { top: 80px; }
-.mnav__in { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+/* разделы переносятся строками — без прокрутки вбок */
+.mnav__in { display: flex; flex-wrap: wrap; gap: 8px; }
 .mnav__in::-webkit-scrollbar { display: none; }
-.mnav a {
+.mnav__in a {
   flex: none;
   display: inline-flex;
   align-items: center;
@@ -48,10 +49,10 @@ body:has(.hdr:not(.is-hidden)) .mnav { top: 80px; }
   white-space: nowrap;
   transition: background-color var(--dur-fast), border-color var(--dur-fast), color var(--dur-fast);
 }
-.mnav a b { padding: 8px 10px; border-radius: var(--r-pill); background: rgb(255 255 255 / 0.08); font: 700 0.75rem / 1 var(--font-text); color: var(--c); }
-.mnav a:hover { border-color: var(--c); }
-.mnav a[aria-current] { background: var(--c); border-color: var(--c); color: var(--pt-deep); }
-.mnav a[aria-current] b { background: rgb(21 21 21 / 0.14); color: var(--pt-deep); }
+.mnav__in a b { padding: 8px 10px; border-radius: var(--r-pill); background: rgb(255 255 255 / 0.08); font: 700 0.75rem / 1 var(--font-text); color: var(--c); }
+.mnav__in a:hover { border-color: var(--c); }
+.mnav__in a[aria-current] { background: var(--c); border-color: var(--c); color: var(--pt-deep); }
+.mnav__in a[aria-current] b { background: rgb(21 21 21 / 0.14); color: var(--pt-deep); }
 
 /* ---------- раздел ---------- */
 .ms { position: relative; padding-block: clamp(56px, 7vw, 104px) 0; color: var(--pt-white); }
@@ -148,11 +149,11 @@ body:has(.hdr:not(.is-hidden)) .mnav { top: 80px; }
   body:has(.hdr:not(.is-hidden)) .mnav { top: 72px; }
 }
 @media (max-width: 767px) {
-  .menu-page [id] { scroll-margin-top: 190px; }
+  .menu-page [id] { scroll-margin-top: 150px; }
   .mh__cut--1 { display: none; }
   .mh__cut--2 { top: auto; bottom: 8px; width: 92px; opacity: 0.9; }
   .mh__lead { max-width: 22ch; }
-  .mnav a { min-height: 42px; padding-left: 14px; font-size: 0.875rem; }
+  .mnav__in a { min-height: 42px; padding-left: 14px; font-size: 0.875rem; }
   .mcard.has-pic > :is(.mcard__desc, .mcard__ingr, .mcard__save) { margin-right: 84px; }
   .mcard__pic { width: 84px; }
   .mtab__hd, .mtab__r { grid-template-columns: minmax(0, 1fr) 70px 58px; gap: 8px; }
@@ -164,8 +165,11 @@ body:has(.hdr:not(.is-hidden)) .mnav { top: 80px; }
 
 /* ---------- вкладки меню: Кухня · Бар · Пиво · Б/а напитки · Кальяны ---------- */
 .mnav { padding: 10px 0 8px; }
-.mnav .mnav__in { margin-top: 8px; }
-.mnav .mnav__in[hidden] { display: none; }
+.mnav__in[hidden] { display: none; }
+/* ПК: разделы закреплены сразу под вкладками (высоту вкладок отдаёт скрипт в --mnav-h) */
+.mnav { border-bottom: 0; }
+.mchips { position: sticky; top: var(--mnav-h, 66px); z-index: 39; padding: 2px 0 12px; background: rgb(21 21 21 / 0.86); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-bottom: 1px solid rgb(255 255 255 / 0.08); transition: top var(--dur-base) var(--ease-out); }
+body:has(.hdr:not(.is-hidden)) .mchips { top: calc(80px + var(--mnav-h, 66px)); }
 .mtabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
 .mtabs::-webkit-scrollbar { display: none; }
 .mtabs__btn {
@@ -185,7 +189,6 @@ body:has(.hdr:not(.is-hidden)) .mnav { top: 80px; }
 .mtabs__btn:hover { color: var(--pt-white); }
 .mtabs__btn[aria-selected="true"] { background: var(--pt-white); color: var(--pt-deep); }
 .mpanel[hidden] { display: none; }
-body:has(.hdr:not(.is-hidden)) .mnav { top: 80px; }
 
 /* подписи раздела: «Рекомендуем» над заголовком, «предзаказ за 2 дня» под ним */
 .ms__kicker { font: 700 0.75rem / 1 var(--font-text); letter-spacing: 0.1em; text-transform: uppercase; color: var(--c); }
@@ -213,5 +216,16 @@ body:has(.hdr:not(.is-hidden)) .mnav { top: 80px; }
   .mtabs__btn[aria-selected="true"] { padding-inline: 9px; }
   /* переносится только по пробелу («Б/а / напитки»), слова не рвутся; кегль растёт с шириной экрана */
   .mtabs__btn { min-width: 0; min-height: 44px; padding: 4px 5px; font-size: clamp(0.5625rem, 2.85vw, 0.8125rem); line-height: 1.05; white-space: normal; text-align: center; overflow-wrap: normal; word-break: keep-all; hyphens: none; }
-  .menu-page [id] { scroll-margin-top: 190px; }
+  .menu-page [id] { scroll-margin-top: 150px; }
+  .mnav { border-bottom: 1px solid rgb(255 255 255 / 0.08); }
+  .mchips { position: static; padding: 16px 0 0; background: none; -webkit-backdrop-filter: none; backdrop-filter: none; border: 0; }
+  /* оглавление вкладки ровной сеткой в две колонки: название слева, «от …» справа */
+  .mnav__in { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  .mnav__in[hidden] { display: none; }
+  .mnav__in a { flex-wrap: wrap; justify-content: space-between; min-height: 44px; padding: 6px 6px 6px 12px; gap: 4px 6px; font-size: 0.8125rem; line-height: 1.15; white-space: normal; overflow-wrap: normal; }
+  .mnav__in a b { flex: none; padding: 6px 7px; font-size: 0.6875rem; }
+}
+/* планшет: шапка ниже — разделы встают сразу под вкладками */
+@media (min-width: 768px) and (max-width: 1023px) {
+  body:has(.hdr:not(.is-hidden)) .mchips { top: calc(72px + var(--mnav-h, 66px)); }
 }

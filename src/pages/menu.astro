@@ -95,6 +95,9 @@ const priceHtml = (n: number) => rub(n).replace(" ₽", "&nbsp;₽");
           ))}
         </div>
       </div>
+    </nav>
+    <!-- разделы вкладки: переносятся строками, без прокрутки вбок; на ПК закреплены под вкладками, на телефоне — обычным блоком -->
+    <nav class="mchips" aria-label="Разделы вкладки" data-mchips>
       {TABS.map((t) => (
         <div class="container mnav__in" data-chips={t.id} hidden={t.id !== DEFAULT_TAB}>
           {chipsOf(t.id).map((c) => (
@@ -264,6 +267,9 @@ const priceHtml = (n: number) => rub(n).replace(" ₽", "&nbsp;₽");
   const panels = [...document.querySelectorAll<HTMLElement>("[data-panel]")];
   const chipRows = [...document.querySelectorAll<HTMLElement>("[data-chips]")];
   const top = document.getElementById("menu-top")!;
+  // высота полосы вкладок → закреплённые разделы встают ровно под ней
+  const mnav = document.querySelector<HTMLElement>("[data-mnav]")!;
+  new ResizeObserver(() => document.documentElement.style.setProperty("--mnav-h", `${mnav.offsetHeight}px`)).observe(mnav);
   let current = tabs.find((t) => t.getAttribute("aria-selected") === "true")?.dataset.tab ?? "kitchen";
   function activate(id: string, opts: { scroll?: boolean; hash?: boolean } = {}) {
     current = id;
