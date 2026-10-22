@@ -1,0 +1,49 @@
+---
+// «Что ещё посмотреть»: конечный набор ссылок (около двух экранов на телефоне), без бесконечной ленты.
+// Экран 1 — популярные залы карточками; экран 2 — списки ссылок: поводы, акции, залы по локациям.
+import Icon from "../Icon.astro";
+import RoomCards from "./RoomCards.astro";
+import { rooms, locations, locIn } from "../../lib/rooms";
+import { OCCASIONS } from "../../lib/occasions";
+import { PROMO_PAGES } from "../../lib/promos";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const locs = locations.filter((l) => l.active);
+// по два зала с каждой локации: самый большой и самый камерный
+const popular = locs.flatMap((l) => {
+  const inLoc = rooms.filter((r) => r.loc === l.id);
+  return [inLoc[0], inLoc[inLoc.length - 1]];
+});
+const byLoc = locs.map((l) => ({ ...l, list: rooms.filter((r) => r.loc === l.id).slice(0, 6) }));
+---
+<section class="blk more" id="more" aria-labelledby="more-title">
+  <div class="container">
+    <h2 class="blk__title" id="more-title">Что ещё посмотреть</h2>
+    <h3 class="more__sub">Популярные залы</h3>
+    <RoomCards list={popular} />
+
+    <div class="more__cols">
+      <nav aria-labelledby="more-pov">
+        <h3 class="more__sub" id="more-pov">Поводы</h3>
+        <ul class="more__list">
+          {OCCASIONS.map((o) => <li><a href={`${base}/povod/${o.slug}/`}>{o.title}</a></li>)}
+        </ul>
+      </nav>
+      <nav aria-labelledby="more-promo">
+        <h3 class="more__sub" id="more-promo">Акции</h3>
+        <ul class="more__list">
+          {PROMO_PAGES.map((p) => <li><a href={`${base}/akcii/${p.slug}/`}>{p.title}</a></li>)}
+        </ul>
+      </nav>
+      {byLoc.map((l) => (
+        <nav aria-labelledby={`more-${l.id}`}>
+          <h3 class="more__sub" id={`more-${l.id}`}>Залы {locIn[l.id]}</h3>
+          <ul class="more__list">
+            {l.list.map((r) => <li><a href={`${base}/#room-${r.slug}`}>{r.title}</a></li>)}
+          </ul>
+        </nav>
+      ))}
+    </div>
+    <a class="hm__btn blk__more" href="#rooms">Весь каталог залов <Icon name="arrow" size={18} /></a>
+  </div>
+</section>
