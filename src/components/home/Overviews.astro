@@ -1,21 +1,43 @@
 ---
-// «Загляните внутрь»: обзорные ролики локаций (вертикальные превью). По клику — плеер в окне (VideoDialog).
-import { overviews } from "../../lib/videos";
-import { locations } from "../../lib/rooms";
+// «Загляните внутрь»: обзорные ролики локаций + несколько роликов залов — ряд на всю ширину контейнера.
+// По клику — плеер в окне (VideoDialog). На телефоне — лента со свайпом.
+import { overviews, roomVideo } from "../../lib/videos";
+import { locations, rooms } from "../../lib/rooms";
 
 const name = (id: string) => locations.find((l) => l.id === id)!.name;
+// залы с видео для ряда: разные по настроению, с разных локаций
+const ROOM_PICKS = ["brooklyn", "maiami-bich", "odnazhdy-v-gollivude", "premiya-oskar", "disco-komendantskiy"];
+const roomCards = ROOM_PICKS.flatMap((slug) => {
+  const v = roomVideo(slug);
+  const r = rooms.find((x) => x.slug === slug);
+  return v && r ? [{ ...v, slug, title: r.title, place: r.locName }] : [];
+});
+const cards = [
+  ...overviews.map((o) => ({ ...o, kind: "Обзор локации", title: name(o.loc), place: o.duration, slug: undefined as string | undefined })),
+  ...roomCards.map((r) => ({ ...r, kind: "Зал", loc: undefined as string | undefined })),
+].slice(0, 6);
 ---
-{overviews.length > 0 && (
+{cards.length > 0 && (
   <section class="blk" id="vnutri" aria-labelledby="vnutri-title">
     <div class="container">
       <h2 class="blk__title" id="vnutri-title">Загляните внутрь</h2>
       <ul class="ovgrid">
-        {overviews.map((o) => (
+        {cards.map((c) => (
           <li>
-            <button type="button" class="ovcard" data-video={o.id} data-video-w={o.w} data-video-h={o.h} data-video-loc={o.loc} data-video-title={o.title}>
-              <img src={o.poster} alt={`Обзор локации ${name(o.loc)}`} width={o.w * 2} height={o.h * 2} loading="lazy" decoding="async" />
+            <button
+              type="button"
+              class="ovcard"
+              data-video={c.id}
+              data-video-w={c.w}
+              data-video-h={c.h}
+              data-video-loc={c.loc}
+              data-video-slug={c.slug}
+              data-video-title={c.slug ? `Видео зала «${c.title}»` : `Обзор локации ${c.title}`}
+            >
+              <img src={c.poster} alt={c.slug ? `Видео зала «${c.title}»` : `Обзор локации ${c.title}`} width={c.w * 2} height={c.h * 2} loading="lazy" decoding="async" />
+              <span class="ovcard__kind">{c.kind}</span>
               <span class="ovcard__play" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M8 5.5v13l11-6.5z" fill="currentColor" /></svg></span>
-              <span class="ovcard__cap">{name(o.loc)}<small class="num">{o.duration}</small></span>
+              <span class="ovcard__cap">{c.title}<small class="num">{c.place}</small></span>
             </button>
           </li>
         ))}
