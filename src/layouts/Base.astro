@@ -23,7 +23,8 @@ const {
   theme = "#FE76B4",
   favicon = "pink",
   bodyClass,
-  noindex = false,
+  // сайт в разработке: индексация закрыта на всех страницах (и в robots.txt). Перед запуском — вернуть false
+  noindex = true,
   preloadImage,
 } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");

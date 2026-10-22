@@ -4,13 +4,13 @@ import { tel } from "../../lib/rooms";
 import { botUrl } from "../../lib/bot";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const href = (h: string) => (h === "soon" || h === "menu" ? `${base}/${h}` : h);
-const word = ["P", "A", "R", "T", "Y", "T", "I", "M", "E"];
+const word = ["В", "Е", "С", "Е", "Л", "И", "М", "С", "Я"];
 const fills = ["lime", "pink", "white", "sky", "violet", "pink", "lime", "white", "saffron"];
 ---
 <footer class="ft" aria-label="Подвал сайта">
   <div class="container ft__cols">
     <div class="ft__brand">
-      <img src={`${base}/brand/logo-primary.svg`} alt="Party Time — пространство для праздника" width="170" height="86" loading="lazy" />
+      <img src={`${base}/brand/logo-primary.svg`} alt="Время веселиться — пространство для праздника" width="170" height="86" loading="lazy" />
       <a class="ft__tel num" href={tel(PHONE_MAIN)}>{PHONE_MAIN}</a>
       <div class="ft__msg">
         <a href={botUrl("site_footer")} target="_blank" rel="noopener">Telegram</a>
@@ -38,5 +38,5 @@ const fills = ["lime", "pink", "white", "sky", "violet", "pink", "lime", "white"
     {word.map((l, i) => <span class={`ft-letter ft-letter--${fills[i]}`} data-letter>{l}</span>)}
   </div>
 
-  <p class="container ft__copy">© 2026 Party Time. Пространство для праздника.</p>
+  <p class="container ft__copy">© 2026 Время веселиться. Пространство для праздника.</p>
 </footer>

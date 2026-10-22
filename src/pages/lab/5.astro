@@ -1,12 +1,12 @@
 ---
 import Lab from "../../layouts/Lab.astro";
-const word = ["P", "A", "R", "T", "Y", "T", "I", "M", "E"];
+const word = ["В", "Е", "С", "Е", "Л", "И", "М", "С", "Я"];
 const fills = ["lime", "pink", "white", "sky", "violet", "pink", "lime", "white", "saffron"];
 ---
 <Lab
   n={5}
   title="Падающие буквы"
-  lead="В подвале слово PARTY TIME падает буквами, когда до него долистали. Курсор расталкивает буквы, любую можно схватить мышью и бросить. На телефоне — тап по куче и буквы подпрыгивают."
+  lead="В подвале слово ВЕСЕЛИМСЯ падает буквами, когда до него долистали. Курсор расталкивает буквы, любую можно схватить мышью и бросить. На телефоне — тап по куче и буквы подпрыгивают."
   notes={[
     "<b>Физика matter-js</b> подгружается, только когда подвал на экране",
     "<b>Буквы — обычный текст</b>, не картинка",
@@ -25,10 +25,10 @@ const fills = ["lime", "pink", "white", "sky", "violet", "pink", "lime", "white"
       <div><b>Компания</b><span>Франшиза</span><span>Работа у нас</span><span>Организаторам</span></div>
       <div><b>Документы</b><span>Политика конфиденциальности</span><span>Правила</span><span>Оферта</span></div>
     </div>
-    <div class="ft-demo__stage" data-letters aria-label="Party Time">
+    <div class="ft-demo__stage" data-letters aria-label="Время веселиться">
       {word.map((l, i) => <span class={`ft-letter ft-letter--${fills[i]}`} data-letter aria-hidden="true">{l}</span>)}
     </div>
-    <p class="container ft-demo__copy">© 2026 Party Time. Пространство для праздника.</p>
+    <p class="container ft-demo__copy">© 2026 Время веселиться. Пространство для праздника.</p>
   </footer>
 </Lab>
 

@@ -2,7 +2,8 @@
 // Разметка Organization + EntertainmentBusiness на каждую активную локацию (4). FAQPage — в секции FAQ.
 import { activeLocations } from "../lib/rooms";
 import { PHONE_MAIN, EMAIL, MESSENGERS, GEO } from "../lib/content";
-const site = new URL(import.meta.env.BASE_URL, Astro.site).toString();
+// адрес сайта со слешем на конце: иначе «site + brand/…» склеивается без разделителя
+const site = new URL(import.meta.env.BASE_URL, Astro.site).toString().replace(/\/?$/, "/");
 const hours = [
   { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday"], opens: "15:00", closes: "03:00" },
   { "@type": "OpeningHoursSpecification", dayOfWeek: ["Friday", "Saturday"], opens: "12:00", closes: "06:00" },
@@ -12,7 +13,7 @@ const org = {
   "@context": "https://schema.org",
   "@type": "Organization",
   "@id": `${site}#org`,
-  name: "Party Time",
+  name: "Время веселиться",
   slogan: "Пространство для праздника",
   url: site,
   logo: `${site}brand/logo-primary.svg`,
@@ -23,7 +24,7 @@ const org = {
 const places = activeLocations.map((l) => ({
   "@context": "https://schema.org",
   "@type": "EntertainmentBusiness",
-  name: `Party Time — ${l.name}`,
+  name: `Время веселиться — ${l.name}`,
   parentOrganization: { "@id": `${site}#org` },
   url: site,
   telephone: l.phone,
