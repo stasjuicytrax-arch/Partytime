@@ -581,6 +581,9 @@
   .hdr__bar { min-height: 72px; }
   .hdr__cta { display: none !important; }
 }
+/* размытие и сдвиг шапки делают её «рамкой» для fixed-меню — пока меню открыто, их нет, и оно занимает весь экран */
+.modal-open .mbar { visibility: hidden; }
+.hdr:has(.hdr__menu[data-open]) { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; translate: none !important; }
 .hdr__menu[data-open] {
   position: fixed;
   inset: 0;
