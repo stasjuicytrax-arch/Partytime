@@ -28,7 +28,10 @@ const poster = `${base}/img/hero/party-confetti-1440.webp`;
           <Icon name="next" size={22} /> Смотреть видео
         </button>
       ) : (
-        <figcaption class="vid__todo">Видео — [уточнить]: ролик ещё не загружен</figcaption>
+        <>
+          <span class="vid__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="32" height="32"><path d="M8 5.5v13l11-6.5z" fill="currentColor" /></svg></span>
+          <figcaption class="vid__todo">Видео — [уточнить]: ролик ещё не загружен</figcaption>
+        </>
       )}
     </figure>
   </div>

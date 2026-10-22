@@ -273,3 +273,10 @@ body:has(.pv) .ft__stage { display: none; }
 .more__list a { display: block; padding: 6px 0; font-size: 0.9375rem; color: var(--t-muted); text-decoration: none; transition: color 0.2s; }
 .more__list a:hover { color: var(--t-text); }
 @media (min-width: 1024px) { .more__cols { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+/* значок «play» на обложке, пока ролика нет: видно, что здесь будет видео */
+.vid__icon {
+  position: absolute; left: 50%; top: 50%; translate: -50% -50%;
+  display: grid; place-items: center; width: 80px; height: 80px; padding-left: 4px;
+  border-radius: 50%; background: var(--t-accent); color: var(--t-on-accent);
+}
+@media (max-width: 767px) { .vid__icon { width: 64px; height: 64px; } }
