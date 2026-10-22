@@ -1,0 +1,51 @@
+---
+// Видео-блок: один ролик с обложкой. Само видео не грузится, пока гость не нажмёт «Смотреть»;
+// звук не включается сам, автозапуска нет. Пока файла нет — на месте ролика обложка и пометка.
+// TODO: положить сжатый ролик (H.264/MP4, ~720p, до 8–10 МБ) в public/video/vremya-veselitsya.mp4 и указать путь в VIDEO_SRC.
+import Icon from "../Icon.astro";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const VIDEO_SRC: string | null = null; // например `${base}/video/vremya-veselitsya.mp4`
+const poster = `${base}/img/hero/party-confetti-1440.webp`;
+---
+<section class="blk" id="video" aria-labelledby="video-title">
+  <div class="container">
+    <h2 class="blk__title" id="video-title">Как у нас празднуют</h2>
+    <figure class="vid" data-video={VIDEO_SRC ?? undefined}>
+      <img
+        class="vid__poster"
+        src={poster}
+        srcset={`${base}/img/hero/party-confetti-640.webp 640w, ${base}/img/hero/party-confetti-960.webp 960w, ${poster} 1440w`}
+        sizes="(max-width: 1440px) 100vw, 1312px"
+        alt="Гости танцуют под конфетти в тематическом зале"
+        width="1440"
+        height="1075"
+        loading="lazy"
+        decoding="async"
+      />
+      {VIDEO_SRC ? (
+        <button type="button" class="vid__play" data-video-play>
+          <Icon name="next" size={22} /> Смотреть видео
+        </button>
+      ) : (
+        <figcaption class="vid__todo">Видео — [уточнить]: ролик ещё не загружен</figcaption>
+      )}
+    </figure>
+  </div>
+</section>
+
+<script>
+  // ролик подгружаем только по нажатию: обложка заменяется плеером со звуком под управлением гостя
+  document.querySelectorAll<HTMLElement>("[data-video]").forEach((fig) => {
+    fig.querySelector("[data-video-play]")?.addEventListener("click", () => {
+      const v = document.createElement("video");
+      v.src = fig.dataset.video!;
+      v.controls = true;
+      v.playsInline = true;
+      v.preload = "auto";
+      v.className = "vid__player";
+      fig.replaceChildren(v);
+      v.play().catch(() => {});
+    });
+  });
+</script>

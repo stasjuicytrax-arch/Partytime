@@ -1,0 +1,25 @@
+---
+// Преимущества: формулировки заголовков заданы заказчиком — не менять. Пояснения — из content.ts.
+import { HOURS, REASONS } from "../../lib/content";
+
+const why = (id: string) => REASONS.find((r) => r.id === id)!.text;
+const perks = [
+  { title: "Открыты каждый день", lines: HOURS.map((h) => `${h.days} ${h.time}`) },
+  { title: "Честная цена без доплат", lines: [why("price")] },
+  { title: "Своя кухня", lines: [why("food")] },
+  { title: "Отдельный зал для своей компании", lines: [why("own")] },
+];
+---
+<section class="blk" id="why" aria-labelledby="why-title">
+  <div class="container">
+    <h2 class="blk__title" id="why-title">Почему выбирают нас</h2>
+    <ul class="perks">
+      {perks.map((p) => (
+        <li>
+          <h3>{p.title}</h3>
+          {p.lines.map((l) => <p class="num">{l}</p>)}
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
