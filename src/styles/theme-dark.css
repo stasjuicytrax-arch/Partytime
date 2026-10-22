@@ -1,0 +1,17 @@
+/* Тёмная тема главной: все цвета новых блоков — только отсюда.
+   Компоненты берут var(--t-*), своих цветов в них нет. */
+.vb {
+  --t-bg: var(--pt-deep);
+  --t-surface: #1E1E1E;
+  --t-surface-2: #262626;
+  --t-text: var(--pt-white);
+  --t-muted: #B4B0A8;
+  --t-line: rgb(255 255 255 / 0.12);
+  --t-line-strong: rgb(255 255 255 / 0.28);
+  --t-accent: var(--pt-lime);
+  --t-on-accent: var(--pt-deep);
+  --t-accent-2: var(--pt-violet-l);
+  --t-photo-shade: rgb(0 0 0 / 0.55);
+  --t-radius: 16px;
+  --t-radius-sm: 12px;
+}

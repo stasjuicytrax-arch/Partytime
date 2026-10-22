@@ -1,9 +1,8 @@
 ---
-// Главная: выбранное направление — вариант B «Ночной лофт». /b оставлен как превью, /variants — экран выбора.
+// Главная (тёмная тема): первый экран с двумя путями — «Выбрать зал» и «Выбрать повод», дальше каталог залов.
 import Base from "../layouts/Base.astro";
 import SiteHeader from "../components/SiteHeader.astro";
-import HeroB from "../components/b/HeroB.astro";
-import Marquee from "../components/Marquee.astro";
+import HeroMain from "../components/home/HeroMain.astro";
 import RoomCatalog from "../components/RoomCatalog.astro";
 import Why from "../components/sections/Why.astro";
 import Formats from "../components/sections/Formats.astro";
@@ -20,22 +19,15 @@ import JsonLd from "../components/JsonLd.astro";
 import "../styles/components.css";
 import "../styles/b.css";
 import "../styles/sections.css";
+import "../styles/theme-dark.css";
+import "../styles/home.css";
 
-const strip = ["Караоке", "Своя кухня", "Авторский бар", "PS5 и Nintendo Switch", "Без пробкового сбора", "До 06:00", "Только свои"];
-const ballPoster = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/img/ball-poster.webp`;
 ---
-<Base theme="#151515" favicon="blue" bodyClass="vb" preloadImage={ballPoster}>
+<Base theme="#151515" favicon="blue" bodyClass="vb">
   <JsonLd slot="head" />
   <SiteHeader variant="b" />
   <main id="main" tabindex="-1">
-    <HeroB />
-    <div class="mb marquee">
-      <p class="visually-hidden">{strip.join(", ")}</p>
-      <div aria-hidden="true">
-        <Marquee items={strip} speed={80} />
-        <Marquee items={[...strip].reverse()} dir="right" speed={96} />
-      </div>
-    </div>
+    <HeroMain />
     <RoomCatalog variant="b" />
     <Why />
     <Formats />
@@ -52,15 +44,10 @@ const ballPoster = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/img/ball-post
 </Base>
 
 <script>
-  import { initSmoothScroll, initMagnetic, initCursor, initMarquee } from "../scripts/motion";
-  import { initHeroB } from "../scripts/hero-b";
+  import { initSmoothScroll } from "../scripts/motion";
   import { initReveals, initClock, initFormats, initServices, initCoupons, initFaq } from "../scripts/sections";
   import { initBooking } from "../scripts/booking";
   initSmoothScroll();
-  initHeroB(document.querySelector("[data-hero-b]")!);
-  initMarquee();
-  initMagnetic();
-  initCursor();
   const idle = (fn: () => void) => ("requestIdleCallback" in window ? requestIdleCallback(fn, { timeout: 2000 }) : setTimeout(fn, 800));
 
   // секции ниже первого экрана: на телефоне настраиваем, когда браузер освободится после загрузки

@@ -1,0 +1,83 @@
+/* Главная, тёмная тема. Цвета — только var(--t-*) из theme-dark.css */
+
+/* ===== Первый экран ===== */
+.hm { padding-top: 84px; padding-bottom: 8px; background: var(--t-bg); color: var(--t-text); }
+.hm__copy { display: grid; gap: 12px; }
+.hm__title {
+  font-size: clamp(2rem, 9vw, 4.5rem);
+  font-weight: 900;
+  line-height: 0.98;
+  letter-spacing: -0.01em;
+}
+.hm__sub {
+  display: block;
+  margin-top: 10px;
+  font-family: var(--font-text);
+  font-size: clamp(1rem, 4.2vw, 1.375rem);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0;
+  color: var(--t-muted);
+  text-wrap: balance;
+}
+.hm__lead { font-size: 0.9375rem; color: var(--t-muted); }
+.hm__ctas { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
+.hm__btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 52px; padding: 0 16px;
+  border-radius: var(--t-radius-sm);
+  border: 1px solid var(--t-line-strong);
+  color: var(--t-text);
+  font-weight: 700; font-size: 1rem; text-decoration: none;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.hm__btn:hover { border-color: var(--t-text); }
+.hm__btn--main { background: var(--t-accent); border-color: var(--t-accent); color: var(--t-on-accent); }
+.hm__btn--main:hover { border-color: var(--t-accent); filter: brightness(1.06); }
+
+/* лента фото: свайп пальцем, на ПК — колесо/тачпад */
+.hm__strip {
+  display: grid; grid-auto-flow: column; grid-auto-columns: 72%;
+  gap: 8px; margin-top: 16px;
+  padding-inline: var(--gutter); scroll-padding-inline: var(--gutter);
+  overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.hm__strip::-webkit-scrollbar { display: none; }
+.hm__strip li { scroll-snap-align: start; }
+.hm__photo {
+  position: relative; display: block; aspect-ratio: 4 / 3;
+  border-radius: var(--t-radius); overflow: hidden; background: var(--t-surface);
+  color: var(--t-text); text-decoration: none;
+}
+.hm__photo img { width: 100%; height: 100%; object-fit: cover; }
+.hm__cap {
+  position: absolute; inset: auto 0 0; padding: 28px 12px 10px;
+  background: linear-gradient(transparent, var(--t-photo-shade));
+  font-weight: 700; font-size: 0.9375rem; line-height: 1.2;
+}
+.hm__cap small { display: block; font-weight: 500; font-size: 0.75rem; color: var(--t-muted); }
+
+/* локации — быстрый путь в каталог */
+.hm__locs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.hm__locs a {
+  display: flex; flex-direction: column; justify-content: center;
+  min-height: 52px; padding: 6px 12px;
+  border-radius: var(--t-radius-sm); background: var(--t-surface);
+  color: var(--t-text); text-decoration: none; font-weight: 700; font-size: 0.9375rem; line-height: 1.2;
+  transition: background-color 0.2s;
+}
+.hm__locs a:hover { background: var(--t-surface-2); }
+.hm__locs small { font-weight: 500; font-size: 0.75rem; color: var(--t-muted); }
+
+@media (min-width: 768px) {
+  .hm { padding-top: 120px; }
+  .hm__ctas { display: flex; flex-wrap: wrap; }
+  .hm__btn { padding: 0 28px; }
+  .hm__strip { grid-auto-columns: calc((100% - 2 * var(--gutter) - 16px) / 3); }
+  .hm__locs { grid-template-columns: repeat(4, 1fr); }
+  .hm__copy > * { max-width: 900px; }
+}
+@media (min-width: 1440px) {
+  .hm__strip { grid-auto-columns: calc((min(100vw, var(--container)) - 2 * var(--gutter) - 16px) / 3); padding-inline: max(var(--gutter), calc((100vw - var(--container)) / 2 + var(--gutter))); }
+}
