@@ -1,0 +1,43 @@
+---
+// Сетка поводов: фото, название, одна строка. Каждая карточка — обычная ссылка на страницу повода.
+// Используется на главной и внизу страниц поводов («Другие поводы»).
+import { OCCASIONS, coverOf } from "../../lib/occasions";
+
+interface Props {
+  id?: string;
+  title?: string;
+  /** slug повода, который не показываем (текущая страница) */
+  exclude?: string;
+}
+const { id = "povody", title = "Выберите повод", exclude } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const list = OCCASIONS.filter((o) => o.slug !== exclude);
+---
+<section class="blk" id={id} aria-labelledby={`${id}-title`}>
+  <div class="container">
+    <h2 class="blk__title" id={`${id}-title`}>{title}</h2>
+    <ul class="ogrid">
+      {list.map((o) => {
+        const r = coverOf(o);
+        return (
+          <li>
+            <a class="ocard" href={`${base}/povod/${o.slug}/`}>
+              <img
+                src={r.images[0].src}
+                srcset={r.images[0].srcset}
+                sizes="(max-width: 767px) 50vw, (max-width: 1279px) 33vw, 20vw"
+                alt={`${o.title} — зал «${r.title}»`}
+                width="960"
+                height="640"
+                loading="lazy"
+                decoding="async"
+              />
+              <h3>{o.title}</h3>
+              <p>{o.line}</p>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+</section>

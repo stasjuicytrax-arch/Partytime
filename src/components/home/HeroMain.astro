@@ -1,7 +1,6 @@
 ---
 // Первый экран главной: H1, два пути («Выбрать зал» и «Выбрать повод»), фото и плитки локаций
-// (быстрый путь «локация → зал → бронь»). На ПК две композиции для выбора заказчиком: ?hero=a (по умолчанию) и ?hero=b.
-// A — две колонки, справа мозаика из трёх первых фото; B — текст по центру, ниже лента фото уходит за правый край.
+// (быстрый путь «локация → зал → бронь»). Телефон — лента фото со свайпом; ПК — две колонки, справа мозаика из трёх первых фото.
 import Icon from "../Icon.astro";
 import { rooms, locations, networkRooms, minPrice, rub } from "../../lib/rooms";
 
@@ -23,9 +22,6 @@ const shots: Shot[] = [
 const locs = locations.filter((l) => l.active);
 const countIn = (id: string) => rooms.filter((r) => r.loc === id).length;
 ---
-<script is:inline>
-  document.documentElement.dataset.hero = new URLSearchParams(location.search).get("hero") === "b" ? "b" : "a";
-</script>
 <section class="hm" aria-labelledby="hero-title">
   <div class="hm__grid">
     <div class="hm__copy">
@@ -35,7 +31,7 @@ const countIn = (id: string) => rooms.filter((r) => r.loc === id).length;
       <p class="hm__lead num">{networkRooms} тематических залов, от&nbsp;{rub(minPrice)} в&nbsp;час. Весь зал только ваш.</p>
       <div class="hm__ctas">
         <a class="hm__btn hm__btn--main" href="#rooms">Выбрать зал <Icon name="arrow" size={20} /></a>
-        <a class="hm__btn" href="#formats">Выбрать повод</a>
+        <a class="hm__btn" href="#povody">Выбрать повод</a>
       </div>
     </div>
 

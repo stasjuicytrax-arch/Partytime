@@ -5,7 +5,7 @@ import SiteHeader from "../components/SiteHeader.astro";
 import HeroMain from "../components/home/HeroMain.astro";
 import RoomCatalog from "../components/RoomCatalog.astro";
 import Why from "../components/sections/Why.astro";
-import Formats from "../components/sections/Formats.astro";
+import Occasions from "../components/home/Occasions.astro";
 import Services from "../components/sections/Services.astro";
 import Promos from "../components/sections/Promos.astro";
 import Reviews from "../components/sections/Reviews.astro";
@@ -29,8 +29,8 @@ import "../styles/home.css";
   <main id="main" tabindex="-1">
     <HeroMain />
     <RoomCatalog variant="b" />
+    <Occasions />
     <Why />
-    <Formats />
     <Services />
     <Promos />
     <Reviews />
@@ -45,7 +45,7 @@ import "../styles/home.css";
 
 <script>
   import { initSmoothScroll } from "../scripts/motion";
-  import { initReveals, initClock, initFormats, initServices, initCoupons, initFaq } from "../scripts/sections";
+  import { initReveals, initClock, initServices, initCoupons, initFaq } from "../scripts/sections";
   import { initBooking } from "../scripts/booking";
   initSmoothScroll();
   const idle = (fn: () => void) => ("requestIdleCallback" in window ? requestIdleCallback(fn, { timeout: 2000 }) : setTimeout(fn, 800));
@@ -54,7 +54,6 @@ import "../styles/home.css";
   const initSections = () => {
     initReveals();
     initClock();
-    initFormats();
     initServices();
     initCoupons();
     initFaq();

@@ -1,0 +1,125 @@
+---
+// Страница повода /povod/<slug>. Одна структура блоков на все 10 поводов (данные — src/lib/occasions.ts):
+// заголовок → акция → подходящие залы → что входит → программа [уточнить] → вопросы → другие поводы.
+import Base from "../../layouts/Base.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import Footer from "../../components/sections/Footer.astro";
+import Messengers from "../../components/Messengers.astro";
+import Icon from "../../components/Icon.astro";
+import Occasions from "../../components/home/Occasions.astro";
+import RoomCards from "../../components/home/RoomCards.astro";
+import { OCCASIONS, roomsFor, coverOf, promoOf, type Occasion } from "../../lib/occasions";
+import { INCLUDED, PROMO } from "../../lib/rooms";
+import { SERVICES, FAQ } from "../../lib/content";
+import "../../styles/components.css";
+import "../../styles/b.css";
+import "../../styles/sections.css";
+import "../../styles/theme-dark.css";
+import "../../styles/home.css";
+
+export function getStaticPaths() {
+  return OCCASIONS.map((o) => ({ params: { slug: o.slug }, props: { o } }));
+}
+const { o } = Astro.props as { o: Occasion };
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const cover = coverOf(o);
+const fit = roomsFor(o);
+const shown = fit.slice(0, 8);
+const promo = promoOf(o);
+// общие вопросы, которые относятся к любому празднику
+const faq = FAQ.filter((f) => /входит|своей едой|свой торт|забронировать|Минимальное/.test(f.q));
+---
+<Base
+  title={`${o.title} в караоке-лофте — Время веселиться, Петербург`}
+  description={`${o.title}: ${fit.length} подходящих тематических залов с караоке в Петербурге. ${o.line}`}
+  theme="#151515"
+  favicon="blue"
+  bodyClass="vb"
+  preloadImage={cover.images[0].src}
+>
+  <SiteHeader variant="b" home={false} />
+  <main id="main" tabindex="-1" class="pv">
+    <section class="pv__hero" aria-labelledby="pv-title">
+      <div class="container pv__hero-in">
+        <nav class="crumbs" aria-label="Навигация">
+          <a href={`${base}/`}>Главная</a><span aria-hidden="true">/</span><a href={`${base}/#povody`}>Поводы</a>
+        </nav>
+        <div class="pv__copy">
+          <h1 id="pv-title" class="pv__title">{o.title}</h1>
+          <p class="pv__line">{o.line}</p>
+          <div class="hm__ctas">
+            <a class="hm__btn hm__btn--main" href="#zaly">Выбрать зал <Icon name="arrow" size={20} /></a>
+            <a class="hm__btn" href={`${base}/#booking`}>Забронировать</a>
+          </div>
+        </div>
+        <img
+          class="pv__cover"
+          src={cover.images[0].src}
+          srcset={cover.images[0].srcset}
+          sizes="(max-width: 767px) 100vw, 50vw"
+          alt={`${o.title} — зал «${cover.title}», ${cover.locName}`}
+          width="960"
+          height="640"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </div>
+    </section>
+
+    {promo && (
+      <section class="blk blk--tight" aria-label="Акция">
+        <div class="container">
+          <div class="pv__promo">
+            <b class="num">{promo.big}</b>
+            <div><h2>{promo.title}</h2><p>{promo.text}</p></div>
+          </div>
+        </div>
+      </section>
+    )}
+
+    <section class="blk" id="zaly" aria-labelledby="zaly-title">
+      <div class="container">
+        <h2 class="blk__title" id="zaly-title">Подходящие залы <span class="num">{fit.length}</span></h2>
+        <RoomCards list={shown} />
+        {fit.length > shown.length && (
+          <a class="hm__btn blk__more" href={`${base}/#rooms`}>Все залы в каталоге <Icon name="arrow" size={18} /></a>
+        )}
+      </div>
+    </section>
+
+    <section class="blk" aria-labelledby="inc-title">
+      <div class="container">
+        <h2 class="blk__title" id="inc-title">Что входит в аренду</h2>
+        <ul class="pv__inc">{INCLUDED.map((x) => <li>{x}</li>)}</ul>
+        <p class="pv__note">{PROMO}</p>
+        <ul class="pv__svc">
+          {SERVICES.map((s) => (
+            <li><h3>{s.title}</h3><p>{s.text}</p></li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="blk" aria-labelledby="prog-title">
+      <div class="container">
+        <h2 class="blk__title" id="prog-title">Программа праздника</h2>
+        <p class="pv__todo">Программа, пакеты и цены для повода «{o.title}» — [уточнить].</p>
+      </div>
+    </section>
+
+    <section class="blk" aria-labelledby="faq-title">
+      <div class="container">
+        <h2 class="blk__title" id="faq-title">Частые вопросы</h2>
+        <div class="pv__faq">
+          {faq.map((f) => (
+            <details><summary>{f.q}</summary><p>{f.a}</p></details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <Occasions id="drugie" title="Другие поводы" exclude={o.slug} />
+  </main>
+  <Footer />
+  <Messengers />
+</Base>

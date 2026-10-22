@@ -125,9 +125,9 @@
   .hm__locs { grid-template-columns: repeat(4, 1fr); }
 }
 
-/* ===== ПК, вариант A: две колонки, справа мозаика (одно большое фото + два малых) ===== */
+/* ===== ПК: две колонки, справа мозаика (одно большое фото + два малых) ===== */
 @media (min-width: 1024px) {
-  html:not([data-hero="b"]) .hm__grid {
+  .hm__grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
     grid-template-areas: "copy photos" "locs photos";
@@ -135,11 +135,11 @@
     align-content: center;
     column-gap: clamp(32px, 4vw, 72px);
   }
-  html:not([data-hero="b"]) .hm__copy { grid-area: copy; align-self: start; }
-  html:not([data-hero="b"]) .hm__title { font-size: clamp(3rem, 4.2vw, 4.5rem); }
-  html:not([data-hero="b"]) .hm__ctas { margin-top: 32px; }
-  html:not([data-hero="b"]) .hm__locs { grid-area: locs; align-self: end; margin-top: 32px; grid-template-columns: 1fr 1fr; }
-  html:not([data-hero="b"]) .hm__strip {
+  .hm__copy { grid-area: copy; align-self: start; }
+  .hm__title { font-size: clamp(3rem, 4.2vw, 4.5rem); }
+  .hm__ctas { margin-top: 32px; }
+  .hm__locs { grid-area: locs; align-self: end; margin-top: 32px; grid-template-columns: 1fr 1fr; }
+  .hm__strip {
     grid-area: photos;
     margin: 0; padding: 0;
     min-height: clamp(440px, 48svh, 540px);
@@ -150,35 +150,80 @@
     grid-template-rows: 3fr 2fr;
     gap: 12px;
   }
-  html:not([data-hero="b"]) .hm__strip li:first-child { grid-column: 1 / -1; }
-  html:not([data-hero="b"]) .hm__strip li:nth-child(n + 4) { display: none; }
+  .hm__strip li:first-child { grid-column: 1 / -1; }
+  .hm__strip li:nth-child(n + 4) { display: none; }
 }
 
-/* ===== ПК, вариант B: верх по центру, ниже лента от левой границы до правого края экрана ===== */
-@media (min-width: 1024px) {
-  html[data-hero="b"] .hm__copy { align-items: center; text-align: center; }
-  html[data-hero="b"] .hm__title { font-size: clamp(3rem, 5vw, 5.25rem); }
-  html[data-hero="b"] .hm__ctas { margin-top: 32px; }
-  html[data-hero="b"] .hm__strip {
-    min-height: 240px; max-height: 460px;
-    margin: 32px calc(-1 * var(--edge)) 0 0;
-    padding: 0 var(--gutter) 0 0;
-    scroll-padding-inline: 0;
-    grid-auto-columns: calc((100cqw - 2 * var(--edge) - 36px) / 4);
-    gap: 12px;
-  }
-  html[data-hero="b"] .hm__locs { margin-top: var(--hm-s3); gap: 12px; }
-}
 
-/* низкий экран ноутбука (например 1568×726): вариант B ужимается, чтобы локации оставались на первом экране */
-@media (min-width: 1024px) and (max-height: 820px) {
-  .hm { --hm-bottom: 32px; }
-  html[data-hero="b"] .hm__title { font-size: clamp(3rem, 4.4vw, 4.25rem); }
-  html[data-hero="b"] .hm__ctas { margin-top: 24px; }
-  html[data-hero="b"] .hm__strip { min-height: 180px; margin-top: 24px; }
-  html[data-hero="b"] .hm__locs { margin-top: var(--hm-s2); }
-}
 
 /* пока виден первый экран, плавающая «Написать нам» не перекрывает фото и локации (в шапке есть «Забронировать») */
 .msgr { transition: opacity 0.25s, translate 0.35s var(--ease-out), visibility 0.25s; }
 html.hero-in .msgr:not(.is-open) { opacity: 0; translate: 0 12px; visibility: hidden; }
+
+/* ===== Общие блоки главной и страниц поводов: одна структура «заголовок → содержимое» ===== */
+.blk { padding-block: 48px; background: var(--t-bg); color: var(--t-text); }
+.blk--tight { padding-block: 8px; }
+.blk__title { margin-bottom: 24px; font-size: clamp(1.625rem, 4vw + 0.5rem, 2.75rem); font-weight: 800; line-height: 1.05; }
+.blk__title .num { color: var(--t-muted); font-weight: 700; }
+.blk__more { margin-top: 24px; }
+@media (min-width: 768px) { .blk { padding-block: 72px; } }
+
+/* поводы: 2 колонки на телефоне, 3 на планшете, 5 на ПК */
+.ogrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 8px; }
+.ocard { display: flex; flex-direction: column; gap: 4px; color: var(--t-text); text-decoration: none; }
+.ocard img { width: 100%; aspect-ratio: 4 / 3; height: auto; object-fit: cover; border-radius: var(--t-radius-sm); background: var(--t-surface); margin-bottom: 4px; transition: opacity 0.2s; }
+.ocard:hover img { opacity: 0.85; }
+.ocard h3 { font-family: var(--font-text); font-size: 1rem; font-weight: 700; line-height: 1.25; }
+.ocard p { font-size: 0.8125rem; line-height: 1.4; color: var(--t-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+@media (min-width: 768px) { .ogrid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px 16px; } }
+@media (min-width: 1280px) { .ogrid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+
+/* карточки залов: как на маркетплейсе — фото, цена, название, факты */
+.zgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 8px; }
+.zcard { display: flex; flex-direction: column; gap: 2px; color: var(--t-text); text-decoration: none; }
+.zcard img { width: 100%; aspect-ratio: 4 / 3; height: auto; object-fit: cover; border-radius: var(--t-radius-sm); background: var(--t-surface); margin-bottom: 6px; transition: opacity 0.2s; }
+.zcard:hover img { opacity: 0.85; }
+.zcard__price { font-weight: 800; font-size: 1.0625rem; }
+.zcard__price small { font-weight: 500; font-size: 0.8125rem; color: var(--t-muted); }
+.zcard h3 { font-family: var(--font-text); font-size: 0.9375rem; font-weight: 600; line-height: 1.25; }
+.zcard__meta { display: flex; align-items: center; gap: 4px; font-size: 0.8125rem; color: var(--t-muted); }
+@media (min-width: 768px) { .zgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px 16px; } }
+@media (min-width: 1280px) { .zgrid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+/* ===== Страница повода ===== */
+.pv__hero { padding: calc(var(--hdr-h) + 16px) 0 24px; background: var(--t-bg); color: var(--t-text); }
+.pv__hero-in { display: grid; gap: 24px; }
+.crumbs { display: flex; gap: 8px; font-size: 0.8125rem; color: var(--t-muted); }
+.crumbs a { color: inherit; text-decoration: none; }
+.crumbs a:hover { color: var(--t-text); }
+.pv__copy { display: flex; flex-direction: column; }
+.pv__title { font-size: clamp(2rem, 6vw + 0.5rem, 4rem); font-weight: 900; line-height: 1; }
+.pv__line { margin-top: 12px; font-size: clamp(1.0625rem, 0.95rem + 0.45vw, 1.25rem); color: var(--t-muted); }
+.pv__cover { width: 100%; aspect-ratio: 3 / 2; height: auto; object-fit: cover; border-radius: var(--t-radius); background: var(--t-surface); }
+@media (min-width: 1024px) {
+  .pv__hero { padding-top: calc(var(--hdr-h) + 48px); padding-bottom: 48px; }
+  .pv__hero-in { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "crumbs crumbs" "copy cover"; align-items: center; column-gap: 64px; }
+  .crumbs { grid-area: crumbs; }
+  .pv__copy { grid-area: copy; }
+  .pv__cover { grid-area: cover; }
+}
+.pv__promo { display: flex; align-items: center; gap: 16px; padding: 16px; border-radius: var(--t-radius); background: var(--t-surface); }
+.pv__promo b { flex: none; font-family: var(--font-display); font-size: 1.75rem; color: var(--t-accent); }
+.pv__promo h2 { font-family: var(--font-text); font-size: 1rem; font-weight: 700; }
+.pv__promo p { font-size: 0.875rem; color: var(--t-muted); }
+.pv__inc { display: flex; flex-wrap: wrap; gap: 8px; }
+.pv__inc li { padding: 8px 14px; border-radius: 999px; background: var(--t-surface); font-size: 0.875rem; font-weight: 600; }
+.pv__note { margin-top: 12px; font-size: 0.875rem; color: var(--t-muted); }
+.pv__svc { display: grid; gap: 8px; margin-top: 24px; }
+.pv__svc li { padding: 16px; border-radius: var(--t-radius-sm); background: var(--t-surface); }
+.pv__svc h3 { font-family: var(--font-text); font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+.pv__svc p { font-size: 0.875rem; color: var(--t-muted); }
+@media (min-width: 768px) { .pv__svc { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
+.pv__todo { padding: 16px; border: 1px dashed var(--t-line-strong); border-radius: var(--t-radius-sm); color: var(--t-muted); }
+.pv__faq { display: grid; gap: 8px; max-width: 860px; }
+.pv__faq details { border-radius: var(--t-radius-sm); background: var(--t-surface); }
+.pv__faq summary { padding: 16px; font-weight: 700; cursor: pointer; }
+.pv__faq details p { padding: 0 16px 16px; color: var(--t-muted); }
+
+/* на внутренних страницах падающих букв в подвале нет — убираем пустую сцену */
+body:has(.pv) .ft__stage { display: none; }
