@@ -7,7 +7,7 @@ import RoomCatalog from "../components/RoomCatalog.astro";
 import Why from "../components/sections/Why.astro";
 import Occasions from "../components/home/Occasions.astro";
 import Services from "../components/sections/Services.astro";
-import Promos from "../components/sections/Promos.astro";
+import PromoCards from "../components/home/PromoCards.astro";
 import Reviews from "../components/sections/Reviews.astro";
 import Booking from "../components/sections/Booking.astro";
 import Faq from "../components/sections/Faq.astro";
@@ -30,9 +30,9 @@ import "../styles/home.css";
     <HeroMain />
     <RoomCatalog variant="b" />
     <Occasions />
+    <PromoCards />
     <Why />
     <Services />
-    <Promos />
     <Reviews />
     <Booking />
     <Faq />
@@ -45,7 +45,7 @@ import "../styles/home.css";
 
 <script>
   import { initSmoothScroll } from "../scripts/motion";
-  import { initReveals, initClock, initServices, initCoupons, initFaq } from "../scripts/sections";
+  import { initReveals, initClock, initServices, initFaq } from "../scripts/sections";
   import { initBooking } from "../scripts/booking";
   initSmoothScroll();
   const idle = (fn: () => void) => ("requestIdleCallback" in window ? requestIdleCallback(fn, { timeout: 2000 }) : setTimeout(fn, 800));
@@ -55,7 +55,6 @@ import "../styles/home.css";
     initReveals();
     initClock();
     initServices();
-    initCoupons();
     initFaq();
     initBooking(document.querySelector<HTMLElement>("[data-booking]")!);
   };

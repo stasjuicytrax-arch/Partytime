@@ -227,3 +227,19 @@ html.hero-in .msgr:not(.is-open) { opacity: 0; translate: 0 12px; visibility: hi
 
 /* на внутренних страницах падающих букв в подвале нет — убираем пустую сцену */
 body:has(.pv) .ft__stage { display: none; }
+
+/* ===== Акции: карточки и страница ===== */
+.pgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.pcard {
+  display: flex; flex-direction: column; gap: 4px; height: 100%;
+  padding: 16px; border-radius: var(--t-radius); background: var(--t-surface);
+  color: var(--t-text); text-decoration: none; transition: background-color 0.2s;
+}
+.pcard:hover { background: var(--t-surface-2); }
+.pcard__big { margin-bottom: 8px; font-family: var(--font-display); font-size: 1.75rem; line-height: 1; color: var(--t-accent); }
+.pcard h3 { font-family: var(--font-text); font-size: 1rem; font-weight: 700; line-height: 1.25; }
+.pcard p { font-size: 0.8125rem; line-height: 1.4; color: var(--t-muted); }
+@media (min-width: 768px) { .pgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
+@media (min-width: 1280px) { .pgrid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); } }
+.pv__big { margin-bottom: 16px; font-family: var(--font-display); font-size: clamp(3rem, 10vw, 6rem); line-height: 1; color: var(--t-accent); }
+@media (min-width: 1024px) { .pv__hero-in--promo { grid-template-areas: "crumbs crumbs" "copy copy"; } }

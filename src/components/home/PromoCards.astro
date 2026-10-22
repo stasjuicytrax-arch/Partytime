@@ -1,0 +1,29 @@
+---
+// Акции: короткая карточка-ссылка на страницу акции. На главной и внизу страниц акций.
+import { PROMO_PAGES } from "../../lib/promos";
+
+interface Props {
+  id?: string;
+  title?: string;
+  exclude?: string;
+}
+const { id = "promos", title = "Акции", exclude } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const list = PROMO_PAGES.filter((p) => p.slug !== exclude);
+---
+<section class="blk" id={id} aria-labelledby={`${id}-title`}>
+  <div class="container">
+    <h2 class="blk__title" id={`${id}-title`}>{title}</h2>
+    <ul class="pgrid">
+      {list.map((p) => (
+        <li>
+          <a class="pcard" href={`${base}/akcii/${p.slug}/`}>
+            <b class="pcard__big num" aria-hidden="true">{p.big}</b>
+            <h3>{p.title}</h3>
+            <p>{p.text}</p>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
