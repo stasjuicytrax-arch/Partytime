@@ -1,83 +1,184 @@
 /* Главная, тёмная тема. Цвета — только var(--t-*) из theme-dark.css */
 
-/* ===== Первый экран ===== */
-.hm { padding-top: 84px; padding-bottom: 8px; background: var(--t-bg); color: var(--t-text); }
-.hm__copy { display: grid; gap: 12px; }
+/* ===== Шапка: воздух вокруг логотипа (общая высота — --hdr-h) ===== */
+.vb { --hdr-h: 80px; }
+.vb .hdr--b .hdr__bar { min-height: var(--hdr-h); padding-block: 10px; }
+@media (min-width: 768px) {
+  .vb { --hdr-h: 104px; }
+  .vb .hdr--b .hdr__bar { padding-block: 14px; }
+}
+
+/* ===== Первый экран =====
+   Ритм по шкале 8 px: связанное ближе, несвязанное дальше */
+.hm {
+  --hm-s1: 8px;   /* H1 → подзаголовок, плитки между собой */
+  --hm-s2: 16px;  /* подзаголовок → строка про залы, фото → локации */
+  --hm-s3: 24px;  /* текст → кнопки, кнопки → фото */
+  --hm-s4: 32px;  /* шапка → H1 на телефоне */
+  --hm-top: var(--hm-s4);
+  --hm-bottom: var(--hm-s3);
+  /* левая граница сетки — та же, что у .container в шапке и секциях */
+  --edge: max(var(--gutter), calc((100cqw - var(--container)) / 2 + var(--gutter)));
+  container-type: inline-size;
+  display: flex;
+  min-height: 100svh;
+  background: var(--t-bg);
+  color: var(--t-text);
+}
+.hm__grid {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: calc(var(--hdr-h) + var(--hm-top)) var(--edge) var(--hm-bottom);
+}
+
+.hm__copy { display: flex; flex-direction: column; }
 .hm__title {
-  font-size: clamp(2rem, 9vw, 4.5rem);
+  font-size: clamp(2.25rem, 7.5vw + 0.5rem, 5.5rem);
   font-weight: 900;
   line-height: 0.98;
   letter-spacing: -0.01em;
 }
 .hm__sub {
   display: block;
-  margin-top: 10px;
+  margin-top: var(--hm-s1);
   font-family: var(--font-text);
-  font-size: clamp(1rem, 4.2vw, 1.375rem);
+  font-size: clamp(1.0625rem, 0.95rem + 0.45vw, 1.25rem);
   font-weight: 500;
-  line-height: 1.3;
+  line-height: 1.35;
   letter-spacing: 0;
   color: var(--t-muted);
   text-wrap: balance;
 }
-.hm__lead { font-size: 0.9375rem; color: var(--t-muted); }
-.hm__ctas { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
+.hm__lead { margin-top: var(--hm-s2); font-size: 1rem; color: var(--t-muted); }
+
+.hm__ctas { display: grid; grid-template-columns: 1fr 1fr; gap: var(--hm-s1); margin-top: var(--hm-s3); }
 .hm__btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  min-height: 52px; padding: 0 16px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 56px; padding: 0 20px;
   border-radius: var(--t-radius-sm);
   border: 1px solid var(--t-line-strong);
   color: var(--t-text);
-  font-weight: 700; font-size: 1rem; text-decoration: none;
-  transition: background-color 0.2s, border-color 0.2s;
+  font-weight: 700; font-size: 1rem; text-decoration: none; white-space: nowrap;
+  transition: border-color 0.2s, filter 0.2s;
 }
 .hm__btn:hover { border-color: var(--t-text); }
 .hm__btn--main { background: var(--t-accent); border-color: var(--t-accent); color: var(--t-on-accent); }
 .hm__btn--main:hover { border-color: var(--t-accent); filter: brightness(1.06); }
 
-/* лента фото: свайп пальцем, на ПК — колесо/тачпад */
+/* лента фото: свайп, следующая карточка подглядывает справа; растягивается на свободную высоту экрана */
 .hm__strip {
-  display: grid; grid-auto-flow: column; grid-auto-columns: 72%;
-  gap: 8px; margin-top: 16px;
-  padding-inline: var(--gutter); scroll-padding-inline: var(--gutter);
+  flex: 1 1 0;
+  min-height: 200px;
+  max-height: 380px;
+  display: grid; grid-auto-flow: column; grid-auto-columns: 74%;
+  gap: var(--hm-s1);
+  margin: var(--hm-s3) calc(-1 * var(--edge)) 0;
+  padding-inline: var(--edge); scroll-padding-inline: var(--edge);
   overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
   scrollbar-width: none;
 }
 .hm__strip::-webkit-scrollbar { display: none; }
-.hm__strip li { scroll-snap-align: start; }
+.hm__strip li { scroll-snap-align: start; min-height: 0; }
 .hm__photo {
-  position: relative; display: block; aspect-ratio: 4 / 3;
+  position: relative; display: block; height: 100%;
   border-radius: var(--t-radius); overflow: hidden; background: var(--t-surface);
   color: var(--t-text); text-decoration: none;
 }
-.hm__photo img { width: 100%; height: 100%; object-fit: cover; }
+/* фото не влияют на высоту сетки: размер задаёт карточка */
+.hm__photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .hm__cap {
-  position: absolute; inset: auto 0 0; padding: 28px 12px 10px;
+  position: absolute; inset: auto 0 0; padding: 32px 16px 12px;
   background: linear-gradient(transparent, var(--t-photo-shade));
   font-weight: 700; font-size: 0.9375rem; line-height: 1.2;
 }
-.hm__cap small { display: block; font-weight: 500; font-size: 0.75rem; color: var(--t-muted); }
+.hm__cap small { display: block; margin-top: 2px; font-weight: 500; font-size: 0.75rem; color: var(--t-muted); }
 
 /* локации — быстрый путь в каталог */
-.hm__locs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.hm__locs { display: grid; grid-template-columns: 1fr 1fr; gap: var(--hm-s1); margin-top: var(--hm-s2); }
 .hm__locs a {
-  display: flex; flex-direction: column; justify-content: center;
-  min-height: 52px; padding: 6px 12px;
+  display: flex; flex-direction: column; justify-content: center; gap: 2px;
+  min-height: 64px; padding: 12px 16px;
   border-radius: var(--t-radius-sm); background: var(--t-surface);
-  color: var(--t-text); text-decoration: none; font-weight: 700; font-size: 0.9375rem; line-height: 1.2;
+  color: var(--t-text); text-decoration: none; font-weight: 700; font-size: 1rem; line-height: 1.2;
   transition: background-color 0.2s;
 }
 .hm__locs a:hover { background: var(--t-surface-2); }
-.hm__locs small { font-weight: 500; font-size: 0.75rem; color: var(--t-muted); }
+.hm__locs small { font-weight: 500; font-size: 0.8125rem; color: var(--t-muted); }
 
+/* телефон: экран за вычетом нижней панели (Telegram / VK / Позвонить), запас под неё уже есть у body */
+@media (max-width: 767px) {
+  .hm { min-height: calc(100svh - var(--mbar-h)); }
+  .hm__grid { padding-bottom: calc(var(--hm-s3) + var(--hm-s1)); }
+}
+@media (max-width: 767px) and (max-height: 700px) {
+  .hm__strip { min-height: 150px; }
+}
+
+/* ===== ПК: общее ===== */
 @media (min-width: 768px) {
-  .hm { padding-top: 120px; }
-  .hm__ctas { display: flex; flex-wrap: wrap; }
+  .hm { --hm-top: 64px; --hm-bottom: 48px; }
+  .hm__ctas { display: flex; gap: 12px; }
   .hm__btn { padding: 0 28px; }
-  .hm__strip { grid-auto-columns: calc((100% - 2 * var(--gutter) - 16px) / 3); }
+  .hm__btn--main { padding: 0 32px; font-size: 1.0625rem; }
   .hm__locs { grid-template-columns: repeat(4, 1fr); }
-  .hm__copy > * { max-width: 900px; }
 }
-@media (min-width: 1440px) {
-  .hm__strip { grid-auto-columns: calc((min(100vw, var(--container)) - 2 * var(--gutter) - 16px) / 3); padding-inline: max(var(--gutter), calc((100vw - var(--container)) / 2 + var(--gutter))); }
+
+/* ===== ПК, вариант A: две колонки, справа мозаика (одно большое фото + два малых) ===== */
+@media (min-width: 1024px) {
+  html:not([data-hero="b"]) .hm__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    grid-template-areas: "copy photos" "locs photos";
+    grid-template-rows: auto auto;
+    align-content: center;
+    column-gap: clamp(32px, 4vw, 72px);
+  }
+  html:not([data-hero="b"]) .hm__copy { grid-area: copy; align-self: start; }
+  html:not([data-hero="b"]) .hm__title { font-size: clamp(3rem, 4.2vw, 4.5rem); }
+  html:not([data-hero="b"]) .hm__ctas { margin-top: 32px; }
+  html:not([data-hero="b"]) .hm__locs { grid-area: locs; align-self: end; margin-top: 32px; grid-template-columns: 1fr 1fr; }
+  html:not([data-hero="b"]) .hm__strip {
+    grid-area: photos;
+    margin: 0; padding: 0;
+    min-height: clamp(440px, 48svh, 540px);
+    max-height: none;
+    overflow: visible;
+    grid-auto-flow: row;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 3fr 2fr;
+    gap: 12px;
+  }
+  html:not([data-hero="b"]) .hm__strip li:first-child { grid-column: 1 / -1; }
+  html:not([data-hero="b"]) .hm__strip li:nth-child(n + 4) { display: none; }
 }
+
+/* ===== ПК, вариант B: верх по центру, ниже лента от левой границы до правого края экрана ===== */
+@media (min-width: 1024px) {
+  html[data-hero="b"] .hm__copy { align-items: center; text-align: center; }
+  html[data-hero="b"] .hm__title { font-size: clamp(3rem, 5vw, 5.25rem); }
+  html[data-hero="b"] .hm__ctas { margin-top: 32px; }
+  html[data-hero="b"] .hm__strip {
+    min-height: 240px; max-height: 460px;
+    margin: 32px calc(-1 * var(--edge)) 0 0;
+    padding: 0 var(--gutter) 0 0;
+    scroll-padding-inline: 0;
+    grid-auto-columns: calc((100cqw - 2 * var(--edge) - 36px) / 4);
+    gap: 12px;
+  }
+  html[data-hero="b"] .hm__locs { margin-top: var(--hm-s3); gap: 12px; }
+}
+
+/* низкий экран ноутбука (например 1568×726): вариант B ужимается, чтобы локации оставались на первом экране */
+@media (min-width: 1024px) and (max-height: 820px) {
+  .hm { --hm-bottom: 32px; }
+  html[data-hero="b"] .hm__title { font-size: clamp(3rem, 4.4vw, 4.25rem); }
+  html[data-hero="b"] .hm__ctas { margin-top: 24px; }
+  html[data-hero="b"] .hm__strip { min-height: 180px; margin-top: 24px; }
+  html[data-hero="b"] .hm__locs { margin-top: var(--hm-s2); }
+}
+
+/* пока виден первый экран, плавающая «Написать нам» не перекрывает фото и локации (в шапке есть «Забронировать») */
+.msgr { transition: opacity 0.25s, translate 0.35s var(--ease-out), visibility 0.25s; }
+html.hero-in .msgr:not(.is-open) { opacity: 0; translate: 0 12px; visibility: hidden; }

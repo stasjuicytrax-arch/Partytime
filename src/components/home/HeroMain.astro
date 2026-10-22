@@ -1,59 +1,87 @@
 ---
-// Первый экран главной: лента из 5 фото со свайпом, H1 и два пути — «Выбрать зал» и «Выбрать повод».
-// Под кнопками — локации: тап сразу открывает каталог на нужной локации (быстрый путь «локация → зал → бронь»).
+// Первый экран главной: H1, два пути («Выбрать зал» и «Выбрать повод»), фото и плитки локаций
+// (быстрый путь «локация → зал → бронь»). На ПК две композиции для выбора заказчиком: ?hero=a (по умолчанию) и ?hero=b.
+// A — две колонки, справа мозаика из трёх первых фото; B — текст по центру, ниже лента фото уходит за правый край.
 import Icon from "../Icon.astro";
 import { rooms, locations, networkRooms, minPrice, rub } from "../../lib/rooms";
 
-const picks = ["brooklyn", "maiami-bich", "odnazhdy-v-gollivude", "gavaji", "disco"]
-  .map((slug) => rooms.find((r) => r.slug === slug))
-  .filter((r): r is (typeof rooms)[number] => !!r);
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const party = (name: string) => ({
+  src: `${base}/img/hero/${name}-960.webp`,
+  srcset: `${base}/img/hero/${name}-640.webp 640w, ${base}/img/hero/${name}-960.webp 960w, ${base}/img/hero/${name}-1440.webp 1440w`,
+});
+const room = (slug: string) => rooms.find((r) => r.slug === slug)!;
+
+// кадры с гостями из Photo/ (23.png, 42.png) чередуются с залами
+type Shot = { src: string; srcset: string; alt: string; href?: string; title?: string; place?: string };
+const shots: Shot[] = [
+  { ...party("party-toast"), alt: "Компания поднимает бокалы за столом в тематическом зале" },
+  ...["brooklyn", "maiami-bich"].map(room).map((r) => ({ ...r.images[0], alt: `Зал «${r.title}», ${r.locName}`, href: `#room-${r.slug}`, title: r.title, place: r.locName })),
+  { ...party("party-group"), alt: "Большая компания празднует в зале с комиксами на стене" },
+  ...["odnazhdy-v-gollivude", "gavaji", "disco"].map(room).map((r) => ({ ...r.images[0], alt: `Зал «${r.title}», ${r.locName}`, href: `#room-${r.slug}`, title: r.title, place: r.locName })),
+];
 const locs = locations.filter((l) => l.active);
 const countIn = (id: string) => rooms.filter((r) => r.loc === id).length;
 ---
+<script is:inline>
+  document.documentElement.dataset.hero = new URLSearchParams(location.search).get("hero") === "b" ? "b" : "a";
+</script>
 <section class="hm" aria-labelledby="hero-title">
-  <div class="container hm__copy">
-    <h1 id="hero-title" class="hm__title">
-      Время веселиться<span class="hm__sub">залы с&nbsp;караоке для вашей компании в&nbsp;Петербурге</span>
-    </h1>
-    <p class="hm__lead num">{networkRooms} тематических залов, от&nbsp;{rub(minPrice)} в&nbsp;час. Весь зал только ваш.</p>
-    <div class="hm__ctas">
-      <a class="hm__btn hm__btn--main" href="#rooms">Выбрать зал <Icon name="arrow" size={18} /></a>
-      <a class="hm__btn" href="#formats">Выбрать повод</a>
+  <div class="hm__grid">
+    <div class="hm__copy">
+      <h1 id="hero-title" class="hm__title">
+        Время веселиться<span class="hm__sub">залы с&nbsp;караоке для вашей компании в&nbsp;Петербурге</span>
+      </h1>
+      <p class="hm__lead num">{networkRooms} тематических залов, от&nbsp;{rub(minPrice)} в&nbsp;час. Весь зал только ваш.</p>
+      <div class="hm__ctas">
+        <a class="hm__btn hm__btn--main" href="#rooms">Выбрать зал <Icon name="arrow" size={20} /></a>
+        <a class="hm__btn" href="#formats">Выбрать повод</a>
+      </div>
     </div>
-  </div>
 
-  <ul class="hm__strip" aria-label="Залы — листайте">
-    {picks.map((r, i) => (
-      <li>
-        <a class="hm__photo" href={`#room-${r.slug}`}>
+    <ul class="hm__strip" aria-label="Фото залов — листайте">
+      {shots.map((s, i) => {
+        const img = (
           <img
-            src={r.images[0].src}
-            srcset={r.images[0].srcset}
-            sizes="(max-width: 767px) 78vw, 30vw"
-            alt={`Зал «${r.title}», ${r.locName}`}
+            src={s.src}
+            srcset={s.srcset}
+            sizes="(max-width: 767px) 78vw, 40vw"
+            alt={s.alt}
             width="960"
             height="640"
-            loading={i < 2 ? "eager" : "lazy"}
+            loading={i < 3 ? "eager" : "lazy"}
             fetchpriority={i === 0 ? "high" : undefined}
             decoding="async"
           />
-          <span class="hm__cap">{r.title}<small>{r.locName}</small></span>
-        </a>
-      </li>
-    ))}
-  </ul>
+        );
+        return (
+          <li>
+            {s.href ? (
+              <a class="hm__photo" href={s.href}>{img}<span class="hm__cap">{s.title}<small>{s.place}</small></span></a>
+            ) : (
+              <div class="hm__photo">{img}</div>
+            )}
+          </li>
+        );
+      })}
+    </ul>
 
-  <nav class="container hm__locs" aria-label="Залы по локациям">
-    {locs.map((l) => (
-      <a href="#rooms" data-goloc={l.id}>
-        <span>{l.name}</span><small class="num">{countIn(l.id)} залов</small>
-      </a>
-    ))}
-  </nav>
+    <nav class="hm__locs" aria-label="Залы по локациям">
+      {locs.map((l) => (
+        <a href="#rooms" data-goloc={l.id}>
+          <span>{l.name}</span><small class="num">{countIn(l.id)} залов</small>
+        </a>
+      ))}
+    </nav>
+  </div>
 </section>
 
 <script>
-  // тап по локации: включаем её вкладку в каталоге (логика каталога та же — обычный клик по кнопке) и едем к залам
+  // пока первый экран в кадре — html.hero-in (прячет плавающую кнопку мессенджеров)
+  const hero = document.querySelector<HTMLElement>(".hm");
+  if (hero) new IntersectionObserver(([e]) => document.documentElement.classList.toggle("hero-in", e.intersectionRatio > 0.35), { threshold: [0, 0.35, 1] }).observe(hero);
+
+  // тап по локации: включаем её вкладку в каталоге (обычный клик по кнопке каталога) и едем к залам
   document.querySelectorAll<HTMLAnchorElement>("[data-goloc]").forEach((a) =>
     a.addEventListener("click", () => {
       document.querySelector<HTMLButtonElement>(`#rooms .loc[data-loc="${a.dataset.goloc}"]`)?.click();
