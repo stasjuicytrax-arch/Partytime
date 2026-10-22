@@ -1,0 +1,137 @@
+{
+  "_note": "Номера фото залов (01, 02… как в public/img/rooms/<slug>/), которые сайт не показывает: 3D-рендеры на белом фоне. Файлы не удалены.",
+  "bashnya-starka": [
+    6,
+    7
+  ],
+  "betmen": [
+    6,
+    7
+  ],
+  "bezumnoe-chaepitie": [
+    7,
+    8
+  ],
+  "brooklyn": [
+    7,
+    8
+  ],
+  "buhta-majyami": [
+    7,
+    8
+  ],
+  "cyberpunk": [
+    6,
+    7
+  ],
+  "dikij-zapad": [
+    5,
+    6
+  ],
+  "disco": [
+    8,
+    9
+  ],
+  "disco-komendantskiy": [
+    7,
+    8
+  ],
+  "gavaji": [
+    6
+  ],
+  "k-marsu": [
+    6,
+    7
+  ],
+  "kluedo": [
+    6,
+    7
+  ],
+  "korabl-ilona-maska": [
+    5,
+    6
+  ],
+  "maiami-bich": [
+    8,
+    9
+  ],
+  "mezhprostranstvennaya_laboratoriya": [
+    5,
+    6
+  ],
+  "mikki-i-mini": [
+    6
+  ],
+  "mondrian": [
+    7,
+    8
+  ],
+  "multivselennaya": [
+    8,
+    9
+  ],
+  "nautilus": [
+    6,
+    7
+  ],
+  "nebesa": [
+    4,
+    5
+  ],
+  "obshchaya-gostinaya": [
+    6,
+    7
+  ],
+  "odnazhdy-v-gollivude": [
+    6,
+    7
+  ],
+  "party-hard": [
+    7,
+    8
+  ],
+  "pod-zvezdami": [
+    7,
+    8
+  ],
+  "popart": [
+    5,
+    6
+  ],
+  "premiya-oskar": [
+    9,
+    10
+  ],
+  "rock-n-roll": [
+    8,
+    9
+  ],
+  "skazochnii-les": [
+    7,
+    8
+  ],
+  "taverna-belogo-volka": [
+    6,
+    7
+  ],
+  "taverna-garcuyushchij-poni": [
+    7,
+    8
+  ],
+  "teatr": [
+    9,
+    10
+  ],
+  "twedes-cafe": [
+    7,
+    8
+  ],
+  "zazerkale": [
+    9,
+    10
+  ],
+  "zvezda-smerti": [
+    6,
+    7
+  ]
+}

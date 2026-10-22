@@ -1,4 +1,5 @@
 import data from "../../content/rooms.json";
+import hidden from "../../content/hidden-photos.json";
 
 export type GroupId = "2-4" | "6-8" | "8-10" | "15-20";
 export type LocId = "dumskaya" | "mayakovskaya" | "leninskiy" | "komendantskiy";
@@ -57,13 +58,18 @@ export const PROMO = "Пакетное предложение — скидка �
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
+// 3D-рендеры на белом фоне не показываем (content/hidden-photos.json): номера файлов при этом не сдвигаются
+const hiddenPhotos = hidden as unknown as Record<string, number[] | string>;
+
 function imagesFor(r: RawRoom): Photo[] {
-  return r.photos.map((_, i) => {
+  const skip = hiddenPhotos[r.slug];
+  return r.photos.flatMap((_, i) => {
+    if (Array.isArray(skip) && skip.includes(i + 1)) return [];
     const stem = `${BASE}/img/rooms/${r.slug}/${String(i + 1).padStart(2, "0")}`;
-    return {
+    return [{
       src: `${stem}-960.webp`,
       srcset: `${stem}-480.webp 480w, ${stem}-960.webp 960w, ${stem}-1600.webp 1600w`,
-    };
+    }];
   });
 }
 
