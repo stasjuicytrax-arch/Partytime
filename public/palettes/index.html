@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Цветовые схемы · Время веселиться</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap">
+<style>
+:root{--page:#1d1d20;--page-text:#f2f2f2;--page-muted:#a8a8b0;--card:#28282d;--line:#3a3a41}
+@media (prefers-color-scheme: light){:root{--page:#f1efeb;--page-text:#1b1b1d;--page-muted:#5d5d63;--card:#ffffff;--line:#d9d6cf}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--page-text);font-family:Inter,system-ui,sans-serif}
+header{max-width:1400px;margin:0 auto;padding:32px 16px 8px}
+h1{margin:0 0 8px;font-family:'Playfair Display',Georgia,serif;font-size:32px}
+header p{margin:0;color:var(--page-muted);max-width:640px;line-height:1.5}
+.filters{max-width:1400px;margin:0 auto;padding:16px 16px 0;display:flex;gap:8px;flex-wrap:wrap}
+.filters button{min-height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--page-text);font:inherit;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--page-text);color:var(--page)}
+main{max-width:1400px;margin:0 auto;padding:24px 16px 64px;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px}
+.scheme{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.scheme[hidden]{display:none}
+.scheme h2{margin:0;font-size:16px;font-weight:600}
+.scheme .tag{font-size:12px;color:var(--page-muted)}
+.phone{border-radius:14px;overflow:hidden;font-family:Inter,system-ui,sans-serif;border:1px solid var(--line)}
+.phone .bar{display:flex;justify-content:space-between;align-items:center;padding:12px 14px}
+.phone .logo{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:17px}
+.phone .body{padding:0 14px 16px;display:flex;flex-direction:column;gap:12px}
+.ph{border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.phone h3{margin:0;font-family:'Playfair Display',Georgia,serif;font-size:22px;line-height:1.15}
+.phone .usp{font-size:12px;line-height:1.5}
+.phone .btns{display:flex;gap:8px}
+.phone .btns span{flex:1;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600}
+.phone .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.phone .ev{border-radius:10px;overflow:hidden}
+.phone .ev i{display:block;height:34px}
+.phone .ev b{display:block;padding:8px 10px;font-size:12px}
+.phone .promo{border-radius:12px;padding:14px}
+.phone .promo small{font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+.phone .promo div{font-family:'Playfair Display',Georgia,serif;font-size:17px;font-weight:600;margin-top:4px}
+.sw{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.sw div{min-width:0}
+.sw i{display:block;height:34px;border-radius:8px;border:1px solid var(--line)}
+.sw span{display:block;font-size:10px;margin-top:4px;color:var(--page-muted);line-height:1.2}
+.sw code{display:block;font-size:10px;line-height:1.2;font-family:ui-monospace,Menlo,monospace}
+.copy{min-height:44px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--page-text);font:inherit;font-size:13px;cursor:pointer}
+</style>
+</head>
+<body>
+<header>
+<h1>Цветовые схемы</h1>
+<p>20 вариантов для сайта «Время веселиться». У каждой номер: достаточно написать «берём 3 и 14». Макет — главная на телефоне, фото и цены пока условные.</p>
+</header>
+<div class="filters" role="group" aria-label="Фильтр">
+<button type="button" data-f="all" aria-pressed="true">Все</button>
+<button type="button" data-f="dark" aria-pressed="false">Тёмные</button>
+<button type="button" data-f="light" aria-pressed="false">Светлые</button>
+<button type="button" data-f="bridge" aria-pressed="false">Мост к брендбуку</button>
+</div>
+<main id="root"></main>
+<script>
+// [номер, название, тип, фон, карточка, фото, текст, приглушённый, акцент, текст на акценте, второй]
+var S = [
+["01","Вино и золото (Масонка)","dark","#2A1017","#3A1822","#4A202D","#F5EBDD","#CDB9A6","#D4AF5F","#2A1017","#8E2F45"],
+["02","Бордо и шампань (Оскар)","dark","#3B0F1B","#4E1826","#632335","#F6EEE3","#D9C3B2","#E8D3A8","#3B0F1B","#B3414F"],
+["03","Бутылочное стекло и латунь","dark","#10261F","#183A2F","#22503F","#F1EBDD","#B9CBBE","#C9A45C","#10261F","#3F7A5F"],
+["04","Паб: орех и медь","dark","#241A14","#33261D","#44332A","#F2E6D6","#CBB8A2","#D08A55","#241A14","#4C5E43"],
+["05","Рим: беж и вино","light","#EBDFC9","#F6EEDD","#DDCDB0","#2B1A17","#6A5648","#7A1F32","#F6EEDD","#B8893E"],
+["06","Пыльная слива","dark bridge","#2A1E30","#3A2A42","#4A3755","#F3E8EE","#CDB8CB","#E39BB0","#2A1E30","#C7B26A"],
+["07","Пыльный фиолет и горчица","dark bridge","#221D3A","#2F2950","#3E3665","#F2EEF8","#C3BCDD","#D9A93B","#221D3A","#B96A8A"],
+["08","Изумруд и вино","dark","#0F2A24","#5A1B2C","#6E2638","#F3EBDD","#D6C3B3","#E3CFA0","#0F2A24","#1E5A49"],
+["09","Гостиная: шоколад и охра","dark","#2B1D17","#3B2820","#4D352B","#F4E7D4","#D0BBA3","#D4A24A","#2B1D17","#B4583F"],
+["10","Беж и глубокий зелёный","light","#E6DCC6","#F3ECDA","#D5C8AB","#17302A","#4F5F52","#1F4A3B","#F3ECDA","#8C2F39"],
+["11","Сливочный и терракота","light","#F6EBDD","#FFF8EE","#E8D2BC","#3A241C","#7A5C4D","#B4472B","#FFF8EE","#E3A857"],
+["12","Белый мрамор и изумруд","light","#F7F5F0","#FFFFFF","#E6E1D6","#14291F","#5B6A60","#0E5C45","#FFFFFF","#C6A24E"],
+["13","Чернильный синий и латунь","dark","#12203A","#1B2D4F","#263B63","#F2EEE4","#BCC6DA","#D6AE5E","#12203A","#8A4B63"],
+["14","Морская волна и коралл","dark","#0F3138","#17444C","#215660","#F3EEE3","#B6D0CF","#F08A7A","#0F3138","#E8C170"],
+["15","Шалфей и бордо","light","#E4E9DA","#F3F6EC","#CBD5BC","#26301F","#55634A","#7B1E3A","#F3F6EC","#D9A441"],
+["16","Тёплый графит и коралл","dark","#2E2B2A","#3B3836","#4A4644","#F4EFE8","#C9C1B8","#EF7B63","#2E2B2A","#D9B26F"],
+["17","Пудровая роза и бордо","light","#F4E1DE","#FCF1EE","#E6C3BF","#3C1520","#7C4A53","#8A1F3D","#FCF1EE","#C98B5A"],
+["18","Баклажан и шафран","dark","#2B1636","#3C2149","#502D5E","#F7EEF5","#D0BCD6","#F2B635","#2B1636","#D4506B"],
+["19","Горчица и вино","light","#E4B64B","#F2D28A","#D19E2F","#3A1020","#5A2F2F","#6B1229","#F8E9C6","#2F5D50"],
+["20","Дымчатый голубой и слива","light","#E3E9EE","#F3F6F8","#C9D4DD","#1F1B33","#55546B","#4A2A6B","#F3F6F8","#D9825B"]
+];
+var LABELS = ["Фон","Карточка","Фото","Текст","Акцент","Второй"];
+var root = document.getElementById('root');
+S.forEach(function(s){
+  var c = {bg:s[3],sf:s[4],s2:s[5],tx:s[6],mu:s[7],ac:s[8],on:s[9],a2:s[10]};
+  var el = document.createElement('section');
+  el.className = 'scheme';
+  el.setAttribute('data-type', s[2]);
+  var evs = ['День рождения','Новый год','8 Марта','Детский праздник'].map(function(n){
+    return '<div class="ev" style="background:'+c.sf+';color:'+c.tx+'"><i style="background:'+c.a2+'"></i><b>'+n+'</b></div>';
+  }).join('');
+  var sw = [c.bg,c.sf,c.s2,c.tx,c.ac,c.a2].map(function(h,i){
+    return '<div><i style="background:'+h+'"></i><span>'+LABELS[i]+'</span><code>'+h+'</code></div>';
+  }).join('');
+  var kind = s[2].indexOf('light')===0 ? 'светлая' : 'тёмная';
+  if (s[2].indexOf('bridge')>-1) kind += ' · мост к брендбуку';
+  el.innerHTML =
+    '<div><h2>'+s[0]+' · '+s[1]+'</h2><div class="tag">'+kind+'</div></div>'+
+    '<div class="phone" style="background:'+c.bg+';color:'+c.tx+'">'+
+      '<div class="bar"><span class="logo">Время веселиться</span><span aria-hidden="true">☰</span></div>'+
+      '<div class="body">'+
+        '<div class="ph" style="height:110px;background:'+c.s2+';color:'+c.mu+';border:1px dashed '+c.mu+'">Фото зала</div>'+
+        '<h3>Отметьте праздник в зале, где всё своё</h3>'+
+        '<div class="usp" style="color:'+c.mu+'">Открыты каждый день · Честная цена без доплат · Своя кухня</div>'+
+        '<div class="btns"><span style="background:'+c.ac+';color:'+c.on+'">Выбрать зал</span><span style="border:1.5px solid '+c.ac+';color:'+c.ac+'">Выбрать повод</span></div>'+
+        '<div class="grid">'+evs+'</div>'+
+        '<div class="promo" style="background:'+c.ac+';color:'+c.on+'"><small>Акция</small><div>[Название акции]</div></div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="sw">'+sw+'</div>'+
+    '<button type="button" class="copy" data-copy="'+s[0]+' · '+s[1]+': '+[c.bg,c.sf,c.s2,c.tx,c.ac,c.a2].join(', ')+'">Скопировать цвета</button>';
+  root.appendChild(el);
+});
+document.querySelectorAll('.filters button').forEach(function(b){
+  b.addEventListener('click', function(){
+    document.querySelectorAll('.filters button').forEach(function(x){ x.setAttribute('aria-pressed', x===b ? 'true' : 'false'); });
+    var f = b.getAttribute('data-f');
+    document.querySelectorAll('.scheme').forEach(function(sc){
+      var t = sc.getAttribute('data-type');
+      sc.hidden = !(f==='all' || t.split(' ').indexOf(f)>-1);
+    });
+  });
+});
+document.addEventListener('click', function(e){
+  var b = e.target.closest('.copy');
+  if(!b) return;
+  var txt = b.getAttribute('data-copy');
+  var done = function(){ var o=b.textContent; b.textContent='Скопировано'; setTimeout(function(){ b.textContent=o; }, 1500); };
+  try { navigator.clipboard.writeText(txt).then(done, function(){}); } catch(err) {}
+});
+</script>
+</body>
+</html>
