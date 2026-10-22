@@ -39,7 +39,7 @@ const byLoc = locs.map((l) => ({ ...l, list: rooms.filter((r) => r.loc === l.id)
         <nav aria-labelledby={`more-${l.id}`}>
           <h3 class="more__sub" id={`more-${l.id}`}>Залы {locIn[l.id]}</h3>
           <ul class="more__list">
-            {l.list.map((r) => <li><a href={`${base}/#room-${r.slug}`}>{r.title}</a></li>)}
+            {l.list.map((r) => <li><a href={`${base}/zal/${r.slug}/`}>{r.title}</a></li>)}
           </ul>
         </nav>
       ))}

@@ -279,7 +279,9 @@ export function initCatalog(root: HTMLElement) {
   });
 
   /* ---------- модалка зала ---------- */
-  const dialog = root.querySelector<HTMLDialogElement>("[data-modal]")!;
+  const dialog = root.querySelector<HTMLDialogElement>("[data-modal]");
+  // на главной карточки — ссылки на страницы залов, окна нет
+  if (!dialog) return;
   const track = dialog.querySelector<HTMLElement>("[data-track]")!;
   const counter = dialog.querySelector<HTMLElement>("[data-counter]")!;
   const thumbs = dialog.querySelector<HTMLElement>("[data-thumbs]")!;

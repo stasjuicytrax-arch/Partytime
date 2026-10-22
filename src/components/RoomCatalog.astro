@@ -20,8 +20,11 @@ import { botUrl } from "../lib/bot";
 
 interface Props {
   variant: "a" | "b" | "c";
+  /** карточки ведут на страницы залов /zal/<slug> (без всплывающего окна) */
+  pages?: boolean;
 }
-const { variant } = Astro.props;
+const { variant, pages = false } = Astro.props;
+const zalBase = import.meta.env.BASE_URL.replace(/\/$/, "");
 // по умолчанию — все локации сразу
 const DEFAULT_LOC = "all";
 const countIn = (loc: string, g?: string) => rooms.filter((r) => (loc === "all" || r.loc === loc) && (!g || r.group === g)).length;
@@ -102,7 +105,7 @@ const sizes = "(max-width: 559px) 112vw, (max-width: 767px) 56vw, (max-width: 10
             hidden={DEFAULT_LOC === "all" ? i >= 6 : r.loc !== DEFAULT_LOC}
             style={`--g: ${groupById[r.group].color}; --tilt: ${[-1, 0.6, -0.4, 1, -0.8, 0.3][i % 6]}deg`}
           >
-            <a class="card__link" href={`#room-${r.slug}`}>
+            <a class="card__link" href={pages ? `${zalBase}/zal/${r.slug}/` : `#room-${r.slug}`}>
               <div class="card__media" data-count={r.images.length}>
                 {r.images.map((im, j) => (
                   <img
@@ -162,7 +165,7 @@ const sizes = "(max-width: 559px) 112vw, (max-width: 767px) 56vw, (max-width: 10
     </div>
   </div>
 
-  <dialog class={`rm rm--${variant}`} aria-labelledby="rm-title" data-modal data-lenis-prevent>
+  {!pages && (<dialog class={`rm rm--${variant}`} aria-labelledby="rm-title" data-modal data-lenis-prevent>
     <div class="rm__panel">
       <button type="button" class="rm__close" data-close aria-label="Закрыть">
         <Icon name="close" />
@@ -237,7 +240,7 @@ const sizes = "(max-width: 559px) 112vw, (max-width: 767px) 56vw, (max-width: 10
         </div>
       </div>
     </div>
-  </dialog>
+  </dialog>)}
 
   <script type="application/json" id="rooms-data" set:html={JSON.stringify(roomsClientData)} />
 </section>

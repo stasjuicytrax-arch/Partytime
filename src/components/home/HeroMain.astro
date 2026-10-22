@@ -15,9 +15,9 @@ const room = (slug: string) => rooms.find((r) => r.slug === slug)!;
 type Shot = { src: string; srcset: string; alt: string; href?: string; title?: string; place?: string };
 const shots: Shot[] = [
   { ...party("party-toast"), alt: "Компания поднимает бокалы за столом в тематическом зале" },
-  ...["brooklyn", "maiami-bich"].map(room).map((r) => ({ ...r.images[0], alt: `Зал «${r.title}», ${r.locName}`, href: `#room-${r.slug}`, title: r.title, place: r.locName })),
+  ...["brooklyn", "maiami-bich"].map(room).map((r) => ({ ...r.images[0], alt: `Зал «${r.title}», ${r.locName}`, href: `${base}/zal/${r.slug}/`, title: r.title, place: r.locName })),
   { ...party("party-group"), alt: "Большая компания празднует в зале с комиксами на стене" },
-  ...["odnazhdy-v-gollivude", "gavaji", "disco"].map(room).map((r) => ({ ...r.images[0], alt: `Зал «${r.title}», ${r.locName}`, href: `#room-${r.slug}`, title: r.title, place: r.locName })),
+  ...["odnazhdy-v-gollivude", "gavaji", "disco"].map(room).map((r) => ({ ...r.images[0], alt: `Зал «${r.title}», ${r.locName}`, href: `${base}/zal/${r.slug}/`, title: r.title, place: r.locName })),
 ];
 const locs = locations.filter((l) => l.active);
 const countIn = (id: string) => rooms.filter((r) => r.loc === id).length;

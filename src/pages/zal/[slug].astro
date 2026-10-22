@@ -1,0 +1,107 @@
+---
+// Страница зала /zal/<slug> — то же, что было во всплывающем окне каталога, но отдельным адресом:
+// фото (свайп), цена, вместимость, описание, что входит, бронь, телефон локации, похожие залы, соседние залы.
+// Названия и тексты залов — только из content/rooms.json (одно место для будущего переименования).
+import Base from "../../layouts/Base.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import Footer from "../../components/sections/Footer.astro";
+import Messengers from "../../components/Messengers.astro";
+import Icon from "../../components/Icon.astro";
+import RoomCards from "../../components/home/RoomCards.astro";
+import Occasions from "../../components/home/Occasions.astro";
+import { rooms, locations, INCLUDED, PROMO, rub, capacityLabel, groupById, tel, type Room } from "../../lib/rooms";
+import "../../styles/components.css";
+import "../../styles/b.css";
+import "../../styles/sections.css";
+import "../../styles/theme-dark.css";
+import "../../styles/home.css";
+
+export function getStaticPaths() {
+  return rooms.map((r, i) => ({ params: { slug: r.slug }, props: { r, i } }));
+}
+const { r, i } = Astro.props as { r: Room; i: number };
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const loc = locations.find((l) => l.id === r.loc)!;
+// похожие: та же вместимость, сначала своя локация
+const same = rooms.filter((x) => x.slug !== r.slug && x.group === r.group);
+const similar = [...same.filter((x) => x.loc === r.loc), ...same.filter((x) => x.loc !== r.loc)].slice(0, 4);
+const prev = rooms[(i - 1 + rooms.length) % rooms.length];
+const next = rooms[(i + 1) % rooms.length];
+const book = `${base}/?room=${r.slug}&loc=${r.loc}#booking`;
+---
+<Base
+  title={`Зал «${r.title}» ${r.locName} — караоке-лофт, Время веселиться`}
+  description={`Зал «${r.title}»: ${capacityLabel(r)}${r.area ? `, ${r.area} м²` : ""}, от ${rub(r.price)} в час. ${loc.address}. ${r.tagline}`}
+  theme="#151515"
+  favicon="blue"
+  bodyClass="vb"
+  preloadImage={r.images[0].src}
+>
+  <SiteHeader variant="b" home={false} />
+  <main id="main" tabindex="-1" class="pv zl">
+    <section class="pv__hero" aria-labelledby="zl-title">
+      <div class="container zl__in">
+        <nav class="crumbs" aria-label="Навигация">
+          <a href={`${base}/`}>Главная</a><span aria-hidden="true">/</span><a href={`${base}/#rooms`}>Залы</a><span aria-hidden="true">/</span><span>{r.locName}</span>
+        </nav>
+
+        <ul class="zl__gallery" aria-label={`Фото зала «${r.title}» — листайте`}>
+          {r.images.map((im, j) => (
+            <li>
+              <img
+                src={im.src}
+                srcset={im.srcset}
+                sizes="(max-width: 767px) 92vw, (max-width: 1279px) 60vw, 820px"
+                alt={j === 0 ? `Зал «${r.title}», ${r.locName}` : `Зал «${r.title}», фото ${j + 1}`}
+                width="960"
+                height="640"
+                loading={j === 0 ? "eager" : "lazy"}
+                fetchpriority={j === 0 ? "high" : undefined}
+                decoding="async"
+              />
+            </li>
+          ))}
+        </ul>
+
+        <div class="zl__info">
+          <p class="zl__loc"><Icon name="pin" size={16} />{r.locName}, {loc.address}</p>
+          <h1 id="zl-title" class="pv__title">{r.title}</h1>
+          <p class="pv__line">{r.tagline}</p>
+          <ul class="zl__facts">
+            <li><Icon name="users" size={18} />{capacityLabel(r)}</li>
+            {r.area && <li class="num"><Icon name="area" size={18} />{r.area}&nbsp;м²</li>}
+            <li class="num"><b>от&nbsp;{rub(r.price)}</b>&nbsp;/час</li>
+          </ul>
+          <div class="hm__ctas">
+            <a class="hm__btn hm__btn--main" href={book}>Забронировать <Icon name="arrow" size={20} /></a>
+            <a class="hm__btn num" href={tel(loc.phone)}><Icon name="phone" size={18} />Позвонить</a>
+          </div>
+          <p class="zl__text">{r.text}</p>
+          <h2 class="zl__h">Что входит в аренду</h2>
+          <ul class="pv__inc">{INCLUDED.map((x) => <li>{x}</li>)}</ul>
+          <p class="pv__note">{PROMO}</p>
+        </div>
+      </div>
+    </section>
+
+    {similar.length > 0 && (
+      <section class="blk" aria-labelledby="sim-title">
+        <div class="container">
+          <h2 class="blk__title" id="sim-title">Похожие залы <span class="num">{groupById[r.group].label} гостей</span></h2>
+          <RoomCards list={similar} />
+        </div>
+      </section>
+    )}
+
+    <nav class="blk blk--tight" aria-label="Соседние залы">
+      <div class="container zl__pager">
+        <a class="hm__btn" href={`${base}/zal/${prev.slug}/`}>← {prev.title}</a>
+        <a class="hm__btn" href={`${base}/zal/${next.slug}/`}>{next.title} →</a>
+      </div>
+    </nav>
+
+    <Occasions id="povody" title="Поводы" />
+  </main>
+  <Footer />
+  <Messengers />
+</Base>

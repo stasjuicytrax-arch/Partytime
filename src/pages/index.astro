@@ -30,7 +30,7 @@ import "../styles/home.css";
   <SiteHeader variant="b" />
   <main id="main" tabindex="-1">
     <HeroMain />
-    <RoomCatalog variant="b" />
+    <RoomCatalog variant="b" pages />
     <Occasions />
     <PromoCards />
     <VideoBlock />
@@ -48,6 +48,9 @@ import "../styles/home.css";
 </Base>
 
 <script>
+  // старые ссылки вида /#room-<slug> ведут на страницу зала
+  const old = location.hash.match(/^#room-(.+)$/);
+  if (old) location.replace(`${import.meta.env.BASE_URL.replace(/\/$/, "")}/zal/${old[1]}/`);
   import { initSmoothScroll } from "../scripts/motion";
   import { initReveals, initClock, initServices, initFaq } from "../scripts/sections";
   import { initBooking } from "../scripts/booking";

@@ -1,7 +1,7 @@
 /* Главная, тёмная тема. Цвета — только var(--t-*) из theme-dark.css */
 
 /* ===== Шапка: воздух вокруг логотипа (общая высота — --hdr-h) ===== */
-.vb { --hdr-h: 80px; }
+.vb { --hdr-h: 80px; --hm-s1: 8px; --hm-s2: 16px; --hm-s3: 24px; --hm-s4: 32px; }
 .vb .hdr--b .hdr__bar { min-height: var(--hdr-h); padding-block: 10px; }
 @media (min-width: 768px) {
   .vb { --hdr-h: 104px; }
@@ -280,3 +280,34 @@ body:has(.pv) .ft__stage { display: none; }
   border-radius: 50%; background: var(--t-accent); color: var(--t-on-accent);
 }
 @media (max-width: 767px) { .vid__icon { width: 64px; height: 64px; } }
+
+/* ===== Страница зала ===== */
+.zl__in { display: grid; gap: 16px; }
+.zl__gallery {
+  display: grid; grid-auto-flow: column; grid-auto-columns: 100%; gap: 8px;
+  margin-inline: calc(-1 * var(--gutter)); padding-inline: var(--gutter); scroll-padding-inline: var(--gutter);
+  overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none;
+}
+.zl__gallery::-webkit-scrollbar { display: none; }
+.zl__gallery li { scroll-snap-align: start; }
+.zl__gallery img { width: 100%; aspect-ratio: 3 / 2; height: auto; object-fit: cover; border-radius: var(--t-radius); background: var(--t-surface); }
+.zl__gallery:has(li:nth-child(2)) { grid-auto-columns: 88%; }
+.zl__info { display: flex; flex-direction: column; }
+.zl__loc { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; font-size: 0.875rem; color: var(--t-muted); }
+.zl__facts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.zl__facts li { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px; background: var(--t-surface); font-size: 0.9375rem; }
+.zl__facts b { font-weight: 800; }
+.zl__text { margin-top: 24px; color: var(--t-muted); }
+.zl__h { margin: 32px 0 12px; font-family: var(--font-text); font-size: 1.125rem; font-weight: 700; }
+.zl .hm__ctas { grid-template-columns: 1fr auto; }
+.zl__pager { display: flex; justify-content: space-between; gap: 8px; }
+.zl__pager .hm__btn { flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+@media (min-width: 1024px) {
+  .zl__in { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); grid-template-areas: "crumbs crumbs" "gallery info"; column-gap: 48px; align-items: start; }
+  .zl .crumbs { grid-area: crumbs; }
+  .zl__gallery { grid-area: gallery; margin: 0; padding: 0; overflow: visible; grid-auto-flow: row; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .zl__gallery li:first-child { grid-column: 1 / -1; }
+  .zl__info { grid-area: info; position: sticky; top: calc(var(--hdr-h) + 16px); }
+  .zl__pager { justify-content: flex-start; }
+  .zl__pager .hm__btn { flex: 0 1 auto; }
+}

@@ -12,7 +12,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 <ul class="zgrid">
   {list.map((r) => (
     <li>
-      <a class="zcard" href={`${base}/#room-${r.slug}`}>
+      <a class="zcard" href={`${base}/zal/${r.slug}/`}>
         <img
           src={r.images[0].src}
           srcset={r.images[0].srcset}
