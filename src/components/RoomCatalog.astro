@@ -17,6 +17,7 @@ import {
   PHONE_MAIN,
 } from "../lib/rooms";
 import { botUrl } from "../lib/bot";
+import { hasVideo } from "../lib/videos";
 
 interface Props {
   variant: "a" | "b" | "c";
@@ -132,6 +133,7 @@ const sizes = "(max-width: 559px) 112vw, (max-width: 767px) 56vw, (max-width: 10
                 <div class="card__badges">
                   <span class="badge badge--cap">{capacityLabel(r)}</span>
                   {r.area && <span class="badge num">{r.area}&nbsp;м²</span>}
+                  {hasVideo(r.slug) && <span class="badge badge--video">▶ видео</span>}
                 </div>
                 <span class="card__price num">
                   от&nbsp;{rub(r.price)}

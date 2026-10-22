@@ -1,0 +1,54 @@
+{
+  "_note": "Видео из Kinescope (аккаунт Party Time). Встраивать плеером: https://kinescope.io/embed/<id>. Страница видео: https://kinescope.io/<id>. Ключ rooms = slug зала из rooms.json.",
+  "overview": {
+    "dumskaya": { "title": "Обзор локации на Невском проспекте (Думская)", "id": "0raM2KYLYs8eTFgCd6sZkg", "duration": "0:26" },
+    "leninskiy": { "title": "Обзор локации на Ленинском", "id": "6Fgjsgbxdxgb8S9diUpZep", "duration": "0:34" },
+    "komendantskiy": { "title": "Обзор локации на Комендантском", "id": "22gRacsFNpZmqT5SM5ahRd", "duration": "0:21" }
+  },
+  "rooms": {
+    "taverna-garcuyushchij-poni": "37GN2NCjAczmyf1VYQdXc6",
+    "skazochnii-les": "iVeRDFv1FPwnBdAu17XtyS",
+    "secretnaya-baza": "9XxLYCkNhye568GvNUn26b",
+    "rock-n-roll": "4CRFSzFaGXPgW4wGXtjACK",
+    "pod-zvezdami": "nx8evNoKdXf1SRD3ogwQty",
+    "odnazhdy-v-gollivude": "c15RAMGKFWK5CpyECbgf5X",
+    "mikki-i-mini": "a7eC51iYHuzwx4XuDkRHAh",
+    "mezhprostranstvennaya_laboratoriya": "cHJE4Fy9AVvQ8vEzgzbC39",
+    "maiami-bich": "7PPBYNDFrZoAYo49mKv9zU",
+    "cyberpunk": "ms8zPgfcKA3eM6sUnxhUys",
+    "k-marsu": "9uZ2rbn1PDm7UvZvARJwqU",
+    "zvezda-smerti": "jnR7uDLqo3CqgvLGnx7qFJ",
+    "disco": "uJHycqGuDgg1j47XEyZwhg",
+    "dikij-zapad": "2DcdFW4tFwkL54kLUBPQ6b",
+    "gavaji": "vYaPRzCASHtrjFSnJfKGSt",
+    "brooklyn": "cx3c7N7QQjpayvE6tBkMaV",
+    "bezumnoe-chaepitie": "51zXFiwDmbw9CChdbsh9gU",
+
+    "buhta-majyami": "kKS32GaAzrXCbbik2tTV5f",
+    "zvezdnyj-razrushitel": "a1H5uuxY8fmzVs5BzxVaiW",
+    "twedes-cafe": "hFyX7GcSedfMr8c53hXYy7",
+    "taverna-belogo-volka": "61MkotLWTeKPsJW4EkPPfG",
+    "premiya-oskar": "nNuxx7vw23Q7YYaiTZ4w4h",
+    "nebesa": "cTiVyhCXJDENR9S2kbuQqR",
+    "multivselennaya": "7NduPMU3jADkkgpgyyKCEZ",
+    "korabl-ilona-maska": "75nwyCES1qYfgTi3uB8Shc",
+    "zazerkale": "4yi8dvQbEZwksAxnpREtRQ",
+    "bashnya-starka": "jNRzsDnsdp7rRxkgNzTy4t",
+    "party-hard": "4ao2tfiUSbCuftvQVGZt5w",
+
+    "teatr": "ay8YWLjcvw2DeodtZvcCt1",
+    "popart": "sshiEJWbfP2YHg7tqWU4gG",
+    "obshchaya-gostinaya": "ohUkQjFKA5Qz4UctQuUcxK",
+    "nautilus": "kK6F8LASE3BQAcQ1FKhyS7",
+    "mondrian": "fgC5TLevTXFtEQf12QoZej",
+    "kluedo": "6sTsbBwphdYDUE4xbbd839",
+    "betmen": "7depfrt3h1dg8PXQXnSDSM",
+    "disco-komendantskiy": "gk6u7nHnUAPtMwircNPoxg"
+  },
+  "unmatched": {
+    "Зал супергероев (папка Невский проспект)": "4wmBzqMCW9emYnFHbwZSGi",
+    "Зал Фокс (папка Комендантский проспект)": "9LtyTeTTMbj1bdCr7fAEQq",
+    "Video - 3 этаж (2) (папка Neparty)": "7S5guvDuNohAvxW81E4q9r"
+  },
+  "no_video": ["contrast", "sssr", "все 18 залов Маяковской"]
+}

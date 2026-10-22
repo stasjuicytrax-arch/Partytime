@@ -2,6 +2,7 @@
 // Простые карточки залов (как на маркетплейсе): фото, название, локация, гости, цена. Ссылка на зал.
 import Icon from "../Icon.astro";
 import { rub, capacityLabel, type Room } from "../../lib/rooms";
+import { hasVideo } from "../../lib/videos";
 
 interface Props {
   list: Room[];
@@ -23,6 +24,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
           loading="lazy"
           decoding="async"
         />
+        {hasVideo(r.slug) && <span class="zcard__badge">▶ видео</span>}
         <span class="zcard__price num">от {rub(r.price)}<small>/час</small></span>
         <h3>{r.title}</h3>
         <span class="zcard__meta"><Icon name="pin" size={14} />{r.locName}</span>

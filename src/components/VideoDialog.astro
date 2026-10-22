@@ -1,0 +1,42 @@
+---
+// Один плеер Kinescope на страницу: открывается кнопками [data-video], iframe создаётся только при открытии
+// и удаляется при закрытии (воспроизведение останавливается). Без автозапуска при reduced-motion.
+import Icon from "./Icon.astro";
+---
+<dialog class="vdlg" aria-label="Видео" data-vdlg>
+  <button type="button" class="vdlg__close" aria-label="Закрыть видео" data-vdlg-close><Icon name="close" size={24} /></button>
+  <div class="vdlg__frame" data-vdlg-frame></div>
+</dialog>
+
+<script>
+  import { reachGoal } from "../lib/analytics";
+  const dlg = document.querySelector<HTMLDialogElement>("[data-vdlg]");
+  if (dlg) {
+    const frame = dlg.querySelector<HTMLElement>("[data-vdlg-frame]")!;
+    const close = () => {
+      frame.replaceChildren(); // убираем iframe — ролик останавливается
+      if (dlg.open) dlg.close();
+      document.documentElement.classList.remove("modal-open");
+    };
+    document.addEventListener("click", (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLElement>("[data-video]");
+      if (!b) return;
+      e.preventDefault();
+      const { video: id, videoW = "9", videoH = "16", videoSlug, videoLoc } = b.dataset;
+      const auto = matchMedia("(prefers-reduced-motion: reduce)").matches ? "" : "?autoplay=1";
+      const f = document.createElement("iframe");
+      f.src = `https://kinescope.io/embed/${id}${auto}`;
+      f.allow = "autoplay; fullscreen; picture-in-picture; encrypted-media";
+      f.allowFullscreen = true;
+      f.title = b.dataset.videoTitle || "Видео";
+      frame.style.setProperty("--ar", `${videoW} / ${videoH}`);
+      frame.replaceChildren(f);
+      dlg.showModal();
+      document.documentElement.classList.add("modal-open");
+      reachGoal("video_play", videoSlug ? { slug: videoSlug } : { loc: videoLoc });
+    });
+    dlg.querySelector("[data-vdlg-close]")!.addEventListener("click", close);
+    dlg.addEventListener("close", close);
+    dlg.addEventListener("click", (e) => { if (e.target === dlg) close(); }); // клик по фону
+  }
+</script>

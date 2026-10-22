@@ -20,6 +20,7 @@ export type Goal =
   | "room_open"
   | "similar_room_click"
   | "room_next"
+  | "video_play"
   | `form_step_${1 | 2 | 3 | 4 | 5 | 6}`
   | "form_submit"
   | "form_to_telegram";

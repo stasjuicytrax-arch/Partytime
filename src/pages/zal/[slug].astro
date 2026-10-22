@@ -9,6 +9,8 @@ import Messengers from "../../components/Messengers.astro";
 import Icon from "../../components/Icon.astro";
 import RoomCards from "../../components/home/RoomCards.astro";
 import Occasions from "../../components/home/Occasions.astro";
+import VideoDialog from "../../components/VideoDialog.astro";
+import { roomVideo } from "../../lib/videos";
 import { rooms, locations, INCLUDED, PROMO, rub, capacityLabel, groupById, tel, type Room } from "../../lib/rooms";
 import "../../styles/components.css";
 import "../../styles/b.css";
@@ -27,6 +29,7 @@ const same = rooms.filter((x) => x.slug !== r.slug && x.group === r.group);
 const similar = [...same.filter((x) => x.loc === r.loc), ...same.filter((x) => x.loc !== r.loc)].slice(0, 4);
 const prev = rooms[(i - 1 + rooms.length) % rooms.length];
 const next = rooms[(i + 1) % rooms.length];
+const vid = roomVideo(r.slug);
 const book = `${base}/?room=${r.slug}&loc=${r.loc}#booking`;
 ---
 <Base
@@ -59,6 +62,11 @@ const book = `${base}/?room=${r.slug}&loc=${r.loc}#booking`;
                 fetchpriority={j === 0 ? "high" : undefined}
                 decoding="async"
               />
+              {j === 0 && vid && (
+                <button type="button" class="zl__video" data-video={vid.id} data-video-w={vid.w} data-video-h={vid.h} data-video-slug={r.slug} data-video-title={`Видео зала «${r.title}»`}>
+                  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor" /></svg>Смотреть видео
+                </button>
+              )}
             </li>
           ))}
         </ul>
@@ -104,4 +112,5 @@ const book = `${base}/?room=${r.slug}&loc=${r.loc}#booking`;
   </main>
   <Footer />
   <Messengers />
+  <VideoDialog />
 </Base>

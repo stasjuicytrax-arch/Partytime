@@ -7,6 +7,8 @@ import RoomCatalog from "../components/RoomCatalog.astro";
 import VideoBlock from "../components/home/VideoBlock.astro";
 import Perks from "../components/home/Perks.astro";
 import MoreLinks from "../components/home/MoreLinks.astro";
+import Overviews from "../components/home/Overviews.astro";
+import VideoDialog from "../components/VideoDialog.astro";
 import Occasions from "../components/home/Occasions.astro";
 import Services from "../components/sections/Services.astro";
 import PromoCards from "../components/home/PromoCards.astro";
@@ -31,6 +33,7 @@ import "../styles/home.css";
   <main id="main" tabindex="-1">
     <HeroMain />
     <RoomCatalog variant="b" pages />
+    <Overviews />
     <Occasions />
     <PromoCards />
     <VideoBlock />
@@ -44,6 +47,7 @@ import "../styles/home.css";
   </main>
   <Footer />
   <Messengers />
+  <VideoDialog />
   <Popups />
 </Base>
 

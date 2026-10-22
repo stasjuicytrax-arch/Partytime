@@ -311,3 +311,59 @@ body:has(.pv) .ft__stage { display: none; }
   .zl__pager { justify-content: flex-start; }
   .zl__pager .hm__btn { flex: 0 1 auto; }
 }
+
+/* ===== Видео Kinescope: плеер в окне, кнопки, обзоры локаций ===== */
+.vdlg {
+  width: min(100vw, calc((100svh - 32px) * 9 / 16 + 0px), 480px); max-width: 100vw; max-height: 100svh;
+  margin: auto; padding: 0; border: 0; border-radius: var(--t-radius); overflow: visible;
+  background: transparent; color: var(--t-text);
+}
+.vdlg::backdrop { background: var(--t-photo-shade); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.vdlg__frame { aspect-ratio: var(--ar, 9 / 16); width: 100%; max-height: calc(100svh - 32px); border-radius: var(--t-radius); overflow: hidden; background: var(--t-surface); }
+.vdlg__frame iframe { display: block; width: 100%; height: 100%; border: 0; }
+.vdlg__close {
+  position: fixed; top: 12px; right: 12px; z-index: 2;
+  display: grid; place-items: center; width: 48px; height: 48px;
+  border: 1px solid var(--t-line-strong); border-radius: 50%; background: var(--t-surface); color: var(--t-text);
+}
+@media (max-width: 767px) {
+  .vdlg { width: 100vw; border-radius: 0; }
+  .vdlg__frame { border-radius: 0; max-height: 100svh; }
+}
+
+.zl__gallery li { position: relative; }
+.zl__video {
+  position: absolute; left: 12px; bottom: 12px;
+  display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 18px 0 14px;
+  border: 0; border-radius: 999px; background: var(--t-accent); color: var(--t-on-accent); font-weight: 700; font-size: 0.9375rem;
+}
+
+.badge--video { background: var(--t-accent) !important; color: var(--t-on-accent) !important; border-color: var(--t-accent) !important; }
+.zcard { position: relative; }
+.zcard__badge {
+  position: absolute; top: 8px; left: 8px; padding: 4px 10px; border-radius: 999px;
+  background: var(--t-accent); color: var(--t-on-accent); font-size: 0.75rem; font-weight: 700;
+}
+
+.ovgrid { display: grid; grid-auto-flow: column; grid-auto-columns: 46%; gap: 8px; margin-inline: calc(-1 * var(--gutter)); padding-inline: var(--gutter); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.ovgrid::-webkit-scrollbar { display: none; }
+.ovgrid li { scroll-snap-align: start; }
+.ovcard {
+  position: relative; display: block; width: 100%; aspect-ratio: 9 / 16; padding: 0; border: 0;
+  border-radius: var(--t-radius); overflow: hidden; background: var(--t-surface); color: var(--t-text); text-align: left;
+}
+.ovcard img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 0.2s; }
+.ovcard:hover img { opacity: 0.85; }
+.ovcard__play {
+  position: absolute; left: 50%; top: 50%; translate: -50% -50%;
+  display: grid; place-items: center; width: 56px; height: 56px; padding-left: 3px;
+  border-radius: 50%; background: var(--t-accent); color: var(--t-on-accent);
+}
+.ovcard__cap {
+  position: absolute; inset: auto 0 0; padding: 32px 14px 12px;
+  background: linear-gradient(transparent, var(--t-photo-shade)); font-weight: 700; line-height: 1.2;
+}
+.ovcard__cap small { display: block; font-weight: 500; font-size: 0.8125rem; color: var(--t-muted); }
+@media (min-width: 768px) {
+  .ovgrid { grid-auto-flow: row; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; padding: 0; overflow: visible; gap: 16px; max-width: 840px; }
+}

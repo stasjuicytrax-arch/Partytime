@@ -1,0 +1,25 @@
+---
+// «Загляните внутрь»: обзорные ролики локаций (вертикальные превью). По клику — плеер в окне (VideoDialog).
+import { overviews } from "../../lib/videos";
+import { locations } from "../../lib/rooms";
+
+const name = (id: string) => locations.find((l) => l.id === id)!.name;
+---
+{overviews.length > 0 && (
+  <section class="blk" id="vnutri" aria-labelledby="vnutri-title">
+    <div class="container">
+      <h2 class="blk__title" id="vnutri-title">Загляните внутрь</h2>
+      <ul class="ovgrid">
+        {overviews.map((o) => (
+          <li>
+            <button type="button" class="ovcard" data-video={o.id} data-video-w={o.w} data-video-h={o.h} data-video-loc={o.loc} data-video-title={o.title}>
+              <img src={o.poster} alt={`Обзор локации ${name(o.loc)}`} width={o.w * 2} height={o.h * 2} loading="lazy" decoding="async" />
+              <span class="ovcard__play" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M8 5.5v13l11-6.5z" fill="currentColor" /></svg></span>
+              <span class="ovcard__cap">{name(o.loc)}<small class="num">{o.duration}</small></span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
