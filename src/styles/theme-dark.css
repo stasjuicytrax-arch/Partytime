@@ -12,11 +12,6 @@
   --t-on-accent: var(--pt-deep);
   --t-accent-2: var(--pt-violet-l);
   --t-photo-shade: rgb(0 0 0 / 0.55);
-  /* карта-схема в контактах */
-  --t-map-land: #1C1C1C;
-  --t-map-water: #342D68;
-  --t-map-label: var(--pt-white);
-  --t-map-halo: var(--pt-deep);
   --t-radius: 16px;
   --t-radius-sm: 12px;
 }

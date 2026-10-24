@@ -218,7 +218,8 @@
 .vc .contacts__mail { color: var(--c-accent); }
 .vc .contacts__msg a { border-color: #D8D2C5; color: var(--c-ink); }
 .vc .contacts__msg a:hover { background: var(--c-ink); color: #fff; }
-.vc .contacts__map { border-color: var(--c-line); }
+.vc .contacts__map { border-color: var(--c-line); background: #eee; }
+.vc .contacts__map iframe { filter: none; }
 
 /* ---------- подвал: тёмный остаётся, без падающих букв ---------- */
 .vc .ft__stage { display: none; }
