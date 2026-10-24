@@ -1,0 +1,40 @@
+---
+// Своя карта-схема Петербурга вместо виджета Яндекса (в бесплатном виджете Яндекс подмешивает рекламу).
+// Вода — маска public/img/map-water.webp из данных OpenStreetMap (scripts/map-water-mask.py, та же рамка BBOX).
+// Цвета — только переменные темы; метка — ссылка на маршрут в Яндекс Картах.
+import { GEO } from "../lib/content";
+import type { Location } from "../lib/rooms";
+
+interface Props {
+  list: Location[];
+  route: (id: string, address: string) => string;
+}
+const { list, route } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+// рамка и размер маски — как в scripts/map-water-mask.py
+const BBOX = { lon0: 30.12, lon1: 30.46, lat0: 59.825, lat1: 60.04 }, W = 1200, H = 1515;
+const xy = (id: string) => ({
+  x: ((GEO[id].lon - BBOX.lon0) / (BBOX.lon1 - BBOX.lon0)) * W,
+  y: ((BBOX.lat1 - GEO[id].lat) / (BBOX.lat1 - BBOX.lat0)) * H,
+});
+// подпись слева или справа от метки: центральные точки рядом, разводим их в стороны
+const side: Record<string, "l" | "r"> = { dumskaya: "l", mayakovskaya: "r", leninskiy: "r", komendantskiy: "r" };
+const pins = list.filter((l) => GEO[l.id]).map((l, i) => ({ l, n: i + 1, ...xy(l.id), s: side[l.id] ?? "r" }));
+---
+<svg class="cmap" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet" role="group" aria-label="Схема Петербурга с локациями">
+  <defs>
+    <mask id="cmap-water" maskUnits="userSpaceOnUse" x="0" y="0" width={W} height={H}>
+      <image href={`${base}/img/map-water.webp`} x="0" y="0" width={W} height={H} />
+    </mask>
+  </defs>
+  <rect class="cmap__land" width={W} height={H} />
+  <rect class="cmap__water" width={W} height={H} mask="url(#cmap-water)" />
+  {pins.map((p) => (
+    <a href={route(p.l.id, p.l.address)} target="_blank" rel="noopener" class={`cmap__pin cmap__pin--${p.l.id}`} aria-label={`${p.l.name}, ${p.l.address} — маршрут в Яндекс Картах`}>
+      <circle cx={p.x} cy={p.y} r="30" />
+      <text class="cmap__num" x={p.x} y={p.y + 11} text-anchor="middle">{p.n}</text>
+      <text class="cmap__label" x={p.s === "l" ? p.x - 46 : p.x + 46} y={p.y + 13} text-anchor={p.s === "l" ? "end" : "start"}>{p.l.name}</text>
+    </a>
+  ))}
+  <text class="cmap__osm" x="24" y={H - 26}>© участники OpenStreetMap</text>
+</svg>
