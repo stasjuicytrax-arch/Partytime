@@ -77,10 +77,11 @@ const pops = isPlaceholder(BOT_DISCOUNT) ? [] : [
     behind().forEach((b) => (b.inert = true));
     lenis()?.stop();
     if (!reduced()) {
-      el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 250, easing: "ease-out" });
+      // мягкое появление без перелёта: короткий подъём и масштаб от 0.96
+      el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, easing: "ease-out" });
       el.querySelector(".pop__card")!.animate(
-        [{ transform: "translateY(40px) rotate(-4deg) scale(.9)", opacity: 0 }, { transform: "translateY(0) rotate(-1.5deg) scale(1)", opacity: 1 }],
-        { duration: 520, easing: "cubic-bezier(.34,1.56,.64,1)" }
+        [{ transform: "translateY(16px) rotate(-1.5deg) scale(.96)", opacity: 0 }, { transform: "translateY(0) rotate(-1.5deg) scale(1)", opacity: 1 }],
+        { duration: 260, easing: "cubic-bezier(0.23, 1, 0.32, 1)" }
       );
     }
     el.querySelector<HTMLElement>(".pop__close")!.focus();

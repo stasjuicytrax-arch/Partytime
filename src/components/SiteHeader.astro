@@ -64,8 +64,9 @@ const nav = [
       lenis()?.stop();
       document.documentElement.classList.add("modal-open");
       if (!reduced()) {
-        gsap.fromTo(menu, { clipPath: "circle(0% at 92% 4%)" }, { clipPath: "circle(150% at 92% 4%)", duration: 0.7, ease: "expo.out" });
-        gsap.fromTo(menu.querySelectorAll("nav a"), { yPercent: 110, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.6, ease: "expo.out", stagger: 0.05, delay: 0.1 });
+        // меню открывают часто — раскрытие ~0.35 с, пункты догоняют за ~0.3 с с короткой лесенкой
+        gsap.fromTo(menu, { clipPath: "circle(0% at 92% 4%)" }, { clipPath: "circle(150% at 92% 4%)", duration: 0.35, ease: "expo.out" });
+        gsap.fromTo(menu.querySelectorAll("nav a"), { yPercent: 40, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.3, ease: "expo.out", stagger: 0.03, delay: 0.04 });
       }
       menu.querySelector<HTMLElement>("nav a")?.focus();
     };

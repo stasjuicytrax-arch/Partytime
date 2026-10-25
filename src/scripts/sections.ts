@@ -25,7 +25,7 @@ export function initReveals() {
   ScrollTrigger.batch("[data-reveal]", {
     start: "top 88%",
     once: true,
-    onEnter: (els) => gsap.to(els, { opacity: 1, translate: "0 0px", duration: 0.9, ease: "expo.out", stagger: 0.08 }),
+    onEnter: (els) => gsap.to(els, { opacity: 1, translate: "0 0px", duration: 0.6, ease: "expo.out", stagger: 0.06 }),
   });
 }
 
@@ -81,10 +81,10 @@ export function initFaq() {
       if (reduced()) return;
       e.preventDefault();
       if (d.open) {
-        gsap.fromTo(body, { height: body.offsetHeight }, { height: 0, duration: 0.35, ease: "power2.inOut", onComplete: () => { d.open = false; gsap.set(body, { clearProps: "height" }); } });
+        gsap.fromTo(body, { height: body.offsetHeight }, { height: 0, duration: 0.22, ease: "power2.inOut", onComplete: () => { d.open = false; gsap.set(body, { clearProps: "height" }); } });
       } else {
         d.open = true;
-        gsap.fromTo(body, { height: 0 }, { height: body.scrollHeight, duration: 0.45, ease: "expo.out", onComplete: () => gsap.set(body, { clearProps: "height" }) });
+        gsap.fromTo(body, { height: 0 }, { height: body.scrollHeight, duration: 0.28, ease: "expo.out", onComplete: () => gsap.set(body, { clearProps: "height" }) });
       }
     });
   });

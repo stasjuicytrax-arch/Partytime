@@ -22,10 +22,12 @@
 .hdr--b .hdr__menu[data-open] { background: var(--pt-deep); color: var(--pt-white); }
 .hdr--b .hdr__menu-close { background: rgb(255 255 255 / 0.1); border: 1px solid rgb(255 255 255 / 0.25); }
 .vb .btn--primary { box-shadow: 0 0 0 0 rgb(201 229 67 / 0); border-color: var(--pt-lime); }
-.vb .btn--primary:hover { box-shadow: 0 10px 40px -8px rgb(201 229 67 / 0.65); translate: 0 -2px; }
+@media (hover: hover) {
+.vb .btn--primary:hover { box-shadow: 0 10px 40px -8px rgb(201 229 67 / 0.65); translate: 0 -2px; } }
 .vb .btn--primary:active { translate: 0 1px; box-shadow: none; }
 .vb .btn--ghost { border-color: rgb(255 255 255 / 0.5); }
-.vb .btn--ghost:hover { background: var(--pt-white); color: var(--pt-deep); border-color: var(--pt-white); }
+@media (hover: hover) {
+.vb .btn--ghost:hover { background: var(--pt-white); color: var(--pt-deep); border-color: var(--pt-white); } }
 
 /* ---------- Hero ---------- */
 .hb {
@@ -209,7 +211,8 @@
   backdrop-filter: blur(10px);
   transition: border-color var(--dur-fast), background-color var(--dur-fast);
 }
-.hb__mic:hover { border-color: var(--pt-lime); }
+@media (hover: hover) {
+.hb__mic:hover { border-color: var(--pt-lime); } }
 .hb__mic[aria-pressed="true"] { background: rgb(254 118 180 / 0.2); border-color: var(--pt-pink); }
 .hb__mic-eq { display: flex; align-items: center; gap: 2px; height: 18px; }
 .hb__mic-eq i { display: block; width: 3px; height: 100%; border-radius: 2px; background: var(--pt-lime); transform: scaleY(0.3); transition: transform 0.08s linear; }
@@ -256,7 +259,8 @@ html.party .vb { animation: party 0.5s steps(1) 6; }
 
 .rc--b .loc { background: rgb(255 255 255 / 0.06); border: 1px solid rgb(255 255 255 / 0.18); color: var(--pt-white); }
 /* наведение не трогает выбранную вкладку: иначе её фон темнеет под тёмным текстом */
-.rc--b .loc:not(.loc--soon):not([aria-pressed="true"]):hover { border-color: var(--loc); background: rgb(255 255 255 / 0.1); }
+@media (hover: hover) {
+.rc--b .loc:not(.loc--soon):not([aria-pressed="true"]):hover { border-color: var(--loc); background: rgb(255 255 255 / 0.1); } }
 .rc--b .loc[aria-pressed="true"] { background: var(--loc); border-color: var(--loc); }
 .rc--b .loc[data-loc="all"][aria-pressed="true"], .rc--b .loc[data-loc="dumskaya"][aria-pressed="true"], .rc--b .loc[data-loc="leninskiy"][aria-pressed="true"], .rc--b .loc[data-loc="komendantskiy"][aria-pressed="true"] { color: var(--pt-deep); }
 .rc--b .loc--soon { background: transparent; border: 1px dashed rgb(255 255 255 / 0.2); color: rgb(255 255 255 / 0.4); }
@@ -265,7 +269,8 @@ html.party .vb { animation: party 0.5s steps(1) 6; }
 .rc--b .loc__tip::after { border-top-color: var(--pt-white); }
 
 .rc--b .chip { background: transparent; border: 1px solid rgb(255 255 255 / 0.22); color: var(--pt-white); }
-.rc--b .chip:hover { border-color: var(--g, var(--pt-white)); }
+@media (hover: hover) {
+.rc--b .chip:hover { border-color: var(--g, var(--pt-white)); } }
 .rc--b .chip[aria-pressed="true"] { background: var(--g, var(--pt-white)); border-color: var(--g, var(--pt-white)); color: var(--pt-deep); }
 .rc--b .chip[data-group="15-20"][aria-pressed="true"] { color: var(--pt-white); }
 
@@ -276,12 +281,18 @@ html.party .vb { animation: party 0.5s steps(1) 6; }
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--g) 38%, transparent);
   transition: box-shadow var(--dur-base) var(--ease-out), translate var(--dur-base) var(--ease-out);
 }
-.rc--b .card__link:hover, .rc--b .card__link:focus-visible {
+.rc--b .card__link:focus-visible {
   translate: 0 -6px;
   box-shadow: 0 0 0 2px var(--g), 0 0 28px 2px color-mix(in srgb, var(--g) 70%, transparent), 0 30px 60px -20px color-mix(in srgb, var(--g) 60%, transparent);
 }
+@media (hover: hover) {
+.rc--b .card__link:hover {
+  translate: 0 -6px;
+  box-shadow: 0 0 0 2px var(--g), 0 0 28px 2px color-mix(in srgb, var(--g) 70%, transparent), 0 30px 60px -20px color-mix(in srgb, var(--g) 60%, transparent);
+} }
 .rc--b .card__media::after { content: ""; position: absolute; inset: 45% 0 0; z-index: 1; background: linear-gradient(transparent, rgb(21 21 21 / 0.85)); pointer-events: none; }
-.rc--b .card__link:hover .card__media img.is-active { scale: 1.05; }
+@media (hover: hover) {
+.rc--b .card__link:hover .card__media img.is-active { scale: 1.05; } }
 .rc--b .badge { background: rgb(21 21 21 / 0.45); color: var(--pt-white); border: 1px solid rgb(255 255 255 / 0.25); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
 .rc--b .badge--cap { background: var(--g); color: var(--pt-deep); border-color: transparent; }
 .rc--b .card[data-group="15-20"] .badge--cap { color: var(--pt-white); }
@@ -306,7 +317,8 @@ html.party .vb { animation: party 0.5s steps(1) 6; }
 .rm--b::backdrop { background: rgb(10 10 12 / 0.75); }
 .rm--b .rm__gallery { background: #000; }
 .rm--b .rm__close, .rm--b .rm__nav { background: rgb(255 255 255 / 0.12); border: 1px solid rgb(255 255 255 / 0.25); color: var(--pt-white); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
-.rm--b .rm__close:hover { background: var(--pt-white); color: var(--pt-deep); }
+@media (hover: hover) {
+.rm--b .rm__close:hover { background: var(--pt-white); color: var(--pt-deep); } }
 .rm--b .rm__count { background: rgb(21 21 21 / 0.6); color: var(--pt-white); }
 /* локация — в цвете локации (как точка на карточке), а не размера зала */
 .rm--b .rm__loc { color: var(--locc, var(--g)); }
