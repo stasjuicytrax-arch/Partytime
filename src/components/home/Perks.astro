@@ -1,15 +1,12 @@
 ---
 // Преимущества: формулировки заголовков заданы заказчиком — не менять. Пояснения — из content.ts.
-// «Своя кухня» ведёт в меню: на главной это заменяет одноимённый пункт в «Всё для праздника».
 import { HOURS, REASONS } from "../../lib/content";
 
-const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-
 const why = (id: string) => REASONS.find((r) => r.id === id)!.text;
-const perks: { title: string; lines: string[]; link?: { label: string; href: string } }[] = [
+const perks = [
   { title: "Открыты каждый день", lines: HOURS.map((h) => `${h.days} ${h.time}`) },
   { title: "Честная цена без доплат", lines: [why("price")] },
-  { title: "Своя кухня", lines: [why("food")], link: { label: "Смотреть меню", href: `${base}/menu` } },
+  { title: "Своя кухня", lines: [why("food")] },
   { title: "Отдельный зал для своей компании", lines: [why("own")] },
 ];
 ---
@@ -21,7 +18,6 @@ const perks: { title: string; lines: string[]; link?: { label: string; href: str
         <li>
           <h3>{p.title}</h3>
           {p.lines.map((l) => <p class="num">{l}</p>)}
-          {p.link && <a class="perks__link" href={p.link.href}>{p.link.label} →</a>}
         </li>
       ))}
     </ul>

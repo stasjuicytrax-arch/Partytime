@@ -13,7 +13,7 @@ const icon = (n: string) => `${base}/img/3d/${n}-dynamic-premium.webp`;
 
     <ul class="svc" role="list">
       {SERVICES.map((s, i) => (
-        <li class="svc__item" data-svc data-svc-id={s.id} data-open={i === 0 ? "" : undefined}>
+        <li class="svc__item" data-svc data-open={i === 0 ? "" : undefined}>
           <button type="button" class="svc__head" aria-expanded={i === 0 ? "true" : "false"} aria-controls={`svc-${s.id}`} id={`svc-btn-${s.id}`}>
             <span class="svc__num num">{String(i + 1).padStart(2, "0")}</span>
             <span class="svc__title">{s.title}</span>
