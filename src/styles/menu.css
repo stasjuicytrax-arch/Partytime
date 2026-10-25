@@ -22,8 +22,7 @@
 .mh__lead { max-width: 30ch; font-size: var(--fs-lead); color: rgb(255 255 255 / 0.86); }
 .mh__kitchen { max-width: 46ch; font-size: var(--fs-small); color: rgb(255 255 255 / 0.7); }
 .mh__kitchen a { color: var(--pt-white); font-weight: 700; text-underline-offset: 3px; white-space: nowrap; }
-@media (hover: hover) {
-.mh__kitchen a:hover { color: var(--pt-lime); } }
+.mh__kitchen a:hover { color: var(--pt-lime); }
 .mh__cut { position: absolute; z-index: -0; width: clamp(96px, 11vw, 168px); height: auto; filter: drop-shadow(0 24px 32px rgb(0 0 0 / 0.55)); pointer-events: none; }
 .mh__cut--1 { right: clamp(150px, 20vw, 330px); bottom: -6px; rotate: -10deg; }
 .mh__cut--2 { right: var(--gutter); top: 4px; width: clamp(120px, 14vw, 210px); rotate: 8deg; }
@@ -51,8 +50,7 @@ body:has(.hdr:not(.is-hidden)) .mnav { top: 80px; }
   transition: background-color var(--dur-fast), border-color var(--dur-fast), color var(--dur-fast);
 }
 .mnav__in a b { padding: 8px 10px; border-radius: var(--r-pill); background: rgb(255 255 255 / 0.08); font: 700 0.75rem / 1 var(--font-text); color: var(--c); }
-@media (hover: hover) {
-.mnav__in a:hover { border-color: var(--c); } }
+.mnav__in a:hover { border-color: var(--c); }
 .mnav__in a[aria-current] { background: var(--c); border-color: var(--c); color: var(--pt-deep); }
 .mnav__in a[aria-current] b { background: rgb(21 21 21 / 0.14); color: var(--pt-deep); }
 
@@ -106,8 +104,7 @@ body:has(.hdr:not(.is-hidden)) .mnav { top: 80px; }
 /* шоты — круглые «подставки» */
 .mshots { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 12px; }
 .mshot { display: grid; gap: 8px; align-content: start; padding: 20px; border-radius: var(--r-md); border: 1px solid rgb(255 255 255 / 0.12); background: rgb(255 255 255 / 0.03); transition: border-color var(--dur-fast); }
-@media (hover: hover) {
-.mshot:hover { border-color: var(--c); } }
+.mshot:hover { border-color: var(--c); }
 .mshot__name { font: 900 1.25rem / 1.05 var(--font-display); text-transform: uppercase; letter-spacing: -0.02em; }
 .mshot__ingr { font-size: 0.8125rem; line-height: 1.45; color: rgb(255 255 255 / 0.7); }
 .mshot__foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 4px; }
@@ -144,8 +141,7 @@ body:has(.hdr:not(.is-hidden)) .mnav { top: 80px; }
 .mcta__title span { display: block; color: var(--pt-lime); }
 .mcta__row { display: flex; flex-wrap: wrap; gap: 12px; }
 .mcta__tg { background: var(--pt-sky); color: var(--pt-deep); border: var(--border); box-shadow: var(--shadow-pop); padding: 0 24px; }
-@media (hover: hover) {
-.mcta__tg:hover { translate: -2px -2px; box-shadow: var(--shadow-pop-hover); } }
+.mcta__tg:hover { translate: -2px -2px; box-shadow: var(--shadow-pop-hover); }
 .mcta__legal { font-size: 0.75rem; color: rgb(255 255 255 / 0.5); }
 
 @media (max-width: 1023px) {
@@ -190,8 +186,7 @@ body:has(.hdr:not(.is-hidden)) .mchips { top: calc(80px + var(--mnav-h, 66px)); 
   white-space: nowrap;
   transition: color var(--dur-fast), background-color var(--dur-fast);
 }
-@media (hover: hover) {
-.mtabs__btn:hover { color: var(--pt-white); } }
+.mtabs__btn:hover { color: var(--pt-white); }
 .mtabs__btn[aria-selected="true"] { background: var(--pt-white); color: var(--pt-deep); }
 .mpanel[hidden] { display: none; }
 

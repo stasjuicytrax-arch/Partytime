@@ -12,8 +12,6 @@
   --t-on-accent: var(--pt-deep);
   --t-accent-2: var(--pt-violet-l);
   --t-photo-shade: rgb(0 0 0 / 0.55);
-  /* без «пружины» с перелётом: в тёмной теме все pop-переходы — плавное замедление */
-  --ease-pop: var(--ease-out);
   --t-radius: 16px;
   --t-radius-sm: 12px;
 }
