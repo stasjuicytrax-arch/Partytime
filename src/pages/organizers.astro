@@ -1,0 +1,40 @@
+---
+import Company from "../layouts/Company.astro";
+import Icon from "../components/Icon.astro";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const photo = base + "/img/hero/party-group-";
+const application = "https://partytimespb.ru/#organisation";
+---
+
+<Company
+  title="Организаторам и блогерам — Party Time"
+  description="Особые условия для организаторов мероприятий, блогеров и партнёров. Обсудите площадку, съёмку или совместный проект с Party Time."
+>
+  <section class="container co__hero co__hero--organizers" aria-labelledby="organizers-title">
+    <div class="co__intro">
+      <h1 id="organizers-title">Организаторам<br /><span>и блогерам</span></h1>
+      <p>Проводите мероприятия, создаёте контент или ищете площадку для коллаборации? Обсудим ваш формат и подберём условия под проект.</p>
+      <div class="co__actions">
+        <a class="btn btn--primary" href="https://t.me/aresty" target="_blank" rel="noopener">
+          Написать напрямую<span class="btn__ico"><Icon name="arrow" size={20} /></span>
+        </a>
+        <a class="btn btn--ghost" href={application}>Оставить заявку</a>
+      </div>
+    </div>
+    <img class="co__photo" src={photo + "960.webp"}
+      srcset={photo + "640.webp 640w, " + photo + "960.webp 960w, " + photo + "1440.webp 1440w"}
+      sizes="(max-width: 800px) 100vw, 47vw" width="960" height="717" fetchpriority="high"
+      alt="Гости в тематическом лофте Party Time" />
+  </section>
+
+  <section class="co__band" aria-labelledby="advertising-title">
+    <div class="container co__band-inner">
+      <div>
+        <h2 id="advertising-title">Реклама и партнёрство</h2>
+        <p>По вопросам рекламы можно связаться с нами в Telegram.</p>
+      </div>
+      <a class="btn btn--ghost" href="https://t.me/Yuriy_Abitsev" target="_blank" rel="noopener">Обсудить рекламу</a>
+    </div>
+  </section>
+</Company>

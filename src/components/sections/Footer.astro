@@ -31,7 +31,9 @@ const fills = ["lime", "pink", "white", "sky", "violet", "pink", "lime", "white"
     <nav aria-label="Компания">
       <b>Компания</b>
       {FOOTER.company.map((l) => (
-        <a href={href(l.href)}>{l.label}{"note" in l && l.note && <small>{l.note}</small>}</a>
+        <a href={href(l.href)} aria-current={Astro.url.pathname.replace(/\/$/, "") === href(l.href) ? "page" : undefined}>
+          {l.label}{"note" in l && l.note && <small>{l.note}</small>}
+        </a>
       ))}
     </nav>
     <nav aria-label="Документы">

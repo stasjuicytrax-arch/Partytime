@@ -1,0 +1,54 @@
+---
+import Company from "../layouts/Company.astro";
+import Icon from "../components/Icon.astro";
+import { EMAIL } from "../lib/content";
+import { activeLocations, networkRooms } from "../lib/rooms";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const room = base + "/img/rooms/xogvarts/01-";
+const application = "https://partytimespb.ru/franchise";
+const email = "mailto:" + EMAIL + "?subject=" + encodeURIComponent("Франшиза Party Time");
+---
+
+<Company
+  title="Франшиза Party Time"
+  description="Франшиза тематических лофтов Party Time для частных вечеринок с караоке, играми и кино. Запросите условия запуска и материалы по франшизе."
+>
+  <section class="co__franchise-hero" aria-labelledby="franchise-title">
+    <img class="co__franchise-photo" src={room + "1600.webp"}
+      srcset={room + "480.webp 480w, " + room + "960.webp 960w, " + room + "1600.webp 1600w"}
+      sizes="100vw" width="1600" height="1067" alt="" fetchpriority="high" />
+    <div class="container co__franchise-copy">
+      <h1 id="franchise-title">Франшиза<br /><span>Party Time</span></h1>
+      <p>Тематические лофты с караоке, играми и кино для частных вечеринок. Откройте пространство Party Time в своём городе.</p>
+      <a class="btn btn--primary" href="#franchise-contact">
+        Получить подробности<span class="btn__ico"><Icon name="arrow" size={20} /></span>
+      </a>
+    </div>
+  </section>
+
+  <section class="container co__network" aria-labelledby="franchise-network">
+    <h2 id="franchise-network">Party Time в цифрах</h2>
+    <dl class="co__stats">
+      <div><dt>Тематических залов</dt><dd class="num">{networkRooms}</dd></div>
+      <div><dt>Локации в Санкт-Петербурге</dt><dd class="num">{activeLocations.length}</dd></div>
+      <div><dt>Праздников и вечеринок за 2022 год</dt><dd class="num">23&nbsp;400+</dd></div>
+    </dl>
+  </section>
+
+  <section class="co__band" id="franchise-contact" aria-labelledby="franchise-contact-title">
+    <div class="container co__band-inner">
+      <div>
+        <h2 id="franchise-contact-title">Условия франшизы</h2>
+        <p>Запросите информацию о стоимости запуска, окупаемости и специальных предложениях.</p>
+        <p class="co__form-note">На действующем сайте анкета открывается по кнопке «Получить подробности».</p>
+      </div>
+      <div class="co__actions">
+        <a class="btn btn--primary btn--sm" href={email}>
+          Написать на почту<span class="btn__ico"><Icon name="arrow" size={18} /></span>
+        </a>
+        <a class="btn btn--ghost btn--sm" href={application}>Перейти к анкете</a>
+      </div>
+    </div>
+  </section>
+</Company>

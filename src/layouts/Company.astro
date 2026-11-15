@@ -1,0 +1,24 @@
+---
+import Base from "./Base.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import Footer from "../components/sections/Footer.astro";
+import "../styles/components.css";
+import "../styles/b.css";
+import "../styles/sections.css";
+import "../styles/theme-dark.css";
+import "../styles/company.css";
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+---
+
+<Base title={title} description={description} theme="#151515" favicon="blue" bodyClass="vb company-page">
+  <SiteHeader variant="b" home={false} />
+  <main id="main" tabindex="-1">
+    <slot />
+  </main>
+  <Footer home={false} />
+</Base>

@@ -1,0 +1,79 @@
+---
+import Company from "../layouts/Company.astro";
+import Icon from "../components/Icon.astro";
+import { EMAIL } from "../lib/content";
+import { tel } from "../lib/rooms";
+import hiring from "../../content/vacancies.json";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const email = (subject: string) => "mailto:" + EMAIL + "?subject=" + encodeURIComponent(subject);
+---
+
+<Company
+  title="Работа у нас — Party Time"
+  description="Вакансии Party Time в Санкт-Петербурге. Администратор пространства и менеджер отдела продаж. График, условия и отклик."
+>
+  <section class="container co__hero co__hero--jobs" aria-labelledby="hiring-title">
+    <div class="co__intro">
+      <h1 id="hiring-title">На работу,<br /><span>как на пати!</span></h1>
+      <p>Ищем в команду Party Time администратора пространства и менеджера отдела продаж.</p>
+      <a class="btn btn--primary" href="#vacancies">
+        Смотреть вакансии<span class="btn__ico"><Icon name="arrow" size={20} /></span>
+      </a>
+    </div>
+    <div class="co__job-art" aria-hidden="true">
+      <img src={base + "/img/3d/megaphone-dynamic-color.webp"} alt="" width="400" height="400" fetchpriority="high" />
+    </div>
+  </section>
+
+  <section class="container co__vacancies" id="vacancies" aria-labelledby="vacancies-title">
+    <h2 id="vacancies-title">Вакансии</h2>
+    <div class="co__job-grid">
+      {hiring.vacancies.map((vacancy) => (
+        <article class="co__job" id={vacancy.id} aria-labelledby={vacancy.id + "-title"} style={"--job-accent: var(--pt-" + vacancy.color + ")"}>
+          <header class="co__job-head">
+            <h3 id={vacancy.id + "-title"}>{vacancy.title}</h3>
+            <img src={base + "/img/3d/" + vacancy.icon + "-dynamic-premium.webp"} alt="" width="800" height="800" loading="lazy" decoding="async" />
+          </header>
+          <p class="co__pay"><strong class="price-pill num">{vacancy.pay}</strong><span>{vacancy.payNote}</span></p>
+          <ul class="co__tags" role="list">
+            {vacancy.tags.map((tag) => <li>{tag}</li>)}
+          </ul>
+          <details class="co__job-details">
+            <summary>Обязанности и условия<Icon name="arrow" size={18} /></summary>
+            {vacancy.groups.map((group) => (
+              <section>
+                <h4>{group.title}</h4>
+                <ul>{group.items.map((item) => <li>{item}</li>)}</ul>
+              </section>
+            ))}
+          </details>
+          <a class="btn btn--ghost btn--sm" href={email("Отклик на вакансию «" + vacancy.title + "»")}>
+            Откликнуться по почте
+          </a>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="container co__benefits" aria-labelledby="benefits-title">
+    <h2 id="benefits-title">Что ждёт в команде</h2>
+    <ul role="list">{hiring.benefits.map((benefit) => <li>{benefit}</li>)}</ul>
+  </section>
+
+  <section class="co__band" aria-labelledby="hiring-contact">
+    <div class="container co__band-inner">
+      <div>
+        <h2 id="hiring-contact">Связаться с командой</h2>
+        <p>Напишите или позвоните, чтобы обсудить вакансию и договориться о собеседовании.</p>
+        <p class="co__form-note">Можно также <a href={hiring.application}>заполнить анкету на действующем сайте</a>. Откройте вакансию и нажмите «Оставить заявку».</p>
+      </div>
+      <div class="co__actions">
+        <a class="btn btn--primary btn--sm" href={email("Работа в Party Time")}>
+          Написать на почту<span class="btn__ico"><Icon name="arrow" size={18} /></span>
+        </a>
+        <a class="btn btn--ghost btn--sm num" href={tel(hiring.phone)}>{hiring.phone}</a>
+      </div>
+    </div>
+  </section>
+</Company>

@@ -133,9 +133,9 @@ export const FOOTER = {
     { label: "Система лояльности", href: "soon" },
   ],
   company: [
-    { label: "Организаторам и блогерам", href: "soon" },
-    { label: "Франшиза", href: "soon" },
-    { label: "Работа у нас", href: "soon", note: "Наша команда растёт — ищем активных людей" },
+    { label: "Организаторам и блогерам", href: "organizers" },
+    { label: "Франшиза", href: "franchise" },
+    { label: "Работа у нас", href: "hr", note: "Наша команда растёт — ищем активных людей" },
   ],
   docs: [
     { label: "Политика конфиденциальности", href: "politic" },
