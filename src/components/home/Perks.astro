@@ -3,23 +3,100 @@
 import { HOURS, REASONS } from "../../lib/content";
 
 const why = (id: string) => REASONS.find((r) => r.id === id)!.text;
-const perks = [
-  { title: "Открыты каждый день", lines: HOURS.map((h) => `${h.days} ${h.time}`) },
-  { title: "Честная цена без доплат", lines: [why("price")] },
-  { title: "Своя кухня", lines: [why("food")] },
-  { title: "Отдельный зал для своей компании", lines: [why("own")] },
-];
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const photo = base + "/img/rooms/disco/01-";
 ---
 <section class="blk" id="why" aria-labelledby="why-title">
   <div class="container">
     <h2 class="blk__title" id="why-title">Почему выбирают нас</h2>
-    <ul class="perks">
-      {perks.map((p) => (
+    <div class="perks">
+      <div class="perks__room">
+        <img src={photo + "960.webp"} srcset={`${photo}480.webp 480w, ${photo}960.webp 960w, ${photo}1600.webp 1600w`}
+          sizes="(max-width: 800px) 92vw, (max-width: 1380px) 50vw, 680px"
+          alt="" width="960" height="639" loading="lazy" decoding="async" />
+        <div class="perks__caption">
+          <h3>Отдельный зал для своей компании</h3>
+          <p>{why("own")}</p>
+        </div>
+      </div>
+      <ul class="perks__facts" role="list">
         <li>
-          <h3>{p.title}</h3>
-          {p.lines.map((l) => <p class="num">{l}</p>)}
+          <h3>Честная цена без доплат</h3>
+          <p>{why("price")}</p>
         </li>
-      ))}
-    </ul>
+        <li>
+          <h3>Своя кухня</h3>
+          <p>{why("food")}</p>
+        </li>
+        <li>
+          <h3>Открыты каждый день</h3>
+          <dl class="perks__hours num">
+            {HOURS.map(({ days, time }) => (
+              <div>
+                <dt>{days}</dt>
+                <dd>{time}</dd>
+              </div>
+            ))}
+          </dl>
+        </li>
+      </ul>
+    </div>
   </div>
 </section>
+
+<style>
+  .perks {
+    display: grid;
+    grid-template-columns: 1.16fr minmax(0, 1fr);
+    gap: clamp(24px, 3.5vw, 56px);
+  }
+  .perks__room {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    align-items: end;
+    min-height: clamp(310px, 30vw, 420px);
+    overflow: hidden;
+    border-radius: var(--r-lg);
+    background: var(--t-surface);
+    color: var(--pt-white);
+  }
+  .perks__room::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    content: "";
+    background: linear-gradient(0deg, rgb(15 15 15 / 0.96), rgb(15 15 15 / 0.82) 29%, rgb(15 15 15 / 0.26) 62%, transparent 84%);
+  }
+  .perks__room img { position: absolute; z-index: -2; width: 100%; height: 100%; object-fit: cover; }
+  .perks__caption { padding: clamp(20px, 3.2vw, 40px); }
+  .perks__caption h3 {
+    max-width: 19ch;
+    font: 850 clamp(1.25rem, 2.5vw, 2.125rem) / 1.14 var(--font-display);
+    text-wrap: balance;
+  }
+  .perks__caption p { max-width: 39ch; margin-top: 10px; font-size: 0.9375rem; color: var(--pt-white); }
+  .perks__facts {
+    display: grid;
+    align-content: stretch;
+    border-block: 1px solid var(--t-line-strong);
+  }
+  .perks__facts li { padding: clamp(17px, 2vw, 30px) 0; }
+  .perks__facts li + li { border-top: 1px solid var(--t-line); }
+  .perks__facts h3 { font: 750 clamp(1.125rem, 1.7vw, 1.375rem) / 1.2 var(--font-text); }
+  .perks__facts p { max-width: 39ch; margin-top: 6px; color: var(--t-muted); line-height: 1.5; }
+  .perks__hours {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px clamp(16px, 3vw, 38px);
+    margin-top: 10px;
+  }
+  .perks__hours dt { color: var(--t-muted); font-size: 0.875rem; }
+  .perks__hours dd { margin: 2px 0 0; color: var(--pt-lime); font-weight: 750; white-space: nowrap; }
+  @media (max-width: 800px) {
+    .perks { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+    .perks__room { min-height: clamp(285px, 61vw, 380px); }
+    .perks__hours { column-gap: clamp(8px, 2.8vw, 16px); }
+    .perks__hours dd { font-size: clamp(0.8125rem, 4.1vw, 1rem); }
+  }
+</style>

@@ -6,6 +6,7 @@ import { tel } from "../lib/rooms";
 import hiring from "../../content/vacancies.json";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const photo = base + "/img/rooms/obshchaya-gostinaya/01-";
 const email = (subject: string) => "mailto:" + EMAIL + "?subject=" + encodeURIComponent(subject);
 ---
 
@@ -21,9 +22,10 @@ const email = (subject: string) => "mailto:" + EMAIL + "?subject=" + encodeURICo
         Смотреть вакансии<span class="btn__ico"><Icon name="arrow" size={20} /></span>
       </a>
     </div>
-    <div class="co__job-art" aria-hidden="true">
-      <img src={base + "/img/3d/megaphone-dynamic-color.webp"} alt="" width="400" height="400" fetchpriority="high" />
-    </div>
+    <img class="co__photo co__photo--jobs" src={photo + "960.webp"}
+      srcset={`${photo}480.webp 480w, ${photo}960.webp 960w, ${photo}1600.webp 1600w`}
+      sizes="(max-width: 800px) calc(100vw - 36px), (max-width: 1380px) 42vw, 570px"
+      alt="Интерьер общей гостиной Party Time" width="960" height="639" fetchpriority="high" />
   </section>
 
   <section class="container co__vacancies" id="vacancies" aria-labelledby="vacancies-title">

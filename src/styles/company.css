@@ -96,19 +96,7 @@
   font-size: min(clamp(1.9rem, 5.5vw, 5rem), 9.7cqi);
 }
 .co__hero--jobs h1 span { color: var(--pt-sky); }
-.co__job-art {
-  display: grid;
-  place-items: center;
-  aspect-ratio: 1.6;
-  border-radius: var(--r-lg);
-  background: var(--pt-sky);
-}
-.co__job-art img {
-  width: min(69%, 315px);
-  height: auto;
-  rotate: -10deg;
-  filter: drop-shadow(0 20px 20px rgb(21 21 21 / 0.24));
-}
+.co__photo--jobs { aspect-ratio: 1.6; }
 .co__vacancies { padding-bottom: clamp(32px, 5vw, 72px); scroll-margin-top: calc(var(--header-bottom) + var(--s-4)); }
 .co__job-grid {
   display: grid;
@@ -166,8 +154,7 @@
   .co__hero--organizers h1 { font-size: min(clamp(1.6rem, 7vw, 3.5rem), 8.1cqi); }
   .co__hero--jobs h1 { font-size: min(clamp(1.9rem, 8.5vw, 4rem), 9.7cqi); }
   .co__band-inner > .btn { justify-self: start; }
-  .co__job-art { aspect-ratio: 1.85; }
-  .co__job-art img { width: min(58%, 255px); }
+  .co__photo--jobs { aspect-ratio: 1.8; }
   .co__franchise-hero::before { background: rgb(15 15 15 / 0.7); }
 }
 @media (max-width: 620px) {

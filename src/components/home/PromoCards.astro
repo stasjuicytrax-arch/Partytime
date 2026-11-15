@@ -1,29 +1,186 @@
 ---
-// Акции: короткая карточка-ссылка на страницу акции. На главной и внизу страниц акций.
 import { PROMO_PAGES } from "../../lib/promos";
+import Icon from "../Icon.astro";
 
 interface Props {
   id?: string;
   title?: string;
   exclude?: string;
+  showcase?: boolean;
 }
-const { id = "promos", title = "Акции", exclude } = Astro.props;
+const { id = "promos", title = "Акции", exclude, showcase = false } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const list = PROMO_PAGES.filter((p) => p.slug !== exclude);
+const photos: Record<string, { name: string; small: number; width: number; height: number; sizes: string }> = {
+  bday: { name: "birthday-cake", small: 480, width: 768, height: 868, sizes: "(min-width: 1280px) 340px, (min-width: 820px) 24vw, 46vw" },
+  "3plus1": { name: "party-toast", small: 640, width: 960, height: 717, sizes: "(min-width: 1280px) 650px, (min-width: 820px) 48vw, 92vw" },
+};
+const featured = list.filter((p) => photos[p.id]);
+const others = list.filter((p) => !photos[p.id]);
+const href = (slug: string) => base + "/akcii/" + slug + "/";
 ---
 <section class="blk" id={id} aria-labelledby={`${id}-title`}>
   <div class="container">
     <h2 class="blk__title" id={`${id}-title`}>{title}</h2>
-    <ul class="pgrid">
-      {list.map((p) => (
-        <li>
-          <a class="pcard" href={`${base}/akcii/${p.slug}/`}>
-            <b class="pcard__big num" aria-hidden="true">{p.big}</b>
-            <h3>{p.title}</h3>
-            <p>{p.text}</p>
-          </a>
-        </li>
-      ))}
-    </ul>
+    {showcase ? (
+      <>
+        <ul class="promo-posters" role="list">
+          {featured.map((p) => {
+            const { name, small, width, height, sizes } = photos[p.id];
+            const photo = base + "/img/hero/" + name + "-";
+            return (
+              <li>
+                <a class:list={["promo-poster", "promo-poster--" + p.id]} href={href(p.slug)}>
+                  <img src={photo + small + ".webp"}
+                    srcset={`${photo}${small}.webp ${small}w, ${photo}${width}.webp ${width}w`}
+                    sizes={sizes} alt="" width={width} height={height} loading="lazy" decoding="async" />
+                  <div class="promo-poster__body">
+                    <span class="promo-poster__value num" aria-hidden="true">{p.big}</span>
+                    <h3>{p.title}</h3>
+                    <p>{p.text}</p>
+                  </div>
+                  <span class="promo-poster__arrow"><Icon name="arrow" size={22} /></span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+        <ul class="promo-links" role="list">
+          {others.map((p) => (
+            <li>
+              <a href={href(p.slug)}>
+                <div>
+                  <h3>{p.title}</h3>
+                  <p>{p.text}</p>
+                </div>
+                <Icon name="arrow" size={20} />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </>
+    ) : (
+      <ul class="pgrid">
+        {list.map((p) => (
+          <li>
+            <a class="pcard" href={href(p.slug)}>
+              <b class="pcard__big num" aria-hidden="true">{p.big}</b>
+              <h3>{p.title}</h3>
+              <p>{p.text}</p>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
   </div>
 </section>
+
+<style>
+  .promo-posters {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .promo-poster {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    min-height: clamp(275px, 26vw, 350px);
+    height: 100%;
+    padding: clamp(20px, 3vw, 36px);
+    overflow: hidden;
+    border-radius: var(--r-lg);
+    color: var(--pt-white);
+    text-decoration: none;
+    background: var(--t-surface);
+    container-type: inline-size;
+  }
+  .promo-poster img {
+    position: absolute;
+    z-index: -2;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 280ms ease-out;
+  }
+  .promo-poster--bday {
+    background: var(--pt-pink);
+    color: var(--pt-deep);
+  }
+  .promo-poster--bday img { left: auto; width: 49%; }
+  .promo-poster--3plus1 img { object-position: 60% 50%; }
+  .promo-poster--3plus1::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    content: "";
+    background:
+      linear-gradient(90deg, rgb(15 15 15 / 0.84), rgb(15 15 15 / 0.48) 52%, transparent 90%),
+      linear-gradient(0deg, rgb(15 15 15 / 0.85), transparent 82%);
+  }
+  .promo-poster__body { position: relative; max-width: calc(51% - 7px); }
+  .promo-poster--3plus1 .promo-poster__body { max-width: calc(100% - 52px); }
+  .promo-poster__value {
+    display: block;
+    margin-bottom: 14px;
+    font: 900 clamp(2.1rem, 11.5cqi, 5.2rem) / 0.95 var(--font-display);
+    letter-spacing: -0.065em;
+    white-space: nowrap;
+  }
+  .promo-poster--3plus1 .promo-poster__value { color: var(--pt-lime); }
+  .promo-poster h3 {
+    font: 800 clamp(1rem, 4.5cqi, 1.65rem) / 1.13 var(--font-display);
+    text-wrap: balance;
+  }
+  .promo-poster p { max-width: 26ch; margin-top: 9px; font-size: clamp(0.875rem, 3.1cqi, 1.02rem); line-height: 1.4; }
+  .promo-poster__arrow {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    right: clamp(16px, 2vw, 26px);
+    bottom: clamp(16px, 2vw, 26px);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--pt-deep);
+    color: var(--pt-white);
+  }
+  .promo-poster--3plus1 .promo-poster__arrow { background: var(--pt-lime); color: var(--pt-deep); }
+  .promo-poster--bday:is(:hover, :focus-visible) .promo-poster__arrow { background: var(--pt-lime); color: var(--pt-deep); }
+  .promo-links {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-top: 18px;
+    border-block: 1px solid var(--t-line-strong);
+  }
+  .promo-links > li + li { border-inline-start: 1px solid var(--t-line); }
+  .promo-links a {
+    display: flex;
+    height: 100%;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 20px clamp(12px, 1.65vw, 24px);
+    color: var(--t-text);
+    text-decoration: none;
+  }
+  .promo-links a:is(:hover, :focus-visible) h3 { color: var(--pt-lime); }
+  .promo-links h3 { font: 750 1.0625rem / 1.22 var(--font-text); }
+  .promo-links p { margin-top: 5px; color: var(--t-muted); font-size: 0.875rem; line-height: 1.4; }
+  .promo-links :global(svg) { flex: none; color: var(--pt-lime); }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .promo-poster--3plus1:hover img { transform: scale(1.035); }
+  }
+  @media (max-width: 819px) {
+    .promo-posters { grid-template-columns: minmax(0, 1fr); }
+    .promo-poster { min-height: clamp(230px, 55vw, 300px); }
+    .promo-links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .promo-links > li:nth-child(odd) { border-inline-start: 0; }
+    .promo-links > li:nth-child(n + 3) { border-top: 1px solid var(--t-line); }
+  }
+  @media (max-width: 380px) {
+    .promo-links { grid-template-columns: minmax(0, 1fr); }
+    .promo-links > li + li { border-inline-start: 0; border-top: 1px solid var(--t-line); }
+  }
+</style>

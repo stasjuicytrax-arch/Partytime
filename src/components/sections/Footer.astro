@@ -9,6 +9,7 @@ interface Props {
 
 const { home = true } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const homeUrl = base + "/";
 const href = (h: string) => (home && h.startsWith("#") ? h : `${base}/${h}`);
 const word = ["В", "Е", "С", "Е", "Л", "И", "М", "С", "Я"];
 const fills = ["lime", "pink", "white", "sky", "violet", "pink", "lime", "white", "saffron"];
@@ -16,7 +17,9 @@ const fills = ["lime", "pink", "white", "sky", "violet", "pink", "lime", "white"
 <footer class="ft" aria-label="Подвал сайта">
   <div class="container ft__cols">
     <div class="ft__brand">
-      <img src={`${base}/brand/logo-primary.svg`} alt="Время веселиться — пространство для праздника" width="170" height="86" loading="lazy" />
+      <a href={homeUrl} aria-label="Party Time — на главную">
+        <img src={base + "/brand/logo-primary.svg"} alt="Время веселиться — пространство для праздника" width="170" height="86" loading="lazy" />
+      </a>
       <a class="ft__tel num" href={tel(PHONE_MAIN)}>{PHONE_MAIN}</a>
       <div class="ft__msg">
         <a href={botUrl("site_footer")} target="_blank" rel="noopener">Telegram</a>
@@ -26,6 +29,7 @@ const fills = ["lime", "pink", "white", "sky", "violet", "pink", "lime", "white"
     </div>
     <nav aria-label="Гостям">
       <b>Гостям</b>
+      <a href={homeUrl} aria-current={Astro.url.pathname.replace(/\/$/, "") === base ? "page" : undefined}>ГЛАВНАЯ</a>
       {FOOTER.guests.map((l) => <a href={href(l.href)}>{l.label}</a>)}
     </nav>
     <nav aria-label="Компания">

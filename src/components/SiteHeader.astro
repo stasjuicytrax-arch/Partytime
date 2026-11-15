@@ -45,7 +45,7 @@ const glassMap = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="25
   </svg>
   <div class="hdr__bar">
     <div class="hdr__glass" aria-hidden="true"></div>
-    <a class="hdr__brand" href={homeUrl} aria-label="Party Time — на главную" data-party>Party Time</a>
+    <a class="hdr__brand" href={homeUrl} aria-label="Party Time — на главную" data-party>PARTY TIME</a>
     <nav class="hdr__nav" aria-label="Основное меню">
       {nav.filter((n) => !n.mobileOnly).map((n) => <a href={n.href} aria-current={isCurrent(n.href) ? "page" : undefined}>{n.label}</a>)}
     </nav>
@@ -63,7 +63,7 @@ const glassMap = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="25
 
 <dialog class="hdr__menu" id={menuId} aria-label="Меню">
   <div class="hdr__menu-top">
-    <a class="hdr__brand" href={homeUrl} aria-label="Party Time — на главную" data-menu-link>Party Time</a>
+    <a class="hdr__brand" href={homeUrl} aria-label="Party Time — на главную" data-menu-link>PARTY TIME</a>
     <button type="button" class="hdr__menu-close" aria-label="Закрыть меню" data-menu-close><Icon name="close" size={24} /></button>
   </div>
   <nav class="hdr__menu-links" aria-label="Основное меню">
