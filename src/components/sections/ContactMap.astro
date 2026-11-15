@@ -1,0 +1,126 @@
+---
+import { locations } from "../../lib/rooms";
+import { GEO } from "../../lib/content";
+
+const pins = locations.flatMap((location, index) => {
+  const point = GEO[location.id];
+  return location.active && point
+    ? [{ ...point, id: location.id, name: location.name, number: index + 1 }]
+    : [];
+});
+---
+
+<div class="contacts__map" data-contact-map={JSON.stringify(pins)}>
+  <div class="contact-map__canvas" data-map-canvas data-lenis-prevent role="region" aria-label="Карта локаций Party Time в Петербурге"></div>
+  <p class="contact-map__status" data-map-status role="status">Карта локаций. Маршруты доступны в карточках адресов.</p>
+  <button class="contact-map__overview" type="button" data-map-overview hidden>Все локации</button>
+  <details class="contact-map__credits" data-map-credits hidden open>
+    <summary aria-label="Источники карты">
+      <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 11v5m0-8v.1" />
+      </svg>
+    </summary>
+    <p>© <a href="https://openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a>
+      · © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></p>
+  </details>
+</div>
+
+<style>
+  .contact-map__canvas { position: absolute; inset: 0; background: #252832; }
+  .contact-map__status {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    padding: 24px;
+    text-align: center;
+    color: var(--pt-dove);
+    pointer-events: none;
+  }
+  .contact-map__overview, .contact-map__credits {
+    position: absolute;
+    z-index: 2;
+    background: #24232b;
+    color: var(--pt-white);
+    border: 1px solid rgb(255 255 255 / 0.24);
+  }
+  .contact-map__overview {
+    top: 12px;
+    left: 12px;
+    min-height: 44px;
+    padding-inline: 14px;
+    border-radius: var(--r-pill);
+    font-weight: 780;
+  }
+  .contact-map__overview:hover { background: var(--pt-lime); color: var(--pt-deep); }
+  .contact-map__credits { right: 9px; bottom: 9px; max-width: calc(100% - 18px); border-radius: 10px; font-size: 0.8125rem; }
+  .contact-map__credits summary {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-inline-start: auto;
+    list-style: none;
+    cursor: pointer;
+  }
+  .contact-map__credits summary::-webkit-details-marker { display: none; }
+  .contact-map__credits summary:hover, .contact-map__credits a:hover { color: var(--pt-lime); }
+  .contact-map__credits p { padding: 0 12px 10px; }
+  .contacts__map :is(.contact-map__status, .contact-map__overview, .contact-map__credits)[hidden] { display: none; }
+  .contacts__map :global(.contact-map__pin) {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 2px solid var(--pt-deep);
+    border-radius: 50%;
+    background: var(--pin-color);
+    color: var(--pt-deep);
+    font: 900 0.875rem / 1 var(--font-display);
+    box-shadow: 0 3px 8px rgb(0 0 0 / 0.45);
+  }
+  .contacts__map :global(.contact-map__pin[aria-pressed="true"]) {
+    z-index: 1;
+    border-color: var(--pt-white);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--pin-color) 35%, transparent);
+  }
+  .contacts__map :global(.maplibregl-ctrl-group) {
+    background: #24232b;
+    border: 1px solid rgb(255 255 255 / 0.24);
+  }
+  .contacts__map :global(.maplibregl-ctrl-group > button) { width: 44px; height: 44px; }
+  .contacts__map :global(.maplibregl-ctrl-group > button + button) { border-top-color: rgb(255 255 255 / 0.24); }
+  .contacts__map :global(.maplibregl-ctrl-group > button > .maplibregl-ctrl-icon) { filter: invert(1); }
+  .contacts__map :global(.maplibregl-ctrl-group > button:hover) { background: rgb(255 255 255 / 0.1); }
+  @media (max-width: 480px) {
+    .contacts__map :global(.contact-map__pin) { width: 29px; height: 29px; }
+  }
+</style>
+
+<script>
+  const maps = document.querySelectorAll<HTMLElement>("[data-contact-map]");
+  const loadMap = async (root: HTMLElement) => {
+    const status = root.querySelector("[data-map-status]");
+    if (status) status.textContent = "Загружаем карту Петербурга…";
+    try {
+      const { initContactMap } = await import("../../scripts/contact-map");
+      await initContactMap(root);
+    } catch {
+      if (status) status.textContent = "Карта не загрузилась. Маршруты доступны в карточках адресов.";
+    }
+  };
+  if ("IntersectionObserver" in window) {
+    const lazy = new IntersectionObserver((entries) => {
+      for (const { isIntersecting, target } of entries) {
+        if (!isIntersecting) continue;
+        lazy.unobserve(target);
+        void loadMap(target as HTMLElement);
+      }
+    }, { rootMargin: "280px" });
+    maps.forEach((map) => lazy.observe(map));
+  } else {
+    maps.forEach((map) => void loadMap(map));
+  }
+</script>

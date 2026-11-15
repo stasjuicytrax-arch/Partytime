@@ -113,11 +113,10 @@ export const FAQ = [
   { q: "Что такое пакетное предложение?", a: "Готовый набор: аренда по сниженной цене + доп. услуги или меню. Подробности — у менеджера." },
 ];
 
-/* ---------- 11. Контакты: координаты для карты — [уточнить], ориентировочно по адресу ---------- */
+/* ---------- 11. Контакты: координаты по адресу из OpenStreetMap (Nominatim) ---------- */
 export const GEO: Record<string, { lat: number; lon: number }> = {
-  dumskaya: { lat: 59.9336, lon: 30.3271 },
-  mayakovskaya: { lat: 59.9318, lon: 30.3551 },
-  // по адресу из OpenStreetMap (Nominatim), 18.10.2026
+  dumskaya: { lat: 59.933364, lon: 30.3286162 },
+  mayakovskaya: { lat: 59.9316463, lon: 30.3547035 },
   leninskiy: { lat: 59.8524, lon: 30.2729 },
   komendantskiy: { lat: 60.0135, lon: 30.251 },
 };
