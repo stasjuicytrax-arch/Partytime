@@ -2,16 +2,16 @@
 interface Props { id: string }
 const { id } = Astro.props;
 const symbols: Record<string, { color: string; path: string }> = {
-  mafia: { color: "violet-l", path: '<path d="M3.5 8.8c2.8-.8 5.3-.6 7.2.8a2.2 2.2 0 0 0 2.6 0c1.9-1.4 4.4-1.6 7.2-.8-.4 4.5-1.9 7.5-4.8 7.5-1.8 0-2.3-1.9-3.7-1.9s-1.9 1.9-3.7 1.9c-2.9 0-4.4-3-4.8-7.5Z"/><path d="m6.7 12 2.3.7m8.3-.7-2.3.7"/>' },
-  menu: { color: "saffron", path: '<path d="M4 17h16M5.5 14.5a6.5 6.5 0 0 1 13 0M12 8V6m-1 0h2M7 19.5h10"/>' },
-  tg: { color: "sky", path: '<path d="m20.6 4.8-3.7 14.5-5-4.1-3 2.7.5-5.1 8.1-5.5-9.8 4.1-4.4-1.6 17.3-5Z"/>' },
-  loyalty: { color: "lime", path: '<circle cx="10" cy="10" r="5.8"/><path d="M15.6 9.3a5.8 5.8 0 1 1-6.3 6.3M10 7.5v5m-2.5-2.5h5"/>' },
+  mafia: { color: "violet-l", path: '<g data-motion><path d="M3.5 8.8c2.8-.8 5.3-.6 7.2.8a2.2 2.2 0 0 0 2.6 0c1.9-1.4 4.4-1.6 7.2-.8-.4 4.5-1.9 7.5-4.8 7.5-1.8 0-2.3-1.9-3.7-1.9s-1.9 1.9-3.7 1.9c-2.9 0-4.4-3-4.8-7.5Z"/><path d="m6.7 12 2.3.7m8.3-.7-2.3.7"/></g>' },
+  menu: { color: "saffron", path: '<g data-motion><path d="M5.5 14.5a6.5 6.5 0 0 1 13 0M12 8V6m-1 0h2"/></g><path d="M4 17h16M7 19.5h10"/>' },
+  tg: { color: "sky", path: '<g data-motion><path d="m20.6 4.8-3.7 14.5-5-4.1-3 2.7.5-5.1 8.1-5.5-9.8 4.1-4.4-1.6 17.3-5Z"/></g>' },
+  loyalty: { color: "lime", path: '<path d="M15.6 9.3a5.8 5.8 0 1 1-6.3 6.3"/><g data-motion><circle cx="10" cy="10" r="5.8" fill="var(--promo-symbol-color)"/><path d="M10 7.5v5m-2.5-2.5h5"/></g>' },
 };
 const symbol = symbols[id];
 ---
 
 {symbol && (
-  <span class="promo-symbol" style={"--promo-symbol-color: var(--pt-" + symbol.color + ")"} aria-hidden="true">
+  <span class="promo-symbol" data-promo-icon={id} style={"--promo-symbol-color: var(--pt-" + symbol.color + ")"} aria-hidden="true">
     <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" set:html={symbol.path} />
   </span>
 )}
@@ -27,4 +27,56 @@ const symbol = symbols[id];
     background-color: var(--promo-symbol-color);
     color: var(--pt-deep);
   }
+  .promo-symbol[data-promo-icon="mafia"] { --promo-motion: mask-peek; }
+  .promo-symbol[data-promo-icon="menu"] { --promo-motion: cloche-lift; }
+  .promo-symbol[data-promo-icon="tg"] { --promo-motion: plane-glide; }
+  .promo-symbol[data-promo-icon="loyalty"] { --promo-motion: coin-flip; }
+  .promo-symbol :global([data-motion]) {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .promo-symbol[data-animate] :global([data-motion]),
+    :global(.promo-links a:focus-visible) .promo-symbol :global([data-motion]) {
+      animation: var(--promo-motion) 720ms cubic-bezier(0.35, 0, 0.2, 1) both;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) and (hover: hover) {
+    :global(.promo-links a:hover) .promo-symbol :global([data-motion]) {
+      animation: var(--promo-motion) 720ms cubic-bezier(0.35, 0, 0.2, 1) both;
+    }
+  }
+  @keyframes mask-peek {
+    45% { transform: translateY(-1px) rotate(-14deg); }
+    72% { transform: rotate(5deg); }
+  }
+  @keyframes cloche-lift {
+    45% { transform: translateY(-3px) rotate(-11deg); }
+  }
+  @keyframes plane-glide {
+    32% { transform: translate(-1px, 2px) rotate(-7deg); }
+    67% { transform: translate(3px, -3px) rotate(8deg); }
+  }
+  @keyframes coin-flip {
+    39% { transform: translateY(-3px) scaleX(0.22); }
+    67% { transform: translateY(-1px) scaleX(0.86); }
+  }
 </style>
+
+<script>
+  if ("IntersectionObserver" in window && matchMedia("(prefers-reduced-motion: no-preference)").matches) {
+    const observer = new IntersectionObserver((entries) => {
+      let delay = 0;
+      for (const { isIntersecting, target } of entries) {
+        if (!isIntersecting) continue;
+        observer.unobserve(target);
+        window.setTimeout(() => target.setAttribute("data-animate", ""), delay);
+        delay += 75;
+      }
+    }, { threshold: 0.75 });
+    document.querySelectorAll("[data-promo-icon]").forEach((icon) => {
+      icon.addEventListener("animationend", () => icon.removeAttribute("data-animate"));
+      observer.observe(icon);
+    });
+  }
+</script>
