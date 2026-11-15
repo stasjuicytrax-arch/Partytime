@@ -70,7 +70,9 @@ const groups: Group[] = catalog;
       {groups.map((group) => (
         <section class="sp__group" id={group.id} aria-labelledby={group.id + "-title"} style={accent(group.color)}>
           <header class="sp__group-head">
-            <h2 id={group.id + "-title"}>{group.title}</h2>
+            <div class="sp__group-label">
+              <h2 id={group.id + "-title"}>{group.title}</h2>
+            </div>
             <img src={art(group.icon + "-dynamic-premium")} alt="" width="800" height="800" loading="lazy" decoding="async" />
           </header>
 
@@ -85,7 +87,7 @@ const groups: Group[] = catalog;
                 <div class="sp__prices">
                   {item.prices.map(({ value, unit }) => (
                     <p class="sp__price">
-                      <strong class="num">{rub(value)}</strong>
+                      <strong class="price-pill num">{rub(value)}</strong>
                       {unit && <span>{unit}</span>}
                     </p>
                   ))}

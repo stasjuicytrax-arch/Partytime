@@ -11,10 +11,11 @@ interface Props {
 const { variant, home = true } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const at = (hash: string) => home ? hash : `${base}/${hash}`;
-const homeUrl = home ? Astro.url.pathname : base + "/";
+const mainUrl = base + "/";
+const homeUrl = home ? Astro.url.pathname : mainUrl;
 const menuId = "menu-" + variant;
 const isCurrent = (href: string) =>
-  !href.includes("#") && Astro.url.pathname.replace(/\/$/, "") === href;
+  !href.includes("#") && Astro.url.pathname.replace(/\/$/, "") === href.replace(/\/$/, "");
 const nav = [
   { href: at("#rooms"), label: "Залы" },
   { href: base + "/menu", label: "Кухня & Бар" },
@@ -22,6 +23,7 @@ const nav = [
   { href: at("#promos"), label: "Акции" },
   { href: at("#contacts"), label: "Контакты" },
 ];
+const menuNav = [{ href: mainUrl, label: "Главная" }, ...nav];
 const glassMap = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
   <defs>
     <linearGradient id="x" x2="1" y2="0"><stop stop-color="#000"/><stop offset="1" stop-color="#f00"/></linearGradient>
@@ -64,7 +66,7 @@ const glassMap = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="25
     <button type="button" class="hdr__menu-close" aria-label="Закрыть меню" data-menu-close><Icon name="close" size={24} /></button>
   </div>
   <nav class="hdr__menu-links" aria-label="Основное меню">
-    {nav.map((n) => (
+    {menuNav.map((n) => (
       <a href={n.href} aria-current={isCurrent(n.href) ? "page" : undefined} data-menu-link>
         {n.label}<Icon name="arrow" size={20} />
       </a>

@@ -559,7 +559,7 @@
 .ft-letter--sky { background: var(--pt-sky); }
 .ft-letter--saffron { background: var(--pt-saffron); }
 .ft-letter--violet { background: var(--pt-violet); color: var(--pt-white); }
-.ft__stage.is-static { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: center; gap: 0.1em; padding-bottom: 24px; }
+.ft__stage.is-static { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: center; gap: 0.1em; padding-bottom: 24px; cursor: auto; }
 .ft__stage.is-static .ft-letter { position: static; transform: none; }
 .ft__copy { padding-block: 16px 28px; font-size: var(--fs-small); color: rgb(255 255 255 / 0.5); }
 @media (max-width: 899px) { .ft__cols { grid-template-columns: 1fr 1fr; } .ft__brand { grid-column: 1 / -1; } }

@@ -42,9 +42,26 @@ const fills = ["lime", "pink", "white", "sky", "violet", "pink", "lime", "white"
     </nav>
   </div>
 
-  <div class="ft__stage" data-letters aria-hidden="true">
+  <div class="ft__stage is-static" data-letters aria-hidden="true">
     {word.map((l, i) => <span class={`ft-letter ft-letter--${fills[i]}`} data-letter>{l}</span>)}
   </div>
 
   <p class="container ft__copy">© 2026 Время веселиться. Пространство для праздника.</p>
 </footer>
+
+<script>
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries) => {
+      for (const { isIntersecting, target } of entries) {
+        if (!isIntersecting) continue;
+        observer.unobserve(target);
+        const stage = target as HTMLElement;
+        import("../../scripts/fx/letters")
+          .then(({ initLetters }) => initLetters(stage))
+          .catch(() => stage.classList.add("is-static"));
+      }
+    }, { rootMargin: "400px" });
+
+    document.querySelectorAll(".ft__stage[data-letters]").forEach((stage) => observer.observe(stage));
+  }
+</script>

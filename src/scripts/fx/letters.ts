@@ -14,6 +14,7 @@ export async function initLetters(stage: HTMLElement) {
 
   const Matter = (await import("matter-js")).default;
   const { Engine, Bodies, Composite, Body, Mouse, MouseConstraint, Events } = Matter;
+  stage.classList.remove("is-static");
 
   const engine = Engine.create({ gravity: { x: 0, y: 1.1 } });
   let W = stage.clientWidth;

@@ -161,7 +161,7 @@ const priceHtml = (n: number) => rub(n).replace(" ₽", "&nbsp;₽");
                           <p class="mrow__name">{i.name}</p>
                           {(i.ingr || i.vol) && <p class="mrow__meta">{i.ingr} {i.vol && <span class="num">{i.vol}</span>}</p>}
                         </div>
-                        <p class="mrow__price num" set:html={priceHtml(i.price)} />
+                        <p class="price-pill num" set:html={priceHtml(i.price)} />
                       </li>
                     ))}
                   </ul>
@@ -321,15 +321,4 @@ const priceHtml = (n: number) => rub(n).replace(" ₽", "&nbsp;₽");
   fromHash();
   addEventListener("hashchange", fromHash);
 
-  // падающие буквы в подвале — как на главной, лениво
-  const stage = document.querySelector<HTMLElement>("[data-letters]");
-  if (stage) {
-    const lio = new IntersectionObserver(async (en) => {
-      if (!en[0].isIntersecting) return;
-      lio.disconnect();
-      const { initLetters } = await import("../scripts/fx/letters");
-      initLetters(stage);
-    }, { rootMargin: "400px" });
-    lio.observe(stage);
-  }
 </script>

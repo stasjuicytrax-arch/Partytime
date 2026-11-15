@@ -50,6 +50,14 @@
 .btn--sm .btn__ico { width: 34px; height: 34px; }
 
 /* ---------- Бейджи / цены ---------- */
+.price-pill {
+  padding: 6px 12px;
+  border-radius: var(--r-pill);
+  background: var(--price-color, var(--c, var(--pt-lime)));
+  color: var(--pt-deep);
+  font: 800 0.9375rem / 1 var(--font-display);
+  white-space: nowrap;
+}
 .badge {
   display: inline-flex;
   align-items: center;

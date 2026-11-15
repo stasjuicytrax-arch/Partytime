@@ -80,7 +80,7 @@ const priceHtml = (n: number) => rub(n).replace(" ₽", "&nbsp;₽");
                           {(i.desc || vol) && <p class="mrow__meta">{i.desc} {vol && <span class="num">{vol}</span>}</p>}
                         </div>
                         {one ? (
-                          <p class="mrow__price num" set:html={priceHtml(i.prices[0].price)} />
+                          <p class="price-pill num" set:html={priceHtml(i.prices[0].price)} />
                         ) : (
                           <p class="mwine__pills">
                             {i.prices.map((p) => <span class="num"><i>{p.vol}</i><Fragment set:html={priceHtml(p.price)} /></span>)}

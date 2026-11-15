@@ -73,19 +73,6 @@ import "../styles/home.css";
     document.readyState === "complete" ? idle(initSections) : addEventListener("load", () => idle(initSections), { once: true });
   } else initSections();
 
-  // вау-эффекты — лениво, после загрузки страницы
-  // падающие буквы в подвале — физика грузится за 400px до подвала
-  const stage = document.querySelector<HTMLElement>("[data-letters]");
-  if (stage) {
-    const io = new IntersectionObserver(async (en) => {
-      if (!en[0].isIntersecting) return;
-      io.disconnect();
-      const { initLetters } = await import("../scripts/fx/letters");
-      initLetters(stage);
-    }, { rootMargin: "400px" });
-    io.observe(stage);
-  }
-
   addEventListener("load", () =>
     idle(async () => {
       const { initLiquid } = await import("../scripts/fx/liquid");
