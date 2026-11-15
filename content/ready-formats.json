@@ -1,0 +1,72 @@
+{
+  "source": "https://partytimespb.ru/complex",
+  "dishes": {
+    "snack-plate": { "name": "Снековая тарелка", "portion": "300 г", "price": 1360, "description": "Чечил, сыр-косичка, охотничьи колбаски, начос, арахис, гренки, чесночный и сырный соусы." },
+    "cheese-plate": { "name": "Сырная тарелка", "portion": "300 г", "price": 1360, "description": "Камамбер, дорблю, пармезан, гауда, виноград, мёд и грецкий орех." },
+    "meat-plate": { "name": "Мясная тарелка", "portion": "300 г", "price": 1360, "description": "Пепперони, салями, балык, карбонад и оливки." },
+    "meat-set": { "name": "Мясной сет", "portion": "625 г", "price": 620, "description": "Куриный попкорн, хотстеры, стрипсы и три соуса на выбор." },
+    "meat-set-double": { "name": "Мясной сет", "portion": "1 250 г", "price": 1240, "description": "Двойная порция куриного попкорна, хотстеров и стрипсов, шесть соусов на выбор." },
+    "pizza": { "name": "Римская пицца «Супермясная»", "portion": "450 г, 20 × 30 см", "price": 1390 },
+    "fish-appetizers": { "name": "Сет горячих закусок «Рыбный»", "portion": "525 г", "price": 720, "description": "Кальмар, королевские креветки, картофельные шарики и три соуса на выбор." },
+    "fish-set": { "name": "Рыбный сет", "portion": "525 г", "price": 720, "description": "Кальмар в панировке, креветки в кляре, картофельные шарики и три соуса на выбор." },
+    "fish-set-double": { "name": "Рыбный сет", "portion": "1 050 г", "price": 1440, "description": "Двойная порция кальмара, креветок и картофельных шариков, шесть соусов на выбор." },
+    "fish-tartlets-12": { "name": "Сет «Рыбка моя»", "portion": "12 шт.", "price": 3780, "description": "По четыре тарталетки с лососем, рулетика с форелью и тарталетки с муссом из форели." },
+    "fish-tartlets-24": { "name": "Сет «Рыбка моя»", "portion": "24 шт., 600 г", "price": 3780, "description": "По восемь тарталеток с лососем, рулетиков с форелью и тарталеток с муссом из форели." },
+    "fish-chips": { "name": "Фиш-энд-чипс", "portion": "675 г", "price": 1120, "description": "Палочки из трески, картофель фри и три соуса на выбор." },
+    "fish-chips-double": { "name": "Фиш-энд-чипс", "portion": "1 300 г", "price": 2240, "description": "Двойная порция палочек из трески и картофеля фри, три соуса на выбор." },
+    "traditions": { "name": "Сет «Лучшие традиции»", "portion": "18 шт., 720 г", "price": 2390, "description": "Канапе с чоризо и цыплёнком, рулетики из ветчины с сыром, тарталетки с копчёной горбушей, форшмаком и оливье." },
+    "olivier": { "name": "Салат «Оливье»", "portion": "1 кг", "price": 1350 },
+    "salads-2": { "name": "Классические салаты", "portion": "2 кг", "price": 2450, "description": "Оливье и селёдка под шубой." },
+    "salads-4": { "name": "Классические салаты", "portion": "4 кг", "price": 4900, "description": "Оливье и селёдка под шубой." },
+    "canapes": { "name": "Сет канапе", "portion": "24 шт., 800 г", "price": 3860, "description": "Канапе с курицей гриль, чоризо, лососем, ветчиной, бужениной и беконом, тарталетки с лососем." },
+    "meatballs": { "name": "Фрикадельки с брусничным соусом", "portion": "1 кг", "price": 2818, "description": "Фрикадельки из свинины, картофель фри и брусничный соус." },
+    "meatballs-large": { "name": "Фрикадельки с брусничным соусом", "portion": "1 950 г", "price": 3997, "description": "Фрикадельки из свинины, картофель фри и брусничный соус." }
+  },
+  "groups": [
+    {
+      "id": "4",
+      "label": "4 гостя",
+      "color": "sky",
+      "rooms": ["betmen", "zazerkale", "nebesa", "bezumnoe-chaepitie", "mikki-i-mini", "pod-zvezdami"],
+      "offers": [
+        { "kind": "choice", "price": 3000 },
+        { "kind": "basic", "price": 3770, "options": ["snack-plate", "cheese-plate", "meat-plate"], "items": ["meat-set", "pizza"] },
+        { "kind": "max", "price": 5620, "items": ["fish-tartlets-12", "fish-appetizers", "fish-chips"] }
+      ]
+    },
+    {
+      "id": "6-8",
+      "label": "6–8 гостей",
+      "color": "saffron",
+      "rooms": ["teatr", "sssr", "kluedo", "korabl-ilona-maska", "party-hard", "multivselennaya", "taverna-belogo-volka", "zvezda-smerti", "taverna-garcuyushchij-poni", "skazochnii-les", "mezhprostranstvennaya_laboratoriya", "k-marsu"],
+      "offers": [
+        { "kind": "choice", "price": 4000 },
+        { "kind": "basic", "price": 5880, "items": ["traditions", "olivier", "meat-set", "fish-set"] },
+        { "kind": "max", "price": 7798, "items": ["canapes", "meatballs", "fish-chips"] }
+      ]
+    },
+    {
+      "id": "8-10",
+      "label": "8–10 гостей",
+      "color": "pink",
+      "rooms": ["mondrian", "disco", "popart", "nautilus", "zvezdnyj-razrushitel", "twedes-cafe", "odnazhdy-v-gollivude", "secretnaya-baza", "dikij-zapad", "cyberpunk"],
+      "offers": [
+        { "kind": "choice", "price": 5000 },
+        { "kind": "basic", "price": 6180, "items": ["traditions", "salads-2", "meat-set", "fish-set"] },
+        { "kind": "max", "price": 11578, "items": ["fish-tartlets-24", "canapes", "meatballs", "fish-chips"] }
+      ]
+    },
+    {
+      "id": "15-20",
+      "label": "15–20 гостей",
+      "color": "violet-l",
+      "rooms": ["obshchaya-gostinaya", "buhta-majyami", "bashnya-starka", "brooklyn", "rock-n-roll", "gavaji", "maiami-bich"],
+      "unlinkedRooms": ["Зал супергероев"],
+      "offers": [
+        { "kind": "choice", "price": 6000 },
+        { "kind": "basic", "price": 9970, "items": ["traditions", "salads-4", "meat-set-double", "fish-set-double"] },
+        { "kind": "max", "price": 15877, "items": ["fish-tartlets-24", "canapes", "meatballs-large", "fish-chips-double"] }
+      ]
+    }
+  ]
+}

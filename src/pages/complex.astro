@@ -1,0 +1,169 @@
+---
+import Base from "../layouts/Base.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import Footer from "../components/sections/Footer.astro";
+import Messengers from "../components/Messengers.astro";
+import Icon from "../components/Icon.astro";
+import catalog from "../../content/ready-formats.json";
+import { botUrl } from "../lib/bot";
+import { rooms, rub } from "../lib/rooms";
+import "../styles/components.css";
+import "../styles/b.css";
+import "../styles/sections.css";
+import "../styles/theme-dark.css";
+import "../styles/ready-formats.css";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const roomBySlug = new Map(rooms.map((room) => [room.slug, room]));
+const photo = base + "/img/hero/party-confetti-";
+const hero = photo + "1440.webp";
+const packageTypes = {
+  choice: { title: "Свобода выбора", icon: "glass" },
+  basic: { title: "Базовый минимум", icon: "gift" },
+  max: { title: "Роскошный максимум", icon: "crown" },
+};
+
+interface Dish {
+  name: string;
+  price: number;
+  portion: string;
+  description?: string;
+}
+interface Offer {
+  kind: keyof typeof packageTypes;
+  price: number;
+  options?: string[];
+  items?: string[];
+}
+interface Group {
+  id: string;
+  label: string;
+  color: string;
+  rooms: string[];
+  unlinkedRooms?: string[];
+  offers: Offer[];
+}
+const { dishes, groups } = catalog as { dishes: Record<string, Dish>; groups: Group[] };
+const groupId = (id: string) => "guests-" + id;
+const accent = (color: string) => "--package-accent: var(--pt-" + color + ")";
+---
+
+<Base
+  title="Готовые форматы — Время веселиться"
+  description="Готовые пакеты Party Time на компании из 4, 6–8, 8–10 и 15–20 человек. Состав, цены и залы."
+  theme="#151515"
+  favicon="blue"
+  bodyClass="vb formats-page"
+>
+  <SiteHeader variant="b" home={false} />
+  <main id="main" tabindex="-1">
+    <section class="container rf__hero" aria-labelledby="formats-title">
+      <div class="rf__intro">
+        <h1 id="formats-title">Готовые<br />форматы</h1>
+        <p>Выберите размер компании и сравните пакеты для вашего праздника.</p>
+        <p class="rf__discount"><strong>−20%</strong><span>на аренду подходящего зала<br />при бронировании на 4 часа</span></p>
+      </div>
+      <img class="rf__hero-photo" src={hero}
+        srcset={photo + "640.webp 640w, " + photo + "960.webp 960w, " + hero + " 1440w"}
+        sizes="(max-width: 767px) 100vw, 50vw"
+        alt="Гости отмечают праздник в зале Party Time" width="1440" height="1076" fetchpriority="high" />
+    </section>
+
+    <div class="container">
+      <nav class="rf__jump" aria-label="Размер компании">
+        {groups.map((group) => (
+          <a href={"#" + groupId(group.id)} style={accent(group.color)}>
+            {group.label}<Icon name="arrow" size={17} />
+          </a>
+        ))}
+      </nav>
+
+      {groups.map((group) => (
+        <section class="rf__group" id={groupId(group.id)} aria-labelledby={groupId(group.id) + "-title"} style={accent(group.color)}>
+          <header class="rf__group-head">
+            <h2 id={groupId(group.id) + "-title"}>{group.label}</h2>
+            <details class="rf__rooms">
+              <summary>Подходящие залы<Icon name="arrow" size={16} /></summary>
+              <ul role="list">
+                {group.rooms.map((slug) => {
+                  const room = roomBySlug.get(slug)!;
+                  return <li><a href={base + "/zal/" + room.slug}>{room.title}</a></li>;
+                })}
+                {group.unlinkedRooms?.map((name) => <li><span>{name}</span></li>)}
+              </ul>
+            </details>
+          </header>
+
+          <div class="rf__packages">
+            {group.offers.map((offer) => {
+              const type = packageTypes[offer.kind];
+              const options = (offer.options ?? []).map((key) => dishes[key]);
+              const items = (offer.items ?? []).map((key) => dishes[key]);
+              const dishGroups = options.length
+                ? [{ label: "Одна тарелка на выбор", items: options }, { label: "Горячее", items }]
+                : [{ label: "", items }];
+              const deposit = offer.kind === "choice";
+              return (
+                <article class="rf__package">
+                  <div class="rf__package-head">
+                    <h3>{type.title}</h3>
+                    <img src={base + "/img/3d/" + type.icon + "-dynamic-premium.webp"} width="800" height="800" alt="" loading="lazy" decoding="async" />
+                  </div>
+                  <p class="rf__package-price">
+                    <strong class="price-pill num">{rub(offer.price)}</strong>
+                    <span>{deposit ? "депозит + аренда зала" : "+ аренда зала"}</span>
+                  </p>
+                  {deposit ? (
+                    <p class="rf__deposit">Внесите депозит заранее и используйте его на блюда из меню и услуги во время праздника.</p>
+                  ) : (
+                    <Fragment>
+                      <ul class="rf__preview" role="list">
+                        {options.length > 0 && <li>Одна закусочная тарелка на выбор</li>}
+                        {items.map((item) => <li>{item.name}</li>)}
+                      </ul>
+                      <details class="rf__details">
+                        <summary>Состав и цены блюд<Icon name="arrow" size={16} /></summary>
+                        {dishGroups.map((dishGroup) => (
+                          <Fragment>
+                            {dishGroup.label && <p class="rf__options-label">{dishGroup.label}</p>}
+                            <ul class="rf__dishes" role="list">
+                              {dishGroup.items.map((item) => (
+                                <li>
+                                  <div>
+                                    <b>{item.name}</b>
+                                    <p class="rf__portion">{item.portion}</p>
+                                  </div>
+                                  <strong class="num">{rub(item.price)}</strong>
+                                  {item.description && <p class="rf__ingredients">{item.description}</p>}
+                                </li>
+                              ))}
+                            </ul>
+                          </Fragment>
+                        ))}
+                      </details>
+                    </Fragment>
+                  )}
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      ))}
+    </div>
+
+    <section class="rf__terms" aria-labelledby="formats-terms">
+      <div class="container rf__terms-inner">
+        <div>
+          <h2 id="formats-terms">Условия пакетов</h2>
+          <p>Состав можно менять и дополнять. Вы можете принести свои еду и напитки. Акции не суммируются.</p>
+          <p>К пакетам с меню можно добавить сет «Комфорт» за 100 ₽ на гостя. При заказе напитков в нашем баре доплаты за сет нет.</p>
+        </div>
+        <a class="btn btn--primary" href={botUrl("site_formats")} target="_blank" rel="noopener">
+          Уточнить в Telegram<span class="btn__ico"><Icon name="arrow" size={18} /></span>
+        </a>
+      </div>
+    </section>
+  </main>
+  <Footer home={false} />
+  <Messengers />
+</Base>
