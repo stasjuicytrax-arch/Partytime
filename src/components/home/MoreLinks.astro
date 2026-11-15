@@ -32,7 +32,7 @@ const byLoc = locs.map((l) => ({ ...l, list: rooms.filter((r) => r.loc === l.id)
       <nav aria-labelledby="more-promo">
         <h3 class="more__sub" id="more-promo">Акции</h3>
         <ul class="more__list">
-          {PROMO_PAGES.map((p) => <li><a href={`${base}/akcii/${p.slug}/`}>{p.title}</a></li>)}
+          {PROMO_PAGES.map((p) => <li><a href={`${base}/${p.path}/`}>{p.title}</a></li>)}
         </ul>
       </nav>
       {byLoc.map((l) => (

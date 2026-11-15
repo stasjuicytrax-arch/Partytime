@@ -1,0 +1,79 @@
+---
+import Company from "../layouts/Company.astro";
+import Icon from "../components/Icon.astro";
+import { PHONE_MAIN } from "../lib/content";
+import { tel } from "../lib/rooms";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const photo = base + "/img/hero/party-confetti-";
+---
+
+<Company
+  title="Система лояльности — Party Time"
+  description="Баллы за мероприятия в Party Time, скидки и бонусные услуги. Уточните условия программы у администратора."
+>
+  <section class="container co__hero loyalty__hero" aria-labelledby="loyalty-title">
+    <div class="co__intro">
+      <h1 id="loyalty-title">Система<br /><span>лояльности</span></h1>
+      <p>Копите баллы за праздники в <span translate="no">Party&nbsp;Time</span> и используйте их на следующих мероприятиях.</p>
+      <a class="btn btn--primary" href={tel(PHONE_MAIN)}>
+        Уточнить по телефону
+        <span class="btn__ico"><Icon name="phone" size={20} /></span>
+      </a>
+      <p class="loyalty__note">Администратор подскажет, доступна ли программа для вашей брони и как воспользоваться баллами.</p>
+    </div>
+    <img class="co__photo loyalty__photo" src={photo + "960.webp"}
+      srcset={photo + "640.webp 640w, " + photo + "960.webp 960w, " + photo + "1440.webp 1440w"}
+      sizes="(max-width: 800px) 92vw, (max-width: 1440px) 43vw, 590px"
+      alt="Гости Party Time празднуют в караоке-лофте с конфетти" width="960" height="717" fetchpriority="high" />
+  </section>
+
+  <section class="container co__network loyalty__rewards" aria-labelledby="loyalty-rewards">
+    <h2 id="loyalty-rewards">На что обменять баллы</h2>
+    <ul class="loyalty__list" role="list">
+      <li>Скидки</li>
+      <li>Бонусные услуги</li>
+      <li>Специальные предложения</li>
+    </ul>
+    <a class="btn btn--ghost" href={base + "/#promos"}>
+      Посмотреть акции <span class="btn__ico"><Icon name="arrow" size={20} /></span>
+    </a>
+  </section>
+</Company>
+
+<style>
+  .loyalty__hero h1 {
+    font-size: clamp(1.65rem, 4.8vw, 4.5rem);
+    font-size: min(clamp(1.65rem, 5.6vw, 4.5rem), 9.6cqi);
+  }
+  .loyalty__hero h1 span { color: var(--pt-pink); }
+  .loyalty__hero .loyalty__note {
+    margin-block: var(--s-3) 0;
+    font-size: var(--fs-small);
+  }
+  .loyalty__photo { aspect-ratio: 1.31; object-position: 51% center; }
+  .loyalty__rewards { padding-top: 0; }
+  .loyalty__list {
+    display: grid;
+    grid-template-columns: 0.65fr 1fr 1.65fr;
+    margin-block: var(--s-5);
+    border-block: 1px solid var(--t-line-strong);
+  }
+  .loyalty__list li {
+    display: flex;
+    align-items: center;
+    min-height: 4.5rem;
+    padding-block: var(--s-3);
+    font: 750 clamp(1.05rem, 2.2vw, 1.65rem) / 1.25 var(--font-text);
+  }
+  .loyalty__list li + li { padding-inline-start: var(--s-5); border-inline-start: 1px solid var(--t-line); }
+  @media (max-width: 800px) {
+    .loyalty__hero h1 { font-size: min(clamp(1.65rem, 8vw, 4.5rem), 9.6cqi); }
+    .loyalty__photo { aspect-ratio: 1.65; }
+  }
+  @media (max-width: 560px) {
+    .loyalty__list { grid-template-columns: minmax(0, 1fr); }
+    .loyalty__list li { min-height: 3.25rem; }
+    .loyalty__list li + li { padding-inline-start: 0; border-inline-start: 0; border-top: 1px solid var(--t-line); }
+  }
+</style>

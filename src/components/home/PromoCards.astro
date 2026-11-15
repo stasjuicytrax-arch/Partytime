@@ -17,7 +17,7 @@ const photos: Record<string, { name: string; small: number; width: number; heigh
 };
 const featured = list.filter((p) => photos[p.id]);
 const others = list.filter((p) => !photos[p.id]);
-const href = (slug: string) => base + "/akcii/" + slug + "/";
+const href = (path: string) => base + "/" + path + "/";
 ---
 <section class="blk" id={id} aria-labelledby={`${id}-title`}>
   <div class="container">
@@ -30,7 +30,7 @@ const href = (slug: string) => base + "/akcii/" + slug + "/";
             const photo = base + "/img/hero/" + name + "-";
             return (
               <li>
-                <a class:list={["promo-poster", "promo-poster--" + p.id]} href={href(p.slug)}>
+                <a class:list={["promo-poster", "promo-poster--" + p.id]} href={href(p.path)}>
                   <img src={photo + small + ".webp"}
                     srcset={`${photo}${small}.webp ${small}w, ${photo}${width}.webp ${width}w`}
                     sizes={sizes} alt="" width={width} height={height} loading="lazy" decoding="async" />
@@ -48,7 +48,7 @@ const href = (slug: string) => base + "/akcii/" + slug + "/";
         <ul class="promo-links" role="list">
           {others.map((p) => (
             <li>
-              <a href={href(p.slug)}>
+              <a href={href(p.path)}>
                 <div>
                   <h3>{p.title}</h3>
                   <p>{p.text}</p>
@@ -63,7 +63,7 @@ const href = (slug: string) => base + "/akcii/" + slug + "/";
       <ul class="pgrid">
         {list.map((p) => (
           <li>
-            <a class="pcard" href={href(p.slug)}>
+            <a class="pcard" href={href(p.path)}>
               <b class="pcard__big num" aria-hidden="true">{p.big}</b>
               <h3>{p.title}</h3>
               <p>{p.text}</p>

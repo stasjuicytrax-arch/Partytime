@@ -11,6 +11,7 @@ const { home = true } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const homeUrl = base + "/";
 const href = (h: string) => (home && h.startsWith("#") ? h : `${base}/${h}`);
+const currentPath = Astro.url.pathname.replace(/\/$/, "");
 const word = ["В", "Е", "С", "Е", "Л", "И", "М", "С", "Я"];
 const fills = ["lime", "pink", "white", "sky", "violet", "pink", "lime", "white", "saffron"];
 ---
@@ -29,13 +30,15 @@ const fills = ["lime", "pink", "white", "sky", "violet", "pink", "lime", "white"
     </div>
     <nav aria-label="Гостям">
       <b>Гостям</b>
-      <a href={homeUrl} aria-current={Astro.url.pathname.replace(/\/$/, "") === base ? "page" : undefined}>ГЛАВНАЯ</a>
-      {FOOTER.guests.map((l) => <a href={href(l.href)}>{l.label}</a>)}
+      <a href={homeUrl} aria-current={currentPath === base ? "page" : undefined}>ГЛАВНАЯ</a>
+      {FOOTER.guests.map((l) => (
+        <a href={href(l.href)} aria-current={currentPath === href(l.href).replace(/\/$/, "") ? "page" : undefined}>{l.label}</a>
+      ))}
     </nav>
     <nav aria-label="Компания">
       <b>Компания</b>
       {FOOTER.company.map((l) => (
-        <a href={href(l.href)} aria-current={Astro.url.pathname.replace(/\/$/, "") === href(l.href) ? "page" : undefined}>
+        <a href={href(l.href)} aria-current={currentPath === href(l.href) ? "page" : undefined}>
           {l.label}{"note" in l && l.note && <small>{l.note}</small>}
         </a>
       ))}

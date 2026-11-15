@@ -20,6 +20,7 @@ export function getStaticPaths() {
 }
 const { p } = Astro.props as { p: PromoPage };
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+if (p.id === "loyalty") return Astro.redirect(base + "/" + p.path + "/", 301);
 const link = p.link ? { label: p.link.label, href: p.link.href === "menu" ? `${base}/menu` : p.link.href, ext: p.link.href.startsWith("http") } : null;
 ---
 <Base

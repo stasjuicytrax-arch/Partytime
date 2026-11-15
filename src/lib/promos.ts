@@ -1,4 +1,4 @@
-// Акции: у каждой своя страница /akcii/<slug>. Тексты — из content.ts (PROMOS);
+// Акции: тексты — из content.ts (PROMOS).
 // условий, которых нет в content/, не выдумываем — на странице стоит «[уточнить]».
 import { PROMOS } from "./content";
 
@@ -11,5 +11,9 @@ const SLUGS: Record<string, string> = {
   loyalty: "bally-loyalnosti",
 };
 // TODO: условия, сроки и ограничения каждой акции — получить у заказчика
-export const PROMO_PAGES = PROMOS.map((p) => ({ ...p, slug: SLUGS[p.id] }));
+export const PROMO_PAGES = PROMOS.map((p) => {
+  const slug = SLUGS[p.id];
+  const path = p.id === "loyalty" ? "loyalty" : "akcii/" + slug;
+  return { ...p, slug, path };
+});
 export type PromoPage = (typeof PROMO_PAGES)[number];

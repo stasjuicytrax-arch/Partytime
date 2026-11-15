@@ -69,7 +69,7 @@
   background: linear-gradient(90deg, rgb(15 15 15 / 0.93), rgb(15 15 15 / 0.67) 52%, rgb(15 15 15 / 0.24));
 }
 .co__franchise-copy h1 { font-size: clamp(2.05rem, 7.2vw, 6rem); }
-.co__franchise-copy h1 span { color: var(--pt-lime); text-transform: none; }
+.co__franchise-copy h1 span { color: var(--pt-lime); }
 .co__franchise-copy p { color: var(--pt-dove); }
 .co__network { padding-block: clamp(36px, 6.4vw, 92px); }
 .co__stats {

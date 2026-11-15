@@ -130,7 +130,7 @@ export const FOOTER = {
     { label: "Услуги", href: "services" },
     { label: "Акции", href: "#promos" },
     { label: "Вопросы и ответы", href: "#faq" },
-    { label: "Система лояльности", href: "soon" },
+    { label: "Система лояльности", href: "loyalty/" },
   ],
   company: [
     { label: "Организаторам и блогерам", href: "organizers" },
