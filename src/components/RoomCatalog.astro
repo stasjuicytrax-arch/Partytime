@@ -39,7 +39,7 @@ const sizes = "(max-width: 559px) 112vw, (max-width: 767px) 56vw, (max-width: 10
 ---
 <section id="rooms" class={`rc rc--${variant}`} aria-labelledby="rooms-title" data-catalog>
   <div class="container rc__inner">
-    <header class="rc__head">
+    <header class:list={["rc__head", Astro.slots.has("header-art") && "rc__head--art"]}>
       <p class="rc__label">01 — Залы</p>
       <h2 id="rooms-title" class="rc__title">
         <span class="w-fill">Найди</span>
@@ -49,6 +49,7 @@ const sizes = "(max-width: 559px) 112vw, (max-width: 767px) 56vw, (max-width: 10
       <p class="rc__lead">
         {totalRooms} тематических миров на&nbsp;{locations.filter((l) => l.active).length}&nbsp;локациях. Выберите локацию и&nbsp;размер компании.
       </p>
+      {Astro.slots.has("header-art") && <div class="rc__art"><slot name="header-art" /></div>}
     </header>
 
     <div class="rc__controls">

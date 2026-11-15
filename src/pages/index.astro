@@ -4,6 +4,7 @@ import Base from "../layouts/Base.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import HeroMain from "../components/home/HeroMain.astro";
 import RoomCatalog from "../components/RoomCatalog.astro";
+import DiscoBall from "../components/home/DiscoBall.astro";
 import VideoBlock from "../components/home/VideoBlock.astro";
 import Perks from "../components/home/Perks.astro";
 import MoreLinks from "../components/home/MoreLinks.astro";
@@ -32,7 +33,9 @@ import "../styles/home.css";
   <SiteHeader variant="b" />
   <main id="main" tabindex="-1">
     <HeroMain />
-    <RoomCatalog variant="b" pages />
+    <RoomCatalog variant="b" pages>
+      <DiscoBall slot="header-art" />
+    </RoomCatalog>
     <Overviews />
     <Occasions />
     <PromoCards showcase />

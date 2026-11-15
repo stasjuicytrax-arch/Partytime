@@ -1,0 +1,135 @@
+---
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<div class="disco-ball" data-catalog-disco>
+  <img src={base + "/img/ball-poster.webp"} alt="" width="460" height="460" loading="lazy" decoding="async" />
+  <canvas aria-hidden="true"></canvas>
+  <button type="button" aria-label="Вращение диско-шара" aria-pressed="true" hidden>
+    <svg class="disco-ball__pause" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+      <path d="M5.5 3.5v9m5-9v9" />
+    </svg>
+    <svg class="disco-ball__play" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+      <path d="m5.5 3.5 7 4.5-7 4.5z" />
+    </svg>
+  </button>
+</div>
+
+<style>
+  .disco-ball { position: relative; isolation: isolate; width: 100%; aspect-ratio: 1; }
+  .disco-ball::before {
+    position: absolute;
+    z-index: -1;
+    inset: -12% 0 -12% -12%;
+    content: "";
+    pointer-events: none;
+    background: radial-gradient(closest-side, rgb(118 89 255 / 0.25), rgb(254 118 180 / 0.09) 66%, transparent);
+  }
+  .disco-ball img, .disco-ball canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .disco-ball canvas { visibility: hidden; }
+  .disco-ball[data-rendered] canvas { visibility: visible; }
+  .disco-ball[data-rendered] img { visibility: hidden; }
+  .disco-ball button {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--pt-white);
+  }
+  .disco-ball button::before {
+    grid-area: 1 / 1;
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--t-line-strong);
+    border-radius: 50%;
+    background: var(--pt-deep);
+    content: "";
+  }
+  .disco-ball button svg { grid-area: 1 / 1; z-index: 1; }
+  .disco-ball button:is(:hover, :focus-visible) { color: var(--pt-lime); }
+  .disco-ball button[hidden], [aria-pressed="true"] .disco-ball__play, [aria-pressed="false"] .disco-ball__pause { display: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .disco-ball[data-rendered] canvas, .disco-ball button { visibility: hidden; }
+    .disco-ball[data-rendered] img { visibility: visible; }
+  }
+</style>
+
+<script>
+  import type { DiscoBall } from "../../scripts/disco";
+
+  const root = document.querySelector<HTMLElement>("[data-catalog-disco]");
+  const canvas = root?.querySelector("canvas");
+  const button = root?.querySelector("button");
+
+  if (root && canvas && button && "IntersectionObserver" in window && "ResizeObserver" in window) {
+    const motion = matchMedia("(prefers-reduced-motion: reduce)");
+    const finePointer = matchMedia("(hover: hover) and (pointer: fine)");
+    let ball: DiscoBall | null = null;
+    let visible = false;
+    let paused = false;
+    let loading = false;
+    let unavailable = false;
+
+    const update = async () => {
+      const onScreen = () => visible && !motion.matches && !document.hidden && !unavailable;
+      if (!onScreen() || paused) {
+        ball?.stop();
+        return;
+      }
+      if (!ball && !loading) {
+        loading = true;
+        try {
+          const { createDiscoBall } = await import("../../scripts/disco");
+          if (!onScreen()) return;
+          ball = createDiscoBall(canvas, { mobile: matchMedia("(max-width: 767px)").matches });
+          ball.renderOnce();
+          root.setAttribute("data-rendered", "");
+          button.hidden = false;
+        } catch {
+          unavailable = true;
+        } finally {
+          loading = false;
+        }
+      }
+      if (onScreen() && !paused) ball?.start();
+    };
+
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      void update();
+    }).observe(root);
+
+    new ResizeObserver(() => {
+      if (!ball || unavailable) return;
+      ball.resize();
+      ball.renderOnce();
+    }).observe(root);
+
+    button.addEventListener("click", () => {
+      paused = !paused;
+      button.setAttribute("aria-pressed", String(!paused));
+      void update();
+    });
+    root.addEventListener("pointermove", (event) => {
+      if (!ball || paused || !finePointer.matches || motion.matches || event.pointerType !== "mouse") return;
+      const rect = root.getBoundingClientRect();
+      ball.setPointer((event.clientX - rect.left) / rect.width - 0.5, (event.clientY - rect.top) / rect.height - 0.5);
+    }, { passive: true });
+    root.addEventListener("pointerleave", () => ball?.setPointer(0, 0));
+    document.addEventListener("visibilitychange", update);
+    motion.addEventListener("change", update);
+    canvas.addEventListener("webglcontextlost", () => {
+      unavailable = true;
+      ball?.stop();
+      root.removeAttribute("data-rendered");
+      button.hidden = true;
+    });
+  }
+</script>
