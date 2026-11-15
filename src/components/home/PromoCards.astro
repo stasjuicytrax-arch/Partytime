@@ -28,12 +28,23 @@ const href = (path: string) => base + "/" + path + "/";
           {featured.map((p) => {
             const { name, small, width, height, sizes } = photos[p.id];
             const photo = base + "/img/hero/" + name + "-";
+            const picture = (
+              <img src={photo + small + ".webp"}
+                srcset={`${photo}${small}.webp ${small}w, ${photo}${width}.webp ${width}w`}
+                sizes={sizes} alt="" width={width} height={height} loading="lazy" decoding="async" />
+            );
             return (
               <li>
                 <a class:list={["promo-poster", "promo-poster--" + p.id]} href={href(p.path)}>
-                  <img src={photo + small + ".webp"}
-                    srcset={`${photo}${small}.webp ${small}w, ${photo}${width}.webp ${width}w`}
-                    sizes={sizes} alt="" width={width} height={height} loading="lazy" decoding="async" />
+                  {p.id === "bday" ? (
+                    <span class="promo-candle" data-promo-candle aria-hidden="true">
+                      {picture}
+                      <span class="promo-candle__cover">
+                        <canvas width="108" height="142"></canvas>
+                        <span class="promo-candle__reflection"></span>
+                      </span>
+                    </span>
+                  ) : picture}
                   <div class="promo-poster__body">
                     <span class="promo-poster__value num" aria-hidden="true">{p.big}</span>
                     <h3>{p.title}</h3>
@@ -109,7 +120,44 @@ const href = (path: string) => base + "/" + path + "/";
     background: var(--pt-pink);
     color: var(--pt-deep);
   }
-  .promo-poster--bday img { left: auto; width: 49%; }
+  .promo-candle {
+    position: absolute;
+    z-index: -2;
+    inset: 0 0 0 51%;
+    overflow: hidden;
+    container-type: size;
+  }
+  .promo-candle__cover {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100cqw, calc(100cqh * 768 / 868));
+    aspect-ratio: 768 / 868;
+    translate: -50% -50%;
+    pointer-events: none;
+    visibility: hidden;
+  }
+  .promo-candle[data-flickering] .promo-candle__cover { visibility: visible; }
+  .promo-candle canvas {
+    position: absolute;
+    left: calc(337 / 768 * 100%);
+    top: calc(376 / 868 * 100%);
+    width: calc(108 / 768 * 100%);
+    height: calc(142 / 868 * 100%);
+    mask-image: radial-gradient(ellipse closest-side, #000 73%, transparent);
+  }
+  .promo-candle__reflection {
+    position: absolute;
+    left: 36%;
+    top: 65%;
+    width: 29%;
+    height: 13%;
+    background: radial-gradient(ellipse, rgb(255 172 80 / 0.38), transparent 70%);
+    opacity: var(--candle-light, 0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .promo-candle[data-flickering] .promo-candle__cover { visibility: hidden; }
+  }
   .promo-poster--3plus1 img { object-position: 60% 50%; }
   .promo-poster--3plus1::before {
     position: absolute;
@@ -184,3 +232,8 @@ const href = (path: string) => base + "/" + path + "/";
     .promo-links > li + li { border-inline-start: 0; border-top: 1px solid var(--t-line); }
   }
 </style>
+
+<script>
+  import { initCandle } from "../../scripts/fx/candle";
+  document.querySelectorAll<HTMLElement>("[data-promo-candle]").forEach(initCandle);
+</script>
