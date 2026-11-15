@@ -71,10 +71,9 @@ function showCredits(credits: HTMLDetailsElement) {
 export async function initContactMap(root: HTMLElement) {
   const container = root.querySelector<HTMLElement>("[data-map-canvas]");
   const status = root.querySelector<HTMLElement>("[data-map-status]");
-  const overview = root.querySelector<HTMLButtonElement>("[data-map-overview]");
   const credits = root.querySelector<HTMLDetailsElement>("[data-map-credits]");
   const pins: Pin[] = JSON.parse(root.dataset.contactMap ?? "[]");
-  if (!container || !status || !overview || !credits || !pins.length) throw new Error("Map is incomplete");
+  if (!container || !status || !credits || !pins.length) throw new Error("Map is incomplete");
 
   const style = await getMapStyle();
   const bounds = new LngLatBounds();
@@ -127,14 +126,9 @@ export async function initContactMap(root: HTMLElement) {
     map.on("resize", separate);
   }
 
-  overview.addEventListener("click", () => {
-    markers.forEach(({ button }) => button.setAttribute("aria-pressed", "false"));
-    map.fitBounds(bounds, { ...fit, duration: duration() });
-  });
   map.once("load", () => {
     root.dataset.mapReady = "";
     status.hidden = true;
-    overview.hidden = false;
     showCredits(credits);
   });
   map.on("error", () => {

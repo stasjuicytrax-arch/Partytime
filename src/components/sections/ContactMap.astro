@@ -13,7 +13,6 @@ const pins = locations.flatMap((location, index) => {
 <div class="contacts__map" data-contact-map={JSON.stringify(pins)}>
   <div class="contact-map__canvas" data-map-canvas data-lenis-prevent role="region" aria-label="Карта локаций Party Time в Петербурге"></div>
   <p class="contact-map__status" data-map-status role="status">Карта локаций. Маршруты доступны в карточках адресов.</p>
-  <button class="contact-map__overview" type="button" data-map-overview hidden>Все локации</button>
   <details class="contact-map__credits" data-map-credits hidden open>
     <summary aria-label="Источники карты">
       <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
@@ -38,22 +37,13 @@ const pins = locations.flatMap((location, index) => {
     color: var(--pt-dove);
     pointer-events: none;
   }
-  .contact-map__overview, .contact-map__credits {
+  .contact-map__credits {
     position: absolute;
     z-index: 2;
     background: #24232b;
     color: var(--pt-white);
     border: 1px solid rgb(255 255 255 / 0.24);
   }
-  .contact-map__overview {
-    top: 12px;
-    left: 12px;
-    min-height: 44px;
-    padding-inline: 14px;
-    border-radius: var(--r-pill);
-    font-weight: 780;
-  }
-  .contact-map__overview:hover { background: var(--pt-lime); color: var(--pt-deep); }
   .contact-map__credits { right: 9px; bottom: 9px; max-width: calc(100% - 18px); border-radius: 10px; font-size: 0.8125rem; }
   .contact-map__credits summary {
     display: grid;
@@ -67,7 +57,7 @@ const pins = locations.flatMap((location, index) => {
   .contact-map__credits summary::-webkit-details-marker { display: none; }
   .contact-map__credits summary:hover, .contact-map__credits a:hover { color: var(--pt-lime); }
   .contact-map__credits p { padding: 0 12px 10px; }
-  .contacts__map :is(.contact-map__status, .contact-map__overview, .contact-map__credits)[hidden] { display: none; }
+  .contacts__map :is(.contact-map__status, .contact-map__credits)[hidden] { display: none; }
   .contacts__map :global(.contact-map__pin) {
     display: grid;
     place-items: center;
