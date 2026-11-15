@@ -1,0 +1,117 @@
+---
+import Base from "../layouts/Base.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import Footer from "../components/sections/Footer.astro";
+import Messengers from "../components/Messengers.astro";
+import Icon from "../components/Icon.astro";
+import catalog from "../../content/services.json";
+import { botUrl } from "../lib/bot";
+import { PHONE_MAIN, rub, tel } from "../lib/rooms";
+import "../styles/components.css";
+import "../styles/b.css";
+import "../styles/sections.css";
+import "../styles/theme-dark.css";
+import "../styles/services.css";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const art = (file: string) => base + "/img/3d/" + file + ".webp";
+const accent = (color: string) => "--service-accent: var(--pt-" + color + ")";
+const telegram = botUrl("site_services");
+
+interface Service {
+  name: string;
+  description?: string;
+  details?: string[];
+  prices: Array<{ value: number; unit?: string }>;
+}
+
+interface Group {
+  id: string;
+  label: string;
+  title: string;
+  color: string;
+  icon: string;
+  items: Service[];
+}
+
+const groups: Group[] = catalog;
+---
+
+<Base
+  title="Услуги — Время веселиться"
+  description="Дополнительные услуги Party Time в Санкт-Петербурге. Украшение зала, караоке, игровые консоли, ведущие, фотографы и шоу. Цены."
+  theme="#151515"
+  favicon="blue"
+  bodyClass="vb services-page"
+>
+  <SiteHeader variant="b" home={false} />
+  <main id="main" tabindex="-1">
+    <section class="container sp__hero" aria-labelledby="services-title">
+      <div class="sp__intro">
+        <h1 id="services-title">Услуги</h1>
+        <p>Украсьте зал, пригласите ведущего или добавьте караоке и игры к бронированию.</p>
+      </div>
+      <div class="sp__scene" aria-hidden="true">
+        <img class="sp__scene-gift" src={art("gift-dynamic-color")} alt="" width="800" height="800" decoding="async" />
+        <img class="sp__scene-mic" src={art("mic-dynamic-color")} alt="" width="800" height="800" fetchpriority="high" />
+        <img class="sp__scene-camera" src={art("camera-dynamic-color")} alt="" width="800" height="800" decoding="async" />
+      </div>
+    </section>
+
+    <div class="container">
+      <nav class="sp__jump" aria-label="Разделы услуг">
+        {groups.map((group) => (
+          <a href={"#" + group.id} style={accent(group.color)}>
+            {group.label}<Icon name="arrow" size={17} />
+          </a>
+        ))}
+      </nav>
+
+      {groups.map((group) => (
+        <section class="sp__group" id={group.id} aria-labelledby={group.id + "-title"} style={accent(group.color)}>
+          <header class="sp__group-head">
+            <h2 id={group.id + "-title"}>{group.title}</h2>
+            <img src={art(group.icon + "-dynamic-premium")} alt="" width="800" height="800" loading="lazy" decoding="async" />
+          </header>
+
+          <ul class="sp__items" role="list">
+            {group.items.map((item) => (
+              <li class:list={["sp__item", { "sp__item--multiple": item.prices.length > 1 }]}>
+                <div class="sp__item-copy">
+                  <h3>{item.name}</h3>
+                  {item.description && <p>{item.description}</p>}
+                  {item.details && <ul class="sp__details">{item.details.map((detail) => <li>{detail}</li>)}</ul>}
+                </div>
+                <div class="sp__prices">
+                  {item.prices.map(({ value, unit }) => (
+                    <p class="sp__price">
+                      <strong class="num">{rub(value)}</strong>
+                      {unit && <span>{unit}</span>}
+                    </p>
+                  ))}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+
+    <section class="sp__contact" aria-labelledby="services-contact">
+      <div class="container sp__contact-inner">
+        <div>
+          <h2 id="services-contact">Добавить к брони</h2>
+          <p>Напишите или позвоните нам, чтобы согласовать услуги на вашу дату.</p>
+        </div>
+        <div class="sp__contact-actions">
+          <a class="btn btn--primary btn--sm" href={telegram} target="_blank" rel="noopener">
+            Написать в Telegram<span class="btn__ico"><Icon name="arrow" size={18} /></span>
+          </a>
+          <a class="btn btn--ghost btn--sm num" href={tel(PHONE_MAIN)}>{PHONE_MAIN}</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer home={false} />
+  <Messengers />
+</Base>

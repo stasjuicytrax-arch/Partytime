@@ -14,11 +14,11 @@ const at = (hash: string) => home ? hash : `${base}/${hash}`;
 const homeUrl = home ? Astro.url.pathname : base + "/";
 const menuId = "menu-" + variant;
 const isCurrent = (href: string) =>
-  !href.includes("#") && !href.endsWith("/soon") && Astro.url.pathname.replace(/\/$/, "") === href;
+  !href.includes("#") && Astro.url.pathname.replace(/\/$/, "") === href;
 const nav = [
   { href: at("#rooms"), label: "Залы" },
   { href: base + "/menu", label: "Кухня & Бар" },
-  { href: base + "/soon", label: "Услуги" },
+  { href: base + "/services", label: "Услуги" },
   { href: at("#promos"), label: "Акции" },
   { href: at("#contacts"), label: "Контакты" },
 ];

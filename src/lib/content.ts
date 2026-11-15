@@ -49,7 +49,7 @@ export const SERVICES = [
   { id: "own-food", title: "Своя еда — можно", icon: "gift", text: "Приносите еду, торт и напитки. «Праздничная сервировка» — 100 ₽/гость; набор посуды «Комфорт» — 100 ₽/гость. Лёд всегда есть.", link: null },
   { id: "games", title: "Игры", icon: "headphone", text: "PlayStation 4/5, Nintendo Switch и настолки на каждой локации.", link: null },
   { id: "cinema", title: "Кино и трансляции", icon: "camera", text: "Большой экран и объёмный звук: фильмы, матчи, презентации (с вашего ноутбука).", link: null },
-  { id: "turnkey", title: "Под ключ", icon: "crown", text: "Ведущие, аниматоры, фотографы, декор и фотозоны.", link: { label: "Услуги", href: "soon" } },
+  { id: "turnkey", title: "Под ключ", icon: "crown", text: "Ведущие, аниматоры, фотографы, декор и фотозоны.", link: { label: "Услуги", href: "services" } },
 ];
 
 /* ---------- 7. Акции ---------- */
@@ -127,7 +127,7 @@ export const FOOTER = {
   guests: [
     { label: "Залы", href: "#rooms" },
     { label: "Кухня & Бар", href: "menu" },
-    { label: "Услуги", href: "soon" },
+    { label: "Услуги", href: "services" },
     { label: "Акции", href: "#promos" },
     { label: "Вопросы и ответы", href: "#faq" },
     { label: "Система лояльности", href: "soon" },
