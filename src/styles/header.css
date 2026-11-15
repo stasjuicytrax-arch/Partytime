@@ -1,0 +1,132 @@
+:root {
+  --header-top: max(16px, env(safe-area-inset-top));
+  --header-bottom: calc(var(--header-top) + 64px);
+}
+.hdr {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  display: grid;
+  justify-items: center;
+  padding: var(--header-top) var(--gutter) 0;
+  color: var(--pt-white);
+  pointer-events: none;
+  transition: translate var(--dur-base) var(--ease-out);
+}
+.hdr.is-hidden:not(:focus-within) { translate: 0 calc(-100% - 32px); }
+.hdr__filters { position: absolute; }
+.hdr__bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 1.3vw, 20px);
+  min-height: 64px;
+  max-width: 100%;
+  padding-inline: 24px 8px;
+  border-radius: var(--r-pill);
+  pointer-events: auto;
+}
+.hdr__glass {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.08), transparent 55%), rgb(46 46 46 / 0.72);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.24),
+    inset 0 0 0 1px rgb(255 255 255 / 0.11),
+    inset 0 -2px 4px rgb(255 255 255 / 0.04),
+    0 16px 32px -14px rgb(0 0 0 / 0.72);
+}
+.hdr[data-liquid] .hdr__glass {
+  backdrop-filter: url(#partytime-nav-glass) blur(5px) saturate(1.35);
+}
+.hdr__brand {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  color: inherit;
+  font: 800 clamp(1rem, 1.65vw, 1.375rem) / 1 var(--font-display);
+  letter-spacing: -0.04em;
+  word-spacing: 0.08em;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.hdr__bar > :not(.hdr__glass) { position: relative; }
+.hdr__nav, .hdr__right { display: flex; align-items: center; gap: 4px; }
+.hdr__nav a, .hdr__phone, .hdr__book, .hdr__menu-phone {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  border-radius: var(--r-pill);
+  font: 650 0.9375rem / 1 var(--font-text);
+  white-space: nowrap;
+  text-decoration: none;
+}
+.hdr__nav a { padding-inline: 12px; }
+.hdr__phone { justify-content: center; min-width: 48px; }
+.hdr__nav a:is(:hover, [aria-current]), .hdr__phone:hover, .hdr__burger:hover, .hdr__menu-close:hover {
+  background: rgb(255 255 255 / 0.13);
+}
+.hdr__nav a[aria-current], .hdr__phone:hover, .hdr__brand:hover { color: var(--pt-lime); }
+.hdr__book { gap: 8px; padding-inline: 15px; background: var(--pt-lime); color: var(--pt-deep); }
+.hdr__book:hover { background: var(--pt-white); }
+.hdr__burger, .hdr__menu-close {
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+}
+.hdr__burger { display: none; }
+.hdr__burger span { grid-area: 1 / 1; width: 20px; height: 1px; background: currentColor; }
+.hdr__burger span:first-child { translate: 0 -4px; }
+.hdr__burger span:last-child { translate: 0 4px; }
+
+.hdr__menu {
+  position: fixed;
+  width: min(100% - 32px, 480px);
+  max-height: calc(100dvh - var(--header-top) - max(16px, env(safe-area-inset-bottom)));
+  padding: clamp(18px, 5vw, 28px);
+  border: 1px solid rgb(255 255 255 / 0.18);
+  border-radius: var(--r-lg);
+  background: rgb(37 37 37 / 0.97);
+  color: var(--pt-white);
+  box-shadow: 0 24px 56px -18px rgb(0 0 0 / 0.65);
+  overscroll-behavior: contain;
+}
+.hdr__menu::backdrop {
+  background: rgb(21 21 21 / 0.56);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.hdr__menu-top, .hdr__menu-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.hdr__menu-close { display: grid; border: 1px solid rgb(255 255 255 / 0.34); }
+.hdr__menu-links { display: grid; margin-block: 16px; }
+.hdr__menu-links a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 52px;
+  padding-block: 8px;
+  border-bottom: 1px solid rgb(255 255 255 / 0.18);
+  font: 700 clamp(1rem, 4.8vw, 1.45rem) / 1.16 var(--font-display);
+  letter-spacing: -0.03em;
+  text-decoration: none;
+}
+.hdr__menu-links a svg { flex: none; }
+.hdr__menu-links a:is(:hover, [aria-current]), .hdr__menu-phone:hover { color: var(--pt-lime); }
+.hdr__menu-foot { flex-wrap: wrap; gap: 4px 12px; }
+.hdr__menu-phone { gap: 8px; }
+
+@media (max-width: 1023px) {
+  .hdr__nav, .hdr__right { display: none; }
+  .hdr__burger { display: grid; }
+  .hdr__bar { gap: 12px; }
+}

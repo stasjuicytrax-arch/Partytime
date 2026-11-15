@@ -55,7 +55,7 @@ const pops = isPlaceholder(BOT_DISCOUNT) ? [] : [
     try { return Number(JSON.parse(ls.get("pt:booking") || "{}").step || 0) > 0; } catch { return false; }
   };
   const busy = () =>
-    !!document.querySelector("dialog[open], .hdr__menu[data-open], .pop:not([hidden])") ||
+    !!document.querySelector("dialog[open], .pop:not([hidden])") ||
     !!document.activeElement?.closest("[data-booking]") ||
     formOnScreen ||
     formStarted();

@@ -13,14 +13,6 @@
   backdrop-filter: var(--glass-blur);
 }
 
-/* ---------- Шапка (фиксированная, стекло после прокрутки) ---------- */
-.hdr--b.is-hidden { translate: 0 -110%; }
-.hdr--b { color: var(--pt-white); transition: background-color var(--dur-base), backdrop-filter var(--dur-base), box-shadow var(--dur-base), translate var(--dur-base) var(--ease-out); }
-.hdr--b.is-scrolled { background: rgb(21 21 21 / 0.62); -webkit-backdrop-filter: blur(16px) saturate(1.4); backdrop-filter: blur(16px) saturate(1.4); box-shadow: 0 1px 0 rgb(255 255 255 / 0.08); }
-.hdr--b .hdr__bar { min-height: 80px; }
-.hdr--b .hdr__burger { background: rgb(255 255 255 / 0.1); border: 1px solid rgb(255 255 255 / 0.25); color: var(--pt-white); }
-.hdr--b .hdr__menu[data-open] { background: var(--pt-deep); color: var(--pt-white); }
-.hdr--b .hdr__menu-close { background: rgb(255 255 255 / 0.1); border: 1px solid rgb(255 255 255 / 0.25); }
 .vb .btn--primary { box-shadow: 0 0 0 0 rgb(201 229 67 / 0); border-color: var(--pt-lime); }
 .vb .btn--primary:hover { box-shadow: 0 10px 40px -8px rgb(201 229 67 / 0.65); translate: 0 -2px; }
 .vb .btn--primary:active { translate: 0 1px; box-shadow: none; }

@@ -5,17 +5,6 @@
 /* интро-занавес: прячем куски коллажа до старта анимации */
 .is-intro .va [data-intro] { visibility: hidden; }
 
-/* ---------- Шапка ---------- */
-.hdr--a { color: var(--pt-deep); }
-.hdr--a.is-scrolled { background: var(--pt-paper); box-shadow: 0 2px 0 var(--pt-deep); }
-.hdr--a.is-scrolled .hdr__bar { min-height: 72px; }
-.hdr.is-hidden { translate: 0 -110%; }
-.hdr--a .hdr__logo { rotate: -2deg; transition: rotate var(--dur-base) var(--ease-pop); }
-.hdr--a .hdr__logo:hover { rotate: 2deg; }
-.hdr--a .hdr__burger { background: var(--pt-white); border: var(--border); box-shadow: 3px 3px 0 var(--pt-deep); }
-.hdr--a .hdr__menu[data-open] { background: var(--pt-pink); color: var(--pt-deep); }
-.hdr--a .hdr__menu-close { background: var(--pt-white); border: var(--border); }
-
 /* ---------- Hero ---------- */
 .ha {
   --fs-hero: clamp(3.4rem, 11vw, 11rem);

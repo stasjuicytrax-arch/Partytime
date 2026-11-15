@@ -25,17 +25,6 @@
 .vc .btn--ghost { color: var(--c-ink); border: 1.5px solid rgb(31 30 28 / 0.35); }
 .vc .btn--ghost:hover { background: var(--c-ink); color: #fff; border-color: var(--c-ink); }
 
-/* ---------- шапка ---------- */
-.hdr--c { color: var(--c-ink); transition: background-color var(--dur-base), box-shadow var(--dur-base), translate var(--dur-base) var(--ease-out); }
-.hdr--c.is-hidden { translate: 0 -110%; }
-.hdr--c.is-scrolled { background: rgb(250 248 244 / 0.92); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 1px 0 var(--c-line); }
-.hdr--c .hdr__bar { min-height: 80px; }
-.hdr--c .hdr__nav a:hover { color: var(--c-accent); }
-.hdr--c .hdr__burger { background: #fff; border: 1px solid var(--c-line); color: var(--c-ink); }
-.hdr--c .hdr__menu[data-open] { background: var(--c-bg); color: var(--c-ink); }
-.hdr--c .hdr__menu nav a { text-transform: none; font-weight: 700; letter-spacing: -0.02em; }
-.hdr--c .hdr__menu-close { background: #fff; border: 1px solid var(--c-line); }
-
 /* ---------- первый экран ---------- */
 .hc { padding: 128px 0 clamp(48px, 6vw, 88px); }
 .hc__inner { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(32px, 5vw, 80px); align-items: center; }

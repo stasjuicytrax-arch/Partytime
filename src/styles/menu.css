@@ -30,7 +30,7 @@
 /* ---------- полоса разделов ---------- */
 .mnav { position: sticky; top: 0; z-index: 40; padding: 10px 0; background: rgb(21 21 21 / 0.86); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-block: 1px solid rgb(255 255 255 / 0.08); transition: top var(--dur-base) var(--ease-out); }
 /* шапка видна — полоса едет под ней */
-body:has(.hdr:not(.is-hidden)) .mnav { top: 80px; }
+body:has(.hdr:is(:not(.is-hidden), :focus-within)) .mnav { top: var(--header-bottom); }
 /* разделы переносятся строками — без прокрутки вбок */
 .mnav__in { display: flex; flex-wrap: wrap; gap: 8px; }
 .mnav__in::-webkit-scrollbar { display: none; }
@@ -146,7 +146,6 @@ body:has(.hdr:not(.is-hidden)) .mnav { top: 80px; }
 
 @media (max-width: 1023px) {
   .ms__groups--rows, .ms__groups--bottles, .ms__groups--wine { grid-template-columns: minmax(0, 1fr); }
-  body:has(.hdr:not(.is-hidden)) .mnav { top: 72px; }
 }
 @media (max-width: 767px) {
   .menu-page [id] { scroll-margin-top: 150px; }
@@ -169,7 +168,7 @@ body:has(.hdr:not(.is-hidden)) .mnav { top: 80px; }
 /* ПК: разделы закреплены сразу под вкладками (высоту вкладок отдаёт скрипт в --mnav-h) */
 .mnav { border-bottom: 0; }
 .mchips { position: sticky; top: var(--mnav-h, 66px); z-index: 39; padding: 2px 0 12px; background: rgb(21 21 21 / 0.86); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-bottom: 1px solid rgb(255 255 255 / 0.08); transition: top var(--dur-base) var(--ease-out); }
-body:has(.hdr:not(.is-hidden)) .mchips { top: calc(80px + var(--mnav-h, 66px)); }
+body:has(.hdr:is(:not(.is-hidden), :focus-within)) .mchips { top: calc(var(--header-bottom) + var(--mnav-h, 66px)); }
 .mtabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
 .mtabs::-webkit-scrollbar { display: none; }
 .mtabs__btn {
@@ -224,8 +223,4 @@ body:has(.hdr:not(.is-hidden)) .mchips { top: calc(80px + var(--mnav-h, 66px)); 
   .mnav__in[hidden] { display: none; }
   .mnav__in a { flex-wrap: wrap; justify-content: space-between; min-height: 44px; padding: 6px 6px 6px 12px; gap: 4px 6px; font-size: 0.8125rem; line-height: 1.15; white-space: normal; overflow-wrap: normal; }
   .mnav__in a b { flex: none; padding: 6px 7px; font-size: 0.6875rem; }
-}
-/* планшет: шапка ниже — разделы встают сразу под вкладками */
-@media (min-width: 768px) and (max-width: 1023px) {
-  body:has(.hdr:not(.is-hidden)) .mchips { top: calc(72px + var(--mnav-h, 66px)); }
 }

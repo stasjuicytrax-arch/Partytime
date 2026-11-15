@@ -1,101 +1,137 @@
 ---
 import Icon from "./Icon.astro";
 import { PHONE_MAIN, tel } from "../lib/rooms";
+import "../styles/header.css";
 
 interface Props {
   variant: "a" | "b" | "c";
-  /** на отдельных страницах (меню бара) якоря ведут на главную */
+  /** На отдельных страницах якоря ведут на главную. */
   home?: boolean;
 }
 const { variant, home = true } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-const soon = `${base}/soon`;
-const at = (hash: string) => (home ? hash : `${base}/${hash}`);
+const at = (hash: string) => home ? hash : `${base}/${hash}`;
+const homeUrl = home ? Astro.url.pathname : base + "/";
+const menuId = "menu-" + variant;
+const isCurrent = (href: string) =>
+  !href.includes("#") && !href.endsWith("/soon") && Astro.url.pathname.replace(/\/$/, "") === href;
 const nav = [
   { href: at("#rooms"), label: "Залы" },
-  { href: `${base}/menu`, label: "Кухня & Бар" },
-  { href: soon, label: "Услуги" },
+  { href: base + "/menu", label: "Кухня & Бар" },
+  { href: base + "/soon", label: "Услуги" },
   { href: at("#promos"), label: "Акции" },
   { href: at("#contacts"), label: "Контакты" },
 ];
+const glassMap = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="x" x2="1" y2="0"><stop stop-color="#000"/><stop offset="1" stop-color="#f00"/></linearGradient>
+    <linearGradient id="y" x2="0" y2="1"><stop stop-color="#000"/><stop offset="1" stop-color="#0f0"/></linearGradient>
+    <filter id="soften"><feGaussianBlur stdDeviation="10.7"/></filter>
+  </defs>
+  <rect width="256" height="256" fill="url(#x)"/>
+  <rect width="256" height="256" fill="url(#y)" style="mix-blend-mode:screen"/>
+  <rect x="32" y="32" width="192" height="192" rx="32" fill="#808000" filter="url(#soften)"/>
+</svg>`;
 ---
-<header class={`hdr hdr--${variant}`} data-header>
-  <div class="container hdr__bar">
-    <a class="hdr__logo" href={home ? Astro.url.pathname : `${base}/`} aria-label="Время веселиться — на главную" data-party>
-      <img src={`${base}/brand/logo-karaoke-loft.svg`} alt="Время веселиться — караоке-лофт" width="150" height="78" />
-    </a>
+<header class:list={["hdr", "hdr--" + variant]} data-header>
+  <svg class="hdr__filters" width="0" height="0" aria-hidden="true" focusable="false">
+    <filter id="partytime-nav-glass" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feImage href={"data:image/svg+xml," + encodeURIComponent(glassMap)} width="100%" height="100%" preserveAspectRatio="none" result="map" />
+      <feDisplacementMap in="SourceGraphic" in2="map" scale="32" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+  </svg>
+  <div class="hdr__bar">
+    <div class="hdr__glass" aria-hidden="true"></div>
+    <a class="hdr__brand" href={homeUrl} aria-label="Party Time — на главную" data-party>Party Time</a>
     <nav class="hdr__nav" aria-label="Основное меню">
-      {nav.map((n) => <a href={n.href}>{n.label}</a>)}
+      {nav.map((n) => <a href={n.href} aria-current={isCurrent(n.href) ? "page" : undefined}>{n.label}</a>)}
     </nav>
     <div class="hdr__right">
-      <a class="hdr__phone num" href={tel(PHONE_MAIN)}><Icon name="phone" size={18} />{PHONE_MAIN}</a>
-      <a class="btn btn--primary btn--sm hdr__cta" href={at("#booking")} data-magnetic>
-        <span>Забронировать</span><span class="btn__ico"><Icon name="arrow" size={18} /></span>
+      <a class="hdr__phone" href={tel(PHONE_MAIN)} aria-label={"Позвонить: " + PHONE_MAIN}>
+        <Icon name="phone" size={18} />
       </a>
-      <button type="button" class="hdr__burger" aria-label="Открыть меню" aria-expanded="false" aria-controls={`menu-${variant}`} data-burger>
-        <Icon name="menu" size={26} />
-      </button>
+      <a class="hdr__book" href={at("#booking")}>Забронировать <Icon name="arrow" size={16} /></a>
     </div>
-  </div>
-  <div class="hdr__menu" id={`menu-${variant}`} data-menu>
-    <button type="button" class="hdr__menu-close" aria-label="Закрыть меню" data-menu-close><Icon name="close" size={26} /></button>
-    <img src={`${base}/brand/logo-karaoke-loft.svg`} alt="" width="132" height="69" />
-    <nav aria-label="Меню">
-      {nav.map((n) => <a href={n.href} data-menu-link>{n.label}</a>)}
-    </nav>
-    <div class="hdr__menu-foot">
-      <a class="hdr__phone num" href={tel(PHONE_MAIN)}><Icon name="phone" size={20} />{PHONE_MAIN}</a>
-      <a class="btn btn--primary" href={at("#booking")} data-menu-link>
-        <span>Забронировать</span><span class="btn__ico"><Icon name="arrow" size={20} /></span>
-      </a>
-    </div>
+    <button type="button" class="hdr__burger" aria-label="Открыть меню" aria-haspopup="dialog" aria-expanded="false" aria-controls={menuId} data-burger>
+      <span></span><span></span>
+    </button>
   </div>
 </header>
 
+<dialog class="hdr__menu" id={menuId} aria-label="Меню">
+  <div class="hdr__menu-top">
+    <a class="hdr__brand" href={homeUrl} aria-label="Party Time — на главную" data-menu-link>Party Time</a>
+    <button type="button" class="hdr__menu-close" aria-label="Закрыть меню" data-menu-close><Icon name="close" size={24} /></button>
+  </div>
+  <nav class="hdr__menu-links" aria-label="Основное меню">
+    {nav.map((n) => (
+      <a href={n.href} aria-current={isCurrent(n.href) ? "page" : undefined} data-menu-link>
+        {n.label}<Icon name="arrow" size={20} />
+      </a>
+    ))}
+  </nav>
+  <div class="hdr__menu-foot">
+    <a class="hdr__menu-phone num" href={tel(PHONE_MAIN)}><Icon name="phone" size={18} />{PHONE_MAIN}</a>
+    <a class="hdr__book" href={at("#booking")} data-menu-link>Забронировать <Icon name="arrow" size={16} /></a>
+  </div>
+</dialog>
+
 <script>
-  import { gsap } from "gsap";
-  import { reduced, lenis } from "../scripts/motion";
+  import { lenis } from "../scripts/motion";
+
   document.querySelectorAll<HTMLElement>("[data-header]").forEach((hdr) => {
-    const menu = hdr.querySelector<HTMLElement>("[data-menu]")!;
     const burger = hdr.querySelector<HTMLButtonElement>("[data-burger]")!;
-    const open = () => {
-      menu.setAttribute("data-open", "");
+    const menu = document.getElementById(burger.getAttribute("aria-controls")!) as HTMLDialogElement;
+    const desktop = matchMedia("(min-width: 1024px)");
+    let restoreFocus = true;
+    if (/Chrome\/|Edg\//.test(navigator.userAgent) && CSS.supports("backdrop-filter", "url(#partytime-nav-glass)")) {
+      hdr.setAttribute("data-liquid", "");
+    }
+    burger.addEventListener("click", () => {
+      restoreFocus = true;
+      menu.showModal();
       burger.setAttribute("aria-expanded", "true");
       lenis()?.stop();
       document.documentElement.classList.add("modal-open");
-      if (!reduced()) {
-        gsap.fromTo(menu, { clipPath: "circle(0% at 92% 4%)" }, { clipPath: "circle(150% at 92% 4%)", duration: 0.7, ease: "expo.out" });
-        gsap.fromTo(menu.querySelectorAll("nav a"), { yPercent: 110, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.6, ease: "expo.out", stagger: 0.05, delay: 0.1 });
-      }
-      menu.querySelector<HTMLElement>("nav a")?.focus();
-    };
-    const close = () => {
-      menu.removeAttribute("data-open");
+      menu.querySelector<HTMLButtonElement>("[data-menu-close]")?.focus();
+    });
+    const unlock = () => {
       burger.setAttribute("aria-expanded", "false");
       lenis()?.start();
       document.documentElement.classList.remove("modal-open");
     };
-    burger.addEventListener("click", open);
-    // фокус не уходит из открытого меню
-    menu.addEventListener("keydown", (e) => {
-      if (e.key !== "Tab") return;
-      const f = [...menu.querySelectorAll<HTMLElement>("a, button")].filter((x) => x.offsetParent !== null);
-      const first = f[0], last = f[f.length - 1];
-      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    menu.addEventListener("close", () => {
+      if (menu.open) return;
+      unlock();
+      if (restoreFocus) {
+        const opener = desktop.matches ? hdr.querySelector<HTMLElement>(".hdr__brand") : burger;
+        opener?.focus({ preventScroll: true });
+      }
     });
-    // шапка: плашка после прокрутки, прячется при скролле вниз и возвращается при скролле вверх
-    // с запасом в 60 px: мелкие шаги прокрутки (медленный скролл, хвост инерции) не дёргают шапку
+    menu.querySelector("[data-menu-close]")?.addEventListener("click", () => menu.close());
+    menu.querySelectorAll("[data-menu-link]").forEach((link) => link.addEventListener("click", () => {
+      restoreFocus = false;
+      menu.close();
+      unlock();
+    }));
+    menu.addEventListener("click", (event) => {
+      if (event.target !== menu) return;
+      const { left, right, top, bottom } = menu.getBoundingClientRect();
+      const { clientX, clientY } = event;
+      if (clientX < left || clientX > right || clientY < top || clientY > bottom) menu.close();
+    });
+    desktop.addEventListener("change", () => { if (desktop.matches && menu.open) menu.close(); });
+
+    // Шапка возвращается после движения вверх, без скачков при медленной прокрутке.
     let anchorY = scrollY;
     let hidden = false;
     const onScroll = () => {
       const y = scrollY;
-      hdr.classList.toggle("is-scrolled", y > 24);
-      if (y < 400 || menu.hasAttribute("data-open")) {
+      if (y < 400 || menu.open) {
         hidden = false;
         anchorY = y;
       } else if (hidden ? y > anchorY : y < anchorY) {
-        anchorY = y; // направление не сменилось — двигаем точку отсчёта
+        anchorY = y;
       } else if (Math.abs(y - anchorY) > 60) {
         hidden = !hidden;
         anchorY = y;
@@ -104,15 +140,13 @@ const nav = [
     };
     addEventListener("scroll", onScroll, { passive: true });
     onScroll();
-    // «скоро на сайте» по тапу (тултипа по hover на таче нет)
-    document.querySelectorAll<HTMLElement>(".loc--soon").forEach((b) =>
-      b.addEventListener("click", () => {
-        b.classList.add("is-tip");
-        setTimeout(() => b.classList.remove("is-tip"), 1600);
+
+    // «Скоро на сайте» по тапу на локации.
+    document.querySelectorAll<HTMLElement>(".loc--soon").forEach((location) =>
+      location.addEventListener("click", () => {
+        location.classList.add("is-tip");
+        setTimeout(() => location.classList.remove("is-tip"), 1600);
       })
     );
-    hdr.querySelector("[data-menu-close]")!.addEventListener("click", () => { close(); burger.focus(); });
-    menu.querySelectorAll("[data-menu-link]").forEach((a) => a.addEventListener("click", close));
-    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && menu.hasAttribute("data-open")) { close(); burger.focus(); } });
   });
 </script>

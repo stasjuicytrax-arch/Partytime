@@ -1,11 +1,8 @@
 /* Главная, тёмная тема. Цвета — только var(--t-*) из theme-dark.css */
 
-/* ===== Шапка: воздух вокруг логотипа (общая высота — --hdr-h) ===== */
 .vb { --hdr-h: 80px; --hm-s1: 8px; --hm-s2: 16px; --hm-s3: 24px; --hm-s4: 32px; }
-.vb .hdr--b .hdr__bar { min-height: var(--hdr-h); padding-block: 10px; }
 @media (min-width: 768px) {
   .vb { --hdr-h: 104px; }
-  .vb .hdr--b .hdr__bar { padding-block: 14px; }
 }
 
 /* ===== Первый экран =====
@@ -17,7 +14,7 @@
   --hm-s4: 32px;  /* шапка → H1 на телефоне */
   --hm-top: var(--hm-s4);
   --hm-bottom: var(--hm-s3);
-  /* левая граница сетки — та же, что у .container в шапке и секциях */
+  /* Левая граница сетки секций. */
   --edge: max(var(--gutter), calc((100cqw - var(--container)) / 2 + var(--gutter)));
   container-type: inline-size;
   display: flex;

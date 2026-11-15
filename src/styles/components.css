@@ -549,43 +549,7 @@
 }
 .cursor.is-view .cursor__label { opacity: 1; scale: 1; }
 
-/* ---------- Шапка: общее ---------- */
-.hdr { position: fixed; inset: 0 0 auto; z-index: 50; transition: background-color var(--dur-base), box-shadow var(--dur-base), translate var(--dur-base) var(--ease-out); }
-.hdr__bar { display: flex; align-items: center; gap: clamp(16px, 2.5vw, 40px); min-height: 88px; }
-.hdr__logo { flex: none; display: block; width: clamp(112px, 10vw, 150px); }
-.hdr__logo img { width: 100%; height: auto; }
-.hdr__nav { display: flex; gap: clamp(14px, 1.8vw, 28px); margin-inline: auto; }
-.hdr__nav a { position: relative; padding: 10px 0; font: 600 0.9375rem / 1 var(--font-text); text-decoration: none; }
-.hdr__nav a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 4px; height: 2px; background: currentColor; scale: 0 1; transform-origin: right; transition: scale var(--dur-base) var(--ease-out); }
-.hdr__nav a:hover::after { scale: 1 1; transform-origin: left; }
-.hdr__right { display: flex; align-items: center; gap: 18px; }
-.hdr__phone { display: inline-flex; align-items: center; gap: 8px; font: 700 0.9375rem / 1 var(--font-text); text-decoration: none; white-space: nowrap; }
-.hdr__burger { display: none; width: 52px; height: 52px; place-items: center; border-radius: 50%; }
-.hdr__menu { display: none; }
-@media (max-width: 1100px) {
-  .hdr__nav, .hdr__bar .hdr__phone { display: none; }
-  .hdr__right { margin-left: auto; }
-  .hdr__burger { display: grid; }
-}
-@media (max-width: 520px) {
-  .hdr__bar { min-height: 72px; }
-  .hdr__cta { display: none !important; }
-}
-/* размытие и сдвиг шапки делают её «рамкой» для fixed-меню — пока меню открыто, их нет, и оно занимает весь экран */
 .modal-open .mbar { visibility: hidden; }
-.hdr:has(.hdr__menu[data-open]) { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; translate: none !important; }
-.hdr__menu[data-open] {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  padding: 88px var(--gutter) 32px;
-}
-.hdr__menu nav { display: grid; gap: 4px; margin-top: 16px; }
-.hdr__menu nav a { font: 900 clamp(2rem, 9vw, 3.5rem) / 1.08 var(--font-display); text-transform: uppercase; text-decoration: none; letter-spacing: -0.03em; }
-.hdr__menu .hdr__menu-foot { display: grid; gap: 16px; margin-top: auto; }
-.hdr__menu-close { position: absolute; top: 12px; right: var(--gutter); width: 52px; height: 52px; display: grid; place-items: center; border-radius: 50%; }
 
 /* ---------- Превью-заглушка «дальше — бронирование» ---------- */
 .next-up { padding-block: clamp(64px, 8vw, 120px); }
