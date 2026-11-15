@@ -2,8 +2,14 @@
 import { FOOTER, PHONE_MAIN, MESSENGERS } from "../../lib/content";
 import { tel } from "../../lib/rooms";
 import { botUrl } from "../../lib/bot";
+
+interface Props {
+  home?: boolean;
+}
+
+const { home = true } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-const href = (h: string) => (h === "soon" || h === "menu" ? `${base}/${h}` : h);
+const href = (h: string) => (home && h.startsWith("#") ? h : `${base}/${h}`);
 const word = ["В", "Е", "С", "Е", "Л", "И", "М", "С", "Я"];
 const fills = ["lime", "pink", "white", "sky", "violet", "pink", "lime", "white", "saffron"];
 ---
@@ -30,7 +36,9 @@ const fills = ["lime", "pink", "white", "sky", "violet", "pink", "lime", "white"
     </nav>
     <nav aria-label="Документы">
       <b>Документы</b>
-      {FOOTER.docs.map((l) => <a href={href(l.href)}>{l.label}</a>)}
+      {FOOTER.docs.map((l) => (
+        <a href={href(l.href)} aria-current={Astro.params.document === l.href ? "page" : undefined}>{l.label}</a>
+      ))}
     </nav>
   </div>
 

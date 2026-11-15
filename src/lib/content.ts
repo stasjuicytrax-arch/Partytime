@@ -138,9 +138,9 @@ export const FOOTER = {
     { label: "Работа у нас", href: "soon", note: "Наша команда растёт — ищем активных людей" },
   ],
   docs: [
-    { label: "Политика конфиденциальности", href: "soon" },
-    { label: "Правила досугового центра", href: "soon" },
-    { label: "Оферта", href: "soon" },
-    { label: "Согласие на обработку ПД", href: "soon" },
+    { label: "Политика конфиденциальности", href: "politic" },
+    { label: "Правила досугового центра", href: "pravila" },
+    { label: "Оферта", href: "contract" },
+    { label: "Согласие на обработку ПД", heading: "Согласие на обработку персональных данных", href: "assent" },
   ],
 };
