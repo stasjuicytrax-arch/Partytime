@@ -1,6 +1,7 @@
 ---
 import { PROMO_PAGES } from "../../lib/promos";
 import Icon from "../Icon.astro";
+import PromoIcon from "./PromoIcon.astro";
 
 interface Props {
   id?: string;
@@ -50,6 +51,7 @@ const href = (path: string) => base + "/" + path + "/";
             <li>
               <a href={href(p.path)}>
                 <div>
+                  <PromoIcon id={p.id} />
                   <h3>{p.title}</h3>
                   <p>{p.text}</p>
                 </div>
@@ -168,7 +170,7 @@ const href = (path: string) => base + "/" + path + "/";
   .promo-links a:is(:hover, :focus-visible) h3 { color: var(--pt-lime); }
   .promo-links h3 { font: 750 1.0625rem / 1.22 var(--font-text); }
   .promo-links p { margin-top: 5px; color: var(--t-muted); font-size: 0.875rem; line-height: 1.4; }
-  .promo-links :global(svg) { flex: none; color: var(--pt-lime); }
+  .promo-links a > :global(svg) { flex: none; color: var(--pt-lime); }
   @media (hover: hover) and (prefers-reduced-motion: no-preference) {
     .promo-poster--3plus1:hover img { transform: scale(1.035); }
   }
